@@ -8,7 +8,7 @@ namespace Core.Match
     {
         private readonly SignalBus _signalBus;
         private readonly ILogger _logger;
-        float _timer = Random.Range(1, 6);
+        private float _timer = Random.Range(1, 6);
 
         public GameController(SignalBus signalBus, ILogger logger)
         {

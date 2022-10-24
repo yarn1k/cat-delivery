@@ -20,6 +20,7 @@ namespace Core.Infrastructure.Installers
         #endif
 
             Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle();
         }
     }
 }
