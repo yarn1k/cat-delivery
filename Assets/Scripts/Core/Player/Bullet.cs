@@ -1,3 +1,5 @@
+using Core.Cats;
+using Core.Infrastructure.Signals.Cat;
 using Core.Models;
 using UnityEngine;
 using Zenject;
@@ -26,9 +28,10 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Cat")) {
+        if (collision.gameObject.CompareTag("Cat")) 
+        {
             Destroy(gameObject);
-            Debug.Log(collision.gameObject.name);
+            _signalBus.Fire(new CatSavedSignal { Cat = collision.gameObject.GetComponent<Cat>() });
         }
     }
 

@@ -1,3 +1,4 @@
+using Core.Cats;
 using UnityEngine;
 using Zenject;
 
@@ -14,7 +15,8 @@ namespace Core.Enemy
         {
             if (other.gameObject.CompareTag("Cat"))
             {
-                Destroy(other.gameObject);
+                if (!other.gameObject.GetComponent<Cat>().IsInvisible)
+                    Destroy(other.gameObject);
             }
         }
 

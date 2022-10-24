@@ -1,3 +1,5 @@
+using Core.Cats;
+using Core.Infrastructure.Signals.Cat;
 using Core.Infrastructure.Signals.Game;
 using System.Collections;
 using UnityEngine;
@@ -24,12 +26,20 @@ namespace Core.Match
 
         public void Initialize()
         {
+            _signalBus.Subscribe<CatFallingSignal>(OnCatFallingSignal);
+            _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
+            _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+
             _asyncProcessor.StartCoroutine(RandomCatSpawn());
             _asyncProcessor.StartCoroutine(RandomLaserSpawn());
         }
 
         public void LateDispose()
         {
+            _signalBus.TryUnsubscribe<CatFallingSignal>(OnCatFallingSignal);
+            _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
+            _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+
             _asyncProcessor.StopCoroutine(RandomCatSpawn());
             _asyncProcessor.StopCoroutine(RandomLaserSpawn());
         }
@@ -52,6 +62,20 @@ namespace Core.Match
                 yield return new WaitForSeconds(timer);
                 _signalBus.Fire(new GameSpawnedLaserSignal { });
             }
+        }
+
+        private void OnCatFallingSignal(CatFallingSignal signal)
+        {
+            signal.Cat.SetFallingState();
+        }
+
+        private void OnCatSavedSignal(CatSavedSignal signal)
+        {
+            signal.Cat.SetSaveState();
+        }
+
+        private void OnCatKidnappedSignal()
+        {
         }
     }
 }

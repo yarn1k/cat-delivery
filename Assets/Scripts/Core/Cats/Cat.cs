@@ -12,8 +12,11 @@ namespace Core.Cats
         private GameSettings _settings;
 
         private ICatState _currentState;
-
         public ICatState State { get => _currentState; }
+        public bool IsInvisible
+        {
+            get => _currentState is SaveState ? true : false;
+        }
 
         private T ChangeState<T>() where T : MonoBehaviour, ICatState
         {
@@ -24,6 +27,7 @@ namespace Core.Cats
                 Destroy(state);
             }
             T newState = gameObject.AddComponent<T>();
+
             return newState;
         }
 
@@ -41,13 +45,7 @@ namespace Core.Cats
 
         private void Start()
         {
-            _signalBus.Subscribe<CatFallingSignal>(OnCatFallingSignal);
-            _signalBus.Fire(new CatFallingSignal { });
-        }
-
-        private void OnDestroy()
-        {
-            _signalBus.TryUnsubscribe<CatFallingSignal>(OnCatFallingSignal);
+            _signalBus.Fire(new CatFallingSignal { Cat = this });
         }
 
         private void OnBecameInvisible()
@@ -55,11 +53,18 @@ namespace Core.Cats
             Destroy(gameObject);
         }
 
-        private void OnCatFallingSignal(CatFallingSignal signal)
+        public void SetFallingState()
         {
             var fallingState = ChangeState<FallingState>();
             fallingState.Init(_settings);
             _currentState = fallingState;
+        }
+
+        public void SetSaveState()
+        {
+            var saveState = ChangeState<SaveState>();
+            saveState.Init(_settings);
+            _currentState = saveState;
         }
 
         public class Factory : PlaceholderFactory<Cat> { }
