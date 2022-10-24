@@ -1,6 +1,5 @@
+using Core.Infrastructure.Signals.Game;
 using Core.Models;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -8,10 +7,12 @@ namespace Core.Cats
 {
     public class SaveState : MonoBehaviour, ICatState
     {
+        private SignalBus _signalBus;
         private GameSettings _settings;
 
-        public void Init(GameSettings settings)
+        public void Init(SignalBus signalBus, GameSettings settings)
         {
+            _signalBus = signalBus;
             _settings = settings;
         }
 
@@ -23,6 +24,12 @@ namespace Core.Cats
         private void FixedUpdate()
         {
             Move();
+        }
+
+        private void OnBecameInvisible()
+        {
+            _signalBus.Fire(new GameScoreChangedSignal { Value = 50 });
+            Destroy(gameObject);
         }
     }
 }

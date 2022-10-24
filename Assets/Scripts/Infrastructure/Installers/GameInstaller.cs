@@ -20,11 +20,15 @@ namespace Core.Infrastructure.Installers
             Container.DeclareSignal<GameSpawnedCatSignal>();
             Container.DeclareSignal<EnemyWantsAttackSignal>();
             Container.DeclareSignal<GameSpawnedLaserSignal>();
+            Container.DeclareSignal<GameScoreChangedSignal>();
+            Container.DeclareSignal<GameOverSignal>();
 
 #if UNITY_EDITOR
             // Include these just to ensure BindSignal works
             Container.BindSignal<GameSpawnedCatSignal>().ToMethod(() => Logger.Log("GameSpawnedCatSignal", LogType.Signal));
+            Container.BindSignal<EnemyWantsAttackSignal>().ToMethod(() => Logger.Log("EnemyWantsAttackSignal", LogType.Signal));
             Container.BindSignal<GameSpawnedLaserSignal>().ToMethod(() => Logger.Log("GameSpawnedLaserSignal", LogType.Signal));
+            Container.BindSignal<GameOverSignal>().ToMethod(() => Logger.Log("GameOverSignal", LogType.Signal));
 #endif
 
             Container.BindFactory<Laser, Laser.Factory>().FromComponentInNewPrefab(_laser);

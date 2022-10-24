@@ -68,7 +68,7 @@ namespace Core.Enemy
         IEnumerator StopMoving()
         {
             _isMoving = false;
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(1.5f);
             _signalBus.Fire(new GameSpawnedLaserSignal { });
             yield return new WaitForSeconds(2);
             _isMoving = true;

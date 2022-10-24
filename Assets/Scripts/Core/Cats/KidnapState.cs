@@ -1,5 +1,7 @@
+using Core.Infrastructure.Signals.Game;
 using Core.Models;
 using UnityEngine;
+using Zenject;
 
 namespace Core.Cats
 {
@@ -20,6 +22,11 @@ namespace Core.Cats
         private void FixedUpdate()
         {
             Move();
+        }
+
+        private void OnBecameInvisible()
+        {
+            Destroy(gameObject);
         }
     }
 }

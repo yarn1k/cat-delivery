@@ -48,22 +48,17 @@ namespace Core.Cats
             _signalBus.Fire(new CatFallingSignal { Cat = this });
         }
 
-        private void OnBecameInvisible()
-        {
-            Destroy(gameObject);
-        }
-
         public void SetFallingState()
         {
             var fallingState = ChangeState<FallingState>();
-            fallingState.Init(_settings);
+            fallingState.Init(_signalBus, _settings);
             _currentState = fallingState;
         }
 
         public void SetSaveState()
         {
             var saveState = ChangeState<SaveState>();
-            saveState.Init(_settings);
+            saveState.Init(_signalBus, _settings);
             _currentState = saveState;
         }
 

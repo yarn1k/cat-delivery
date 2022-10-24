@@ -1,6 +1,7 @@
 using Core.Cats;
 using Core.Infrastructure.Signals.Cat;
 using Core.Infrastructure.Signals.Game;
+using Core.Infrastructure.Signals.UI;
 using System.Collections;
 using UnityEngine;
 using Zenject;
@@ -16,6 +17,7 @@ namespace Core.Match
         private readonly SignalBus _signalBus;
         private readonly ILogger _logger;
         private AsyncProcessor _asyncProcessor;
+        private int _score;
 
         public GameController(SignalBus signalBus, ILogger logger, AsyncProcessor asyncProcessor)
         {
@@ -29,6 +31,7 @@ namespace Core.Match
             _signalBus.Subscribe<CatFallingSignal>(OnCatFallingSignal);
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+            _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
 
             _asyncProcessor.StartCoroutine(RandomCatSpawn());
             _asyncProcessor.StartCoroutine(RandomLaserSpawn());
@@ -39,6 +42,7 @@ namespace Core.Match
             _signalBus.TryUnsubscribe<CatFallingSignal>(OnCatFallingSignal);
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+            _signalBus.TryUnsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
 
             _asyncProcessor.StopCoroutine(RandomCatSpawn());
             _asyncProcessor.StopCoroutine(RandomLaserSpawn());
@@ -78,6 +82,12 @@ namespace Core.Match
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
             signal.Cat.SetKidnapState();
+        }
+
+        private void OnGameScoreChangedSignal(GameScoreChangedSignal signal)
+        {
+            _score += signal.Value;
+            _signalBus.Fire(new UIScoreChangedSignal { Value = _score });
         }
     }
 }
