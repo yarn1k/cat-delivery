@@ -13,7 +13,7 @@ namespace Core.Player
         [SerializeField]
         private Camera _mainCamera;
         private Vector3 _mousePosition;
-        private bool _isCanFire;
+        private bool _isCanFire = true;
         private float _reloadTimer;
         [SerializeField]
         private GameObject _firePoint;
@@ -30,7 +30,8 @@ namespace Core.Player
             _mousePosition = _mainCamera.ScreenToWorldPoint(Input.mousePosition);
 
             Vector2 lookDirection = _mousePosition - transform.position;
-            float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg - 90f;
+            float rotationZ = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg - 90f;
+            float angle = Mathf.Clamp(rotationZ, -55, 55);
             transform.rotation = Quaternion.Euler(0, 0, angle);
 
             if (!_isCanFire)
@@ -48,6 +49,10 @@ namespace Core.Player
                 _isCanFire = false;
                 _signalBus.Fire(new PlayerFiredSignal { FirePoint = _firePoint.transform });
             }
+
+            float moveHorizontal = Input.GetAxis("Horizontal");
+
+            transform.Translate(moveHorizontal * _settings.MovementSpeed * Time.fixedDeltaTime, 0, 0, Space.World);
         }
     }
 }

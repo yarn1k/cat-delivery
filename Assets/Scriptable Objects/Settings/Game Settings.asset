@@ -16,3 +16,4 @@ MonoBehaviour:
     _catsFallingSpeed: 2
     _bulletForce: 5
     _reloadTime: 2
+    _movementSpeed: 3

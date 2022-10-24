@@ -13,10 +13,13 @@ namespace Core.Models
         private float _bulletForce;
         [SerializeField]
         private float _reloadTime;
+        [SerializeField]
+        private float _movementSpeed;
 
         public float CatsFallingSpeed => _catsFallingSpeed;
         public float BulletForce => _bulletForce;
         public float ReloadTime => _reloadTime;
+        public float MovementSpeed => _movementSpeed;
     }
 
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Installers/Game Settings")]
