@@ -74,8 +74,9 @@ namespace Core.Match
             signal.Cat.SetSaveState();
         }
 
-        private void OnCatKidnappedSignal()
+        private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
+            signal.Cat.SetKidnapState();
         }
     }
 }

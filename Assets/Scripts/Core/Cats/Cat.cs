@@ -67,6 +67,13 @@ namespace Core.Cats
             _currentState = saveState;
         }
 
+        public void SetKidnapState()
+        {
+            var kidnapState = ChangeState<KidnapState>();
+            kidnapState.Init(_settings);
+            _currentState = kidnapState;
+        }
+
         public class Factory : PlaceholderFactory<Cat> { }
     }
 }
