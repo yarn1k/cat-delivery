@@ -26,8 +26,10 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Destroy(gameObject);
-        Debug.Log(collision.gameObject.name);
+        if (collision.gameObject.CompareTag("Cat")) {
+            Destroy(gameObject);
+            Debug.Log(collision.gameObject.name);
+        }
     }
 
     private void OnBecameInvisible()

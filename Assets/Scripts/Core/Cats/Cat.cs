@@ -2,6 +2,7 @@ using UnityEngine;
 using Core.Infrastructure.Signals.Cat;
 using Zenject;
 using Core.Models;
+using System;
 
 namespace Core.Cats
 {
@@ -41,11 +42,17 @@ namespace Core.Cats
         private void Start()
         {
             _signalBus.Subscribe<CatFallingSignal>(OnCatFallingSignal);
+            _signalBus.Fire(new CatFallingSignal { });
         }
 
-        private void Dispose()
+        private void OnDestroy()
         {
             _signalBus.TryUnsubscribe<CatFallingSignal>(OnCatFallingSignal);
+        }
+
+        private void OnBecameInvisible()
+        {
+            Destroy(gameObject);
         }
 
         private void OnCatFallingSignal(CatFallingSignal signal)
