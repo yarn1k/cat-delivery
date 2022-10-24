@@ -17,7 +17,7 @@ namespace Core.Enemy
 
         private void Start()
         {
-            Destroy(gameObject, 1f);
+            Destroy(gameObject, 2f);
         }
 
         private void OnTriggerEnter2D(Collider2D other)

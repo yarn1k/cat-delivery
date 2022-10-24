@@ -16,6 +16,8 @@ public class Spawner : MonoBehaviour, IDisposable
 
     [SerializeField]
     private Transform _level;
+    [SerializeField]
+    private Transform _enemyFirePoint;
 
     [Inject]
     private void Construct(SignalBus signalBus) => _signalBus = signalBus;
@@ -34,7 +36,7 @@ public class Spawner : MonoBehaviour, IDisposable
 
     private void OnGameSpawnedCatSignal(GameSpawnedCatSignal signal)
     {
-        Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(-10.0f, 10.0f), signal.SpawnPositionY, 0);
+        Vector3 spawnPosition = new Vector3(UnityEngine.Random.Range(-10.0f, 8.0f), signal.SpawnPositionY, 0);
         var cat = _catFactory.Create();
         SetSpawnPosition(cat.gameObject, spawnPosition);
     }
@@ -43,7 +45,7 @@ public class Spawner : MonoBehaviour, IDisposable
     {
         Vector3 spawnPosition = new Vector3(0, UnityEngine.Random.Range(0f, 3.0f), 0);
         var laser = _laserFactory.Create();
-        SetSpawnPosition(laser.gameObject, spawnPosition);
+        SetSpawnPosition(laser.gameObject, _enemyFirePoint.position);
     }
 
     private void SetSpawnPosition(GameObject item, Vector3 spawnPosition)

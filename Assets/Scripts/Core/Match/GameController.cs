@@ -60,7 +60,8 @@ namespace Core.Match
             {
                 float timer = Random.Range(1, 10);
                 yield return new WaitForSeconds(timer);
-                _signalBus.Fire(new GameSpawnedLaserSignal { });
+                _signalBus.Fire(new EnemyWantsAttackSignal { });
+                yield return new WaitForSeconds(2);
             }
         }
 

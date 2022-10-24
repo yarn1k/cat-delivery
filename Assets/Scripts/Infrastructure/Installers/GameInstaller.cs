@@ -18,6 +18,7 @@ namespace Core.Infrastructure.Installers
         {
             // Declare all signals
             Container.DeclareSignal<GameSpawnedCatSignal>();
+            Container.DeclareSignal<EnemyWantsAttackSignal>();
             Container.DeclareSignal<GameSpawnedLaserSignal>();
 
 #if UNITY_EDITOR
