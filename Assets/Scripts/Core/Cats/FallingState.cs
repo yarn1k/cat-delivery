@@ -1,18 +1,20 @@
 using Core.Models;
-using System.Reflection.Emit;
 using UnityEngine;
-using Zenject;
 
 namespace Core.Cats
 {
     public class FallingState : MonoBehaviour, ICatState
     {
-        private GameSettings _gameSettings;
-        private float _fallSpeed = 2f;
+        private GameSettings _settings;
+
+        public void Init(GameSettings settings)
+        {
+            _settings = settings;
+        }
 
         public void Move()
         {
-            transform.Translate(_fallSpeed * Vector3.down * Time.fixedDeltaTime, Space.World);
+            transform.Translate(_settings.CatsFallingSpeed * Vector3.down * Time.fixedDeltaTime, Space.World);
         }
 
         private void FixedUpdate()

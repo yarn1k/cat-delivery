@@ -1,12 +1,14 @@
 using UnityEngine;
 using Core.Infrastructure.Signals.Cat;
 using Zenject;
+using Core.Models;
 
 namespace Core.Cats
 {
     public class Cat : MonoBehaviour
     {
         private SignalBus _signalBus;
+        private GameSettings _settings;
 
         private ICatState _currentState;
 
@@ -25,7 +27,11 @@ namespace Core.Cats
         }
 
         [Inject]
-        private void Construct(SignalBus signalBus) => _signalBus = signalBus;
+        private void Construct(SignalBus signalBus, GameSettings settings)
+        {
+            _signalBus = signalBus;
+            _settings = settings;
+        }
 
         private void Awake()
         {
@@ -44,7 +50,9 @@ namespace Core.Cats
 
         private void OnCatFallingSignal(CatFallingSignal signal)
         {
-            _currentState = ChangeState<FallingState>();
+            var fallingState = ChangeState<FallingState>();
+            fallingState.Init(_settings);
+            _currentState = fallingState;
         }
 
         public class Factory : PlaceholderFactory<Cat> { }
