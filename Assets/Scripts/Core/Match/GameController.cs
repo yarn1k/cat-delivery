@@ -4,6 +4,7 @@ using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.UI;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 namespace Core.Match
@@ -18,6 +19,8 @@ namespace Core.Match
         private readonly ILogger _logger;
         private AsyncProcessor _asyncProcessor;
         private int _score;
+        private int lives = 3;
+        private bool isGameOver;
 
         public GameController(SignalBus signalBus, ILogger logger, AsyncProcessor asyncProcessor)
         {
@@ -46,11 +49,12 @@ namespace Core.Match
 
             _asyncProcessor.StopCoroutine(RandomCatSpawn());
             _asyncProcessor.StopCoroutine(RandomLaserSpawn());
+            _asyncProcessor.StopCoroutine(GameOver());
         }
 
         IEnumerator RandomCatSpawn()
         {
-            while (true)
+            while (!isGameOver)
             {
                 float timer = Random.Range(1, 6);
                 yield return new WaitForSeconds(timer);
@@ -60,7 +64,7 @@ namespace Core.Match
 
         IEnumerator RandomLaserSpawn()
         {
-            while (true)
+            while (!isGameOver)
             {
                 float timer = Random.Range(1, 10);
                 yield return new WaitForSeconds(timer);
@@ -82,12 +86,23 @@ namespace Core.Match
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
             signal.Cat.SetKidnapState();
+            if (lives - 1 != 0)
+                lives -= 1;
+            else
+                _asyncProcessor.StartCoroutine(GameOver());
         }
 
         private void OnGameScoreChangedSignal(GameScoreChangedSignal signal)
         {
             _score += signal.Value;
             _signalBus.Fire(new UIScoreChangedSignal { Value = _score });
+        }
+
+        IEnumerator GameOver()
+        {
+            isGameOver = true;
+            yield return new WaitForSeconds(3f);
+            SceneManager.LoadScene(0);
         }
     }
 }
