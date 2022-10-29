@@ -360,9 +360,9 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!1 &131946110 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7178795103758936380, guid: 90e28cb68ee5e0d4e88f1527340f9133, type: 3}
+--- !u!4 &131946111 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1927998029781973188, guid: 90e28cb68ee5e0d4e88f1527340f9133, type: 3}
   m_PrefabInstance: {fileID: 184188966296468218}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &202783557
@@ -1129,7 +1129,7 @@ PrefabInstance:
     - target: {fileID: 1793470423989614588, guid: 90e28cb68ee5e0d4e88f1527340f9133, type: 3}
       propertyPath: _firePoint
       value: 
-      objectReference: {fileID: 131946110}
+      objectReference: {fileID: 131946111}
     - target: {fileID: 1793470423989614588, guid: 90e28cb68ee5e0d4e88f1527340f9133, type: 3}
       propertyPath: _mainCamera
       value: 
