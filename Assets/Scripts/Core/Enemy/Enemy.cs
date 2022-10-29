@@ -23,13 +23,13 @@ namespace Core.Enemy
         [Inject]
         private void Construct(SignalBus signalBus) => _signalBus = signalBus;
 
-        void Start()
+        private void Start()
         {
             _signalBus.Subscribe<EnemyWantsAttackSignal>(OnEnemyWantsAttackSignal);
             StartCoroutine(Move());
         }
 
-        IEnumerator Move()
+        private IEnumerator Move()
         {
             if (_moveSpots.Length != 2) yield break;
 
@@ -65,7 +65,7 @@ namespace Core.Enemy
             StartCoroutine(StopMoving());
         }
 
-        IEnumerator StopMoving()
+        private IEnumerator StopMoving()
         {
             _isMoving = false;
             yield return new WaitForSeconds(1.5f);

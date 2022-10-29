@@ -1,25 +1,14 @@
 using System;
 using UnityEngine;
 using Zenject;
+using Editor;
 
 namespace Core.Models
 {
     [Serializable]
     public class GameSettings
     {
-        [SerializeField]
-        private float _catsFallingSpeed;
-        [SerializeField]
-        private float _bulletForce;
-        [SerializeField]
-        private float _reloadTime;
-        [SerializeField]
-        private float _movementSpeed;
-
-        public float CatsFallingSpeed => _catsFallingSpeed;
-        public float BulletForce => _bulletForce;
-        public float ReloadTime => _reloadTime;
-        public float MovementSpeed => _movementSpeed;
+   
     }
 
     [Serializable]
@@ -28,6 +17,8 @@ namespace Core.Models
         public GameObject CatPrefab;
         [Range(0f, 10f)]
         public float CatsFallingSpeed;
+        [MinMaxSlider(0f, 20f, width: 45f)]
+        public Vector2 SpawnInterval;
     }
 
     [Serializable]

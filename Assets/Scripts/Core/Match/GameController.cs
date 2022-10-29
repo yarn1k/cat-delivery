@@ -30,35 +30,23 @@ namespace Core.Match
 
         public void Initialize()
         {
-            _signalBus.Subscribe<CatFallingSignal>(OnCatFallingSignal);
-            _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
-            _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+            //_signalBus.Subscribe<CatFallingSignal>(OnCatFallingSignal);
+            //_signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
+            //_signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
 
-            _asyncProcessor.StartCoroutine(RandomCatSpawn());
             _asyncProcessor.StartCoroutine(RandomLaserSpawn());
         }
 
         public void LateDispose()
         {
-            _signalBus.TryUnsubscribe<CatFallingSignal>(OnCatFallingSignal);
-            _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
-            _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+            //_signalBus.TryUnsubscribe<CatFallingSignal>(OnCatFallingSignal);
+            //_signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
+            //_signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.TryUnsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
 
-            _asyncProcessor.StopCoroutine(RandomCatSpawn());
             _asyncProcessor.StopCoroutine(RandomLaserSpawn());
             _asyncProcessor.StopCoroutine(GameOver());
-        }
-
-        IEnumerator RandomCatSpawn()
-        {
-            while (!isGameOver)
-            {
-                float timer = Random.Range(1, 6);
-                yield return new WaitForSeconds(timer);
-                _signalBus.Fire(new GameSpawnedCatSignal { SpawnPositionY = 5.85f });
-            }
         }
 
         IEnumerator RandomLaserSpawn()
@@ -72,24 +60,24 @@ namespace Core.Match
             }
         }
 
-        private void OnCatFallingSignal(CatFallingSignal signal)
-        {
-            signal.FallingCat.SetFallingState();
-        }
+        //private void OnCatFallingSignal(CatFallingSignal signal)
+        //{
+        //    signal.FallingCat.SetFallingState();
+        //}
 
-        private void OnCatSavedSignal(CatSavedSignal signal)
-        {
-            signal.SavedCat.SetSaveState();
-        }
+        //private void OnCatSavedSignal(CatSavedSignal signal)
+        //{
+        //    signal.SavedCat.SetSaveState();
+        //}
 
-        private void OnCatKidnappedSignal(CatKidnappedSignal signal)
-        {
-            signal.KidnappedCat.SetKidnapState();
-            if (lives - 1 != 0)
-                lives -= 1;
-            else
-                _asyncProcessor.StartCoroutine(GameOver());
-        }
+        //private void OnCatKidnappedSignal(CatKidnappedSignal signal)
+        //{
+        //    signal.KidnappedCat.SetKidnapState();
+        //    if (lives - 1 != 0)
+        //        lives -= 1;
+        //    else
+        //        _asyncProcessor.StartCoroutine(GameOver());
+        //}
 
         private void OnGameScoreChangedSignal(GameScoreChangedSignal signal)
         {
