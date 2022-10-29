@@ -32,7 +32,6 @@ namespace Core.Infrastructure.Installers
             Container.DeclareSignal<GameOverSignal>();
 
 #if UNITY_EDITOR
-            Container.BindSignal<GameSpawnedCatSignal>().ToMethod(() => Logger.Log("GameSpawnedCatSignal", LogType.Signal));
             Container.BindSignal<EnemyWantsAttackSignal>().ToMethod(() => Logger.Log("EnemyWantsAttackSignal", LogType.Signal));
             Container.BindSignal<GameOverSignal>().ToMethod(() => Logger.Log("GameOverSignal", LogType.Signal));
 #endif                    

@@ -1,9 +1,10 @@
-using Core.Infrastructure.Signals.Game;
-using Core.Infrastructure.Signals.UI;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
+using Core.Infrastructure.Signals.Cats;
+using Core.Infrastructure.Signals.Game;
+using Core.Infrastructure.Signals.UI;
 
 namespace Core.Match
 {
@@ -28,7 +29,7 @@ namespace Core.Match
         public void Initialize()
         {
             //_signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
-            //_signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+            _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
 
             _asyncProcessor.StartCoroutine(RandomLaserSpawn());
@@ -37,7 +38,7 @@ namespace Core.Match
         public void LateDispose()
         {
             //_signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
-            //_signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+            _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.TryUnsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
 
             _asyncProcessor.StopCoroutine(RandomLaserSpawn());
@@ -60,14 +61,14 @@ namespace Core.Match
         //    signal.SavedCat.SetSaveState();
         //}
 
-        //private void OnCatKidnappedSignal(CatKidnappedSignal signal)
-        //{
-        //    signal.KidnappedCat.SetKidnapState();
-        //    if (lives - 1 != 0)
-        //        lives -= 1;
-        //    else
-        //        _asyncProcessor.StartCoroutine(GameOver());
-        //}
+        private void OnCatKidnappedSignal(CatKidnappedSignal signal)
+        {
+            signal.KidnappedCat.Kidnap();
+            if (lives - 1 != 0)
+                lives -= 1;
+            else
+                _asyncProcessor.StartCoroutine(GameOver());
+        }
 
         private void OnGameScoreChangedSignal(GameScoreChangedSignal signal)
         {

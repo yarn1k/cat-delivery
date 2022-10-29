@@ -7,7 +7,7 @@ namespace Core.Infrastructure.Installers
     {
         public override void InstallBindings()
         {
-            Container.BindInterfacesTo<CatStateMachine>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CatStateMachine>().AsSingle();
         }
     }
 }
