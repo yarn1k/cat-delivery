@@ -1,7 +1,7 @@
-using Core.Cats;
-using Core.Infrastructure.Signals.Cat;
 using UnityEngine;
 using Zenject;
+using Core.Cats;
+using Core.Infrastructure.Signals.Cats;
 
 namespace Core.Enemy
 {
@@ -22,10 +22,9 @@ namespace Core.Enemy
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.CompareTag("Cat"))
+            if (other.gameObject.TryGetComponent(out Cat cat) && !cat.IsInvisible)
             {
-                if (!other.gameObject.GetComponent<Cat>().IsInvisible)
-                    _signalBus.Fire(new CatKidnappedSignal { Cat = other.gameObject.GetComponent<Cat>() });
+                _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = cat });
             }
         }
 

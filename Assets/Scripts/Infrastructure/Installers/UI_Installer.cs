@@ -1,6 +1,5 @@
-using Core.Infrastructure.Signals.Game;
-using Core.Infrastructure.Signals.UI;
 using Zenject;
+using Core.Infrastructure.Signals.UI;
 
 namespace Core.Infrastructure.Installers
 {

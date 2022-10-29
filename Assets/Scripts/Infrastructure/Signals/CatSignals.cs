@@ -1,15 +1,17 @@
-namespace Core.Infrastructure.Signals.Cat
+using Core.Cats;
+
+namespace Core.Infrastructure.Signals.Cats
 {
     public struct CatFallingSignal 
     {
-        public Cats.Cat Cat;
+        public Cat FallingCat;
     }
     public struct CatSavedSignal 
     {
-        public Cats.Cat Cat;
+        public Cat SavedCat;
     }
     public struct CatKidnappedSignal
     {
-        public Cats.Cat Cat;
+        public Cat KidnappedCat;
     }
 }

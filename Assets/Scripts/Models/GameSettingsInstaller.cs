@@ -22,11 +22,39 @@ namespace Core.Models
         public float MovementSpeed => _movementSpeed;
     }
 
+    [Serializable]
+    public struct CatsSettings
+    {
+        public GameObject CatPrefab;
+        [Range(0f, 10f)]
+        public float CatsFallingSpeed;
+    }
+
+    [Serializable]
+    public struct PlayerSettings
+    {
+        public GameObject BulletPrefab;
+        [Range(0f, 10f)]
+        public float ReloadTime;
+        [Range(0f, 10f)]
+        public float MovementSpeed;
+    }
+
+    [Serializable]
+    public struct EnemySettings
+    {
+
+    }
+
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Installers/Game Settings")]
     public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInstaller>
     {
         [SerializeField]
         private GameSettings _gameSettings;
+        [SerializeField]
+        private PlayerSettings _playerSettings;
+        [SerializeField]
+        private CatsSettings _catsSettings;
 
         public override void InstallBindings()
         {
@@ -34,7 +62,7 @@ namespace Core.Models
 
             Container.Bind<ILogger>().To<StandaloneLogger>().AsCached();
 
-            Container.BindInstance(_gameSettings).IfNotBound();
+            Container.BindInstances(_gameSettings, _playerSettings, _catsSettings);
         }
     }
 }

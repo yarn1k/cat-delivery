@@ -1,5 +1,4 @@
-using Core.Cats;
-using Core.Infrastructure.Signals.Cat;
+using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.UI;
 using System.Collections;
@@ -75,17 +74,17 @@ namespace Core.Match
 
         private void OnCatFallingSignal(CatFallingSignal signal)
         {
-            signal.Cat.SetFallingState();
+            signal.FallingCat.SetFallingState();
         }
 
         private void OnCatSavedSignal(CatSavedSignal signal)
         {
-            signal.Cat.SetSaveState();
+            signal.SavedCat.SetSaveState();
         }
 
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
-            signal.Cat.SetKidnapState();
+            signal.KidnappedCat.SetKidnapState();
             if (lives - 1 != 0)
                 lives -= 1;
             else

@@ -1,6 +1,6 @@
+using UnityEngine;
 using Core.Infrastructure.Signals.Player;
 using Core.Models;
-using UnityEngine;
 using Zenject;
 
 namespace Core.Player

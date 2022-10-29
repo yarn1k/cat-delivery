@@ -1,44 +1,60 @@
-using Core.Cats;
-using Core.Infrastructure.Signals.Cat;
-using Core.Models;
+using System;
 using UnityEngine;
 using Zenject;
+using Core.Cats;
+using Core.Infrastructure.Signals.Cats;
 
-public class Bullet : MonoBehaviour
+namespace Core
 {
-    private SignalBus _signalBus;
-    private GameSettings _settings;
-
-    private Rigidbody2D _rigidbody2D;
-
-    [Inject]
-    private void Construct(SignalBus signalBus, GameSettings settings)
+    [RequireComponent(typeof(Rigidbody2D))]
+    [RequireComponent(typeof(Collider2D))]
+    public class Bullet : MonoBehaviour, IPoolable<IMemoryPool>, IDisposable
     {
-        _signalBus = signalBus;
-        _settings = settings;
-    }
+        private SignalBus _signalBus;
+        private Collider2D _collider;
+        private Rigidbody2D _rigidbody;
+        private IMemoryPool _pool;
 
-    public void Init(Transform firePoint)
-    {
-        transform.position = firePoint.position;
-        transform.rotation = firePoint.rotation;
-        _rigidbody2D = GetComponent<Rigidbody2D>();
-        _rigidbody2D.AddForce(firePoint.up * _settings.BulletForce, ForceMode2D.Impulse);
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Cat")) 
+        [Inject]
+        private void Construct(SignalBus signalBus)
         {
-            Destroy(gameObject);
-            _signalBus.Fire(new CatSavedSignal { Cat = collision.gameObject.GetComponent<Cat>() });
+            _signalBus = signalBus;
         }
-    }
 
-    private void OnBecameInvisible()
-    {
-        Destroy(gameObject);
-    }
+        private void Awake()
+        {
+            _collider = GetComponent<Collider2D>();
+            _rigidbody = GetComponent<Rigidbody2D>();
+        }
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.collider.TryGetComponent(out Cat cat))
+            {
+                Dispose();
+                _signalBus.Fire(new CatSavedSignal { SavedCat = cat });
+            }
+        }
+        private void OnBecameInvisible() => Dispose();
+        public void Dispose()
+        {
+            _pool.Despawn(this);
+        }
 
-    public class Factory : PlaceholderFactory<Bullet> { }
+        void IPoolable<IMemoryPool>.OnDespawned()
+        {
+            _pool = null;
+            _collider.enabled = false;
+            _rigidbody.simulated = false;
+            _rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+        void IPoolable<IMemoryPool>.OnSpawned(IMemoryPool pool)
+        {
+            _pool = pool;
+            _collider.enabled = true;
+            _rigidbody.simulated = true;
+            _rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
+
+        public class Factory : PlaceholderFactory<Bullet> { }
+    }
 }

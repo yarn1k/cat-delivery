@@ -1,22 +1,19 @@
-using UnityEngine;
-using Core.Infrastructure.Signals.Cat;
-using Zenject;
-using Core.Models;
 using System;
+using UnityEngine;
+using Zenject;
+using Core.Infrastructure.Signals.Cats;
+using Core.Models;
 
 namespace Core.Cats
 {
-    public class Cat : MonoBehaviour
+    public class Cat : MonoBehaviour, IPoolable<IMemoryPool>, IDisposable
     {
         private SignalBus _signalBus;
         private GameSettings _settings;
-
+        private IMemoryPool _pool;
         private ICatState _currentState;
-        public ICatState State { get => _currentState; }
-        public bool IsInvisible
-        {
-            get => _currentState is SaveState ? true : false;
-        }
+        public ICatState State => _currentState;
+        public bool IsInvisible => _currentState is SaveState;
 
         private T ChangeState<T>() where T : MonoBehaviour, ICatState
         {
@@ -38,35 +35,38 @@ namespace Core.Cats
             _settings = settings;
         }
 
-        private void Awake()
-        {
-            _currentState = ChangeState<NeutralState>();
-        }
-
-        private void Start()
-        {
-            _signalBus.Fire(new CatFallingSignal { Cat = this });
-        }
-
         public void SetFallingState()
         {
             var fallingState = ChangeState<FallingState>();
             fallingState.Init(_signalBus, _settings);
             _currentState = fallingState;
         }
-
         public void SetSaveState()
         {
             var saveState = ChangeState<SaveState>();
             saveState.Init(_signalBus, _settings);
             _currentState = saveState;
         }
-
         public void SetKidnapState()
         {
             var kidnapState = ChangeState<KidnapState>();
             kidnapState.Init(_settings);
             _currentState = kidnapState;
+        }
+        public void Dispose()
+        {
+            _pool.Despawn(this);
+        }
+
+        void IPoolable<IMemoryPool>.OnDespawned()
+        {
+            _pool = null;
+        }
+        void IPoolable<IMemoryPool>.OnSpawned(IMemoryPool pool)
+        {
+            _pool = pool;
+            _currentState = ChangeState<NeutralState>();
+            _signalBus.Fire(new CatFallingSignal { FallingCat = this });
         }
 
         public class Factory : PlaceholderFactory<Cat> { }

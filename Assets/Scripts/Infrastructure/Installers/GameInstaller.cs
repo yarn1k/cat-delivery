@@ -1,9 +1,10 @@
 using Zenject;
 using Core.Infrastructure.Signals.Game;
-using Core.Match;
 using UnityEngine;
+using Core.Match;
 using Core.Enemy;
-using Zenject.SpaceFighter;
+using Core.Cats;
+using Core.Models;
 
 namespace Core.Infrastructure.Installers
 {
@@ -13,6 +14,11 @@ namespace Core.Infrastructure.Installers
         private ILogger Logger;
         [SerializeField]
         private Laser _laser;
+
+        [Inject]
+        private CatsSettings _catsSettings;
+        [Inject]
+        private PlayerSettings _playerSettings;
 
         public override void InstallBindings()
         {
@@ -29,15 +35,35 @@ namespace Core.Infrastructure.Installers
             Container.BindSignal<EnemyWantsAttackSignal>().ToMethod(() => Logger.Log("EnemyWantsAttackSignal", LogType.Signal));
             Container.BindSignal<GameSpawnedLaserSignal>().ToMethod(() => Logger.Log("GameSpawnedLaserSignal", LogType.Signal));
             Container.BindSignal<GameOverSignal>().ToMethod(() => Logger.Log("GameOverSignal", LogType.Signal));
-#endif
-
-            Container.BindFactory<Laser, Laser.Factory>().FromComponentInNewPrefab(_laser);
+#endif                    
 
             Container.Bind<IInitializable>().To<GameController>().AsSingle();
             Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
 
-            //Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
+            BindEnemy();
+            BindPlayer();
+            BindPools();
+        }
+
+        private void BindEnemy()
+        {
+            Container.BindFactory<Laser, Laser.Factory>().FromComponentInNewPrefab(_laser);
+        }
+        private void BindPlayer()
+        {
             Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle();
+        }
+        private void BindPools()
+        {
+            Container.BindFactory<Cat, Cat.Factory>().FromMonoPoolableMemoryPool(x => x
+                .WithInitialSize(5)
+                .FromComponentInNewPrefab(_catsSettings.CatPrefab)
+                .UnderTransformGroup("Cats"));
+
+            Container.BindFactory<Bullet, Bullet.Factory>().FromMonoPoolableMemoryPool(x => x
+                .WithInitialSize(5)
+                .FromComponentInNewPrefab(_playerSettings.BulletPrefab)
+                .UnderTransformGroup("Bullets"));
         }
     }
 }

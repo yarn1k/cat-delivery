@@ -10,15 +10,11 @@ namespace Core.Infrastructure.Installers
     {
         [Inject]
         private ILogger Logger;
-        [SerializeField]
-        private Bullet _bullet;
 
         public override void InstallBindings()
         {
             // Declare all signals
             Container.DeclareSignal<PlayerFiredSignal>();
-
-            Container.BindFactory<Bullet, Bullet.Factory>().FromComponentInNewPrefab(_bullet);
 
 #if UNITY_EDITOR
             // Include these just to ensure BindSignal works

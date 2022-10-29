@@ -1,17 +1,16 @@
-using Core.Cats;
+using Core;
 using Core.Infrastructure.Signals.Player;
 using Zenject;
 
 public class PlayerController : IInitializable, ILateDisposable
 {
     private SignalBus _signalBus;
-
-    [Inject]
     private Bullet.Factory _bulletFactory;
 
-    public PlayerController(SignalBus signalBus)
+    public PlayerController(SignalBus signalBus, Bullet.Factory bulletFactory)
     {
         _signalBus = signalBus;
+        _bulletFactory = bulletFactory;
     }
 
     public void Initialize()
@@ -26,7 +25,8 @@ public class PlayerController : IInitializable, ILateDisposable
 
     private void OnPlayerFiredSignal(PlayerFiredSignal signal)
     {
-        var bullet = _bulletFactory.Create();
-        bullet.Init(signal.FirePoint);
+        Bullet bullet = _bulletFactory.Create();
+        bullet.transform.position = signal.FirePoint.position;
+        bullet.transform.rotation = signal.FirePoint.rotation;
     }
 }
