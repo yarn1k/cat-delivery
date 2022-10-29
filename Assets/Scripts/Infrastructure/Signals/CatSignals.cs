@@ -2,16 +2,12 @@ using Core.Cats;
 
 namespace Core.Infrastructure.Signals.Cats
 {
-    public struct CatFallingSignal 
-    {
-        public Cat FallingCat;
-    }
     public struct CatSavedSignal 
     {
-        public Cat SavedCat;
+        public CatView SavedCat;
     }
     public struct CatKidnappedSignal
     {
-        public Cat KidnappedCat;
+        public CatView KidnappedCat;
     }
 }

@@ -7,10 +7,10 @@ namespace Core.Input
     public class StandaloneInputController : IInitializable, ITickable, ILateDisposable, IInputSystem
     {
         private PlayerControls _playerControls;
-        private float _direction;
+        private float _horizontalAxis;
         private Vector2 _mousePosition;
 
-        public ref float HorizontalAxis => ref _direction;
+        public ref float HorizontalAxis => ref _horizontalAxis;
         public ref Vector2 MousePosition => ref _mousePosition;
         public bool Enabled => _playerControls.Player.enabled;
         public Action Fire { get; set; }
@@ -33,7 +33,7 @@ namespace Core.Input
         {
             if (!Enabled) return;
 
-            _direction = _playerControls.Player.Movement.ReadValue<float>();
+            _horizontalAxis = _playerControls.Player.Movement.ReadValue<float>();
             _mousePosition = _playerControls.Player.MousePosition.ReadValue<Vector2>();
         }
     }

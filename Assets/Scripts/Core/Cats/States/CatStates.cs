@@ -2,12 +2,12 @@ using UnityEngine;
 
 namespace Core.Cats.States
 {
-    public abstract class BaseCatState : IState<Cat>
+    public abstract class BaseCatState : IState<CatView>
     {
-        protected readonly IStateMachine<Cat> StateMachine;
-        protected Cat Context => StateMachine.Context;
+        protected readonly IStateMachine<CatView> StateMachine;
+        protected CatView Context => StateMachine.Context;
 
-        public BaseCatState(IStateMachine<Cat> stateMachine)
+        public BaseCatState(IStateMachine<CatView> stateMachine)
         {
             StateMachine = stateMachine;
         }
@@ -21,7 +21,7 @@ namespace Core.Cats.States
     {
         private readonly float _fallingSpeed;
 
-        public FallingState(IStateMachine<Cat> stateMachine, float fallingSpeed) : base(stateMachine)
+        public FallingState(IStateMachine<CatView> stateMachine, float fallingSpeed) : base(stateMachine)
         {
             _fallingSpeed = fallingSpeed;
         }
@@ -43,7 +43,7 @@ namespace Core.Cats.States
     {
         private readonly float _fallingSpeed;
 
-        public KidnapState(IStateMachine<Cat> stateMachine, float fallingSpeed) : base(stateMachine)
+        public KidnapState(IStateMachine<CatView> stateMachine, float fallingSpeed) : base(stateMachine)
         {
             _fallingSpeed = fallingSpeed;
         }
@@ -65,7 +65,7 @@ namespace Core.Cats.States
     {
         private readonly float _fallingSpeed;
 
-        public SaveState(IStateMachine<Cat> stateMachine, float fallingSpeed) : base(stateMachine)
+        public SaveState(IStateMachine<CatView> stateMachine, float fallingSpeed) : base(stateMachine)
         {
             _fallingSpeed = fallingSpeed;
         }
@@ -87,7 +87,7 @@ namespace Core.Cats.States
     {
         private readonly float _fallingSpeed;
 
-        public NeutralState(IStateMachine<Cat> stateMachine, float fallingSpeed) : base(stateMachine)
+        public NeutralState(IStateMachine<CatView> stateMachine, float fallingSpeed) : base(stateMachine)
         {
             _fallingSpeed = fallingSpeed;
         }

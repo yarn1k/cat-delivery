@@ -22,7 +22,7 @@ namespace Core.Enemy
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.TryGetComponent(out Cat cat) && !cat.IsInvisible)
+            if (other.gameObject.TryGetComponent(out CatView cat) && !cat.IsInvisible)
             {
                 _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = cat });
             }

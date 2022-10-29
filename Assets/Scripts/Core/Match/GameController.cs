@@ -1,4 +1,3 @@
-using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.UI;
 using System.Collections;
@@ -15,22 +14,19 @@ namespace Core.Match
     public class GameController : IInitializable, ILateDisposable
     {
         private readonly SignalBus _signalBus;
-        private readonly ILogger _logger;
         private AsyncProcessor _asyncProcessor;
         private int _score;
         private int lives = 3;
         private bool isGameOver;
 
-        public GameController(SignalBus signalBus, ILogger logger, AsyncProcessor asyncProcessor)
+        public GameController(SignalBus signalBus, AsyncProcessor asyncProcessor)
         {
             _signalBus = signalBus;
-            _logger = logger;
             _asyncProcessor = asyncProcessor;
         }
 
         public void Initialize()
         {
-            //_signalBus.Subscribe<CatFallingSignal>(OnCatFallingSignal);
             //_signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             //_signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
@@ -40,7 +36,6 @@ namespace Core.Match
 
         public void LateDispose()
         {
-            //_signalBus.TryUnsubscribe<CatFallingSignal>(OnCatFallingSignal);
             //_signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             //_signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.TryUnsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
@@ -59,11 +54,6 @@ namespace Core.Match
                 yield return new WaitForSeconds(2);
             }
         }
-
-        //private void OnCatFallingSignal(CatFallingSignal signal)
-        //{
-        //    signal.FallingCat.SetFallingState();
-        //}
 
         //private void OnCatSavedSignal(CatSavedSignal signal)
         //{

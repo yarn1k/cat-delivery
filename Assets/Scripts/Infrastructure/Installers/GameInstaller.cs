@@ -7,6 +7,7 @@ using Core.Models;
 using Core.Input;
 using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.Cats;
+using Core.Enemy.States;
 
 namespace Core.Infrastructure.Installers
 {
@@ -24,7 +25,6 @@ namespace Core.Infrastructure.Installers
 
         public override void InstallBindings()
         {
-            // Declare all signals
             Container.DeclareSignal<GameSpawnedCatSignal>();
             Container.DeclareSignal<EnemyWantsAttackSignal>();
             Container.DeclareSignal<GameSpawnedLaserSignal>();
@@ -32,10 +32,8 @@ namespace Core.Infrastructure.Installers
             Container.DeclareSignal<GameOverSignal>();
 
 #if UNITY_EDITOR
-            // Include these just to ensure BindSignal works
             Container.BindSignal<GameSpawnedCatSignal>().ToMethod(() => Logger.Log("GameSpawnedCatSignal", LogType.Signal));
             Container.BindSignal<EnemyWantsAttackSignal>().ToMethod(() => Logger.Log("EnemyWantsAttackSignal", LogType.Signal));
-            Container.BindSignal<GameSpawnedLaserSignal>().ToMethod(() => Logger.Log("GameSpawnedLaserSignal", LogType.Signal));
             Container.BindSignal<GameOverSignal>().ToMethod(() => Logger.Log("GameOverSignal", LogType.Signal));
 #endif                    
 
@@ -50,20 +48,12 @@ namespace Core.Infrastructure.Installers
 
         private void BindCats()
         {
-            // Declare all signals
-            Container.DeclareSignal<CatFallingSignal>();
             Container.DeclareSignal<CatSavedSignal>();
             Container.DeclareSignal<CatKidnappedSignal>();
-
-#if UNITY_EDITOR
-            // Include these just to ensure BindSignal works
-            Container.BindSignal<CatFallingSignal>().ToMethod(() => Logger.Log("CatFallingSignal", LogType.Signal));
-            Container.BindSignal<CatSavedSignal>().ToMethod(() => Logger.Log("CatSavedSignal", LogType.Signal));
-            Container.BindSignal<CatKidnappedSignal>().ToMethod(() => Logger.Log("CatKidnappedSignal", LogType.Signal));
-#endif
         }
         private void BindEnemy()
         {
+            Container.BindInterfacesAndSelfTo<EnemyStateMachine>().AsSingle();
             Container.BindFactory<Laser, Laser.Factory>().FromComponentInNewPrefab(_laser);
         }
         private void BindPlayer()
@@ -72,7 +62,7 @@ namespace Core.Infrastructure.Installers
         }
         private void BindPools()
         {
-            Container.BindFactory<Cat, Cat.Factory>().FromMonoPoolableMemoryPool(x => x
+            Container.BindFactory<CatView, CatView.Factory>().FromMonoPoolableMemoryPool(x => x
                 .WithInitialSize(5)
                 .FromSubContainerResolve()
                 .ByNewPrefabInstaller<CatInstaller>(_catsSettings.CatPrefab)

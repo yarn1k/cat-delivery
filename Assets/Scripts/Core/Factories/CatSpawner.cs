@@ -11,7 +11,7 @@ namespace Core
     public class CatSpawner : MonoBehaviour, IDisposable
     {
         private SignalBus _signalBus;
-        private Cat.Factory _catFactory;
+        private CatView.Factory _catFactory;
         private CatsSettings _settings;
         private float _timer;
         private float _spawnTime;
@@ -22,7 +22,7 @@ namespace Core
         private Transform _enemyFirePoint;
 
         [Inject]
-        private void Construct(SignalBus signalBus, Cat.Factory catFactory, CatsSettings settings)
+        private void Construct(SignalBus signalBus, CatView.Factory catFactory, CatsSettings settings)
         {
             _signalBus = signalBus;
             _catFactory = catFactory;
@@ -44,17 +44,18 @@ namespace Core
             }
         }
 
+        private void SpawnCat()
+        {
+            Vector2 spawnPosition = new Vector2(UnityEngine.Random.Range(-10.0f, 8.0f), 5.85f);
+            CatView cat = _catFactory.Create();
+            cat.transform.position = spawnPosition;
+        }
+
         public void Dispose()
         {
             _signalBus.Unsubscribe<GameSpawnedLaserSignal>(OnGameSpawnedLaserSignal);
         }
 
-        private void SpawnCat()
-        {
-            Vector2 spawnPosition = new Vector2(UnityEngine.Random.Range(-10.0f, 8.0f), 5.85f);
-            Cat cat = _catFactory.Create();
-            cat.transform.position = spawnPosition;
-        }
 
         private void OnGameSpawnedLaserSignal(GameSpawnedLaserSignal signal)
         {

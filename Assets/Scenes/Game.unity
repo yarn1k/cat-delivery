@@ -452,7 +452,6 @@ GameObject:
   - component: {fileID: 388849118}
   - component: {fileID: 388849122}
   - component: {fileID: 388849121}
-  - component: {fileID: 388849124}
   - component: {fileID: 388849126}
   - component: {fileID: 388849125}
   m_Layer: 0
@@ -506,7 +505,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 86920438ab5294742b94bbb33c3a6560, type: 2}
   _monoInstallers:
   - {fileID: 388849121}
-  - {fileID: 388849124}
   - {fileID: 388849126}
   _installerPrefabs: []
   _autoRun: 1
@@ -525,18 +523,6 @@ MonoBehaviour:
   _parentNewObjectsUnderSceneContext: 0
   _contractNames: []
   _parentContractNames: []
---- !u!114 &388849124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388849117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e576cb415266af469a7cd3d18d7bf61, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &388849125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -708,8 +694,6 @@ Transform:
   m_Children:
   - {fileID: 1326118846}
   - {fileID: 1941678604}
-  - {fileID: 2142366051}
-  - {fileID: 1788118544}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -872,37 +856,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _textMeshPro: {fileID: 1667142004}
---- !u!1 &1788118543
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1788118544}
-  m_Layer: 0
-  m_Name: MoveSpot (2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1788118544
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1788118543}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.8, y: -2, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1227369850}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1937202345
 GameObject:
   m_ObjectHideFlags: 0
@@ -1036,37 +989,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4819100117537806068, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
   m_PrefabInstance: {fileID: 4819100117780528376}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2142366050
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2142366051}
-  m_Layer: 0
-  m_Name: MoveSpot (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2142366051
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2142366050}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.8, y: 4, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1227369850}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &184188966296468218
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1154,15 +1076,15 @@ PrefabInstance:
     - target: {fileID: 1941678605, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
       propertyPath: _moveSpots.Array.data[0]
       value: 
-      objectReference: {fileID: 2142366051}
+      objectReference: {fileID: 0}
     - target: {fileID: 1941678605, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
       propertyPath: _moveSpots.Array.data[1]
       value: 
-      objectReference: {fileID: 1788118544}
+      objectReference: {fileID: 0}
     - target: {fileID: 1941678605, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
       propertyPath: _moveSpots.Array.data[2]
       value: 
-      objectReference: {fileID: 2142366051}
+      objectReference: {fileID: 0}
     - target: {fileID: 4819100117537806066, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
       propertyPath: m_Name
       value: Gyro
@@ -1177,7 +1099,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4819100117537806068, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4819100117537806068, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
       propertyPath: m_LocalPosition.z

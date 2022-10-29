@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7617580221496467115}
   - component: {fileID: 2031104315487546702}
   - component: {fileID: 7422731246145602450}
-  - component: {fileID: 471719139024745465}
+  - component: {fileID: -6099057007948292778}
   m_Layer: 0
   m_Name: Cat
   m_TagString: Cat
@@ -115,7 +115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d7d480dac1149946847cc9164d3debb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &471719139024745465
+--- !u!114 &-6099057007948292778
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
