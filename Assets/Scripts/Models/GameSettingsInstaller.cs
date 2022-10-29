@@ -1,38 +1,39 @@
 using System;
 using UnityEngine;
 using Zenject;
-using Editor;
 
 namespace Core.Models
 {
     [Serializable]
     public class GameSettings
     {
-   
+        public ushort GameTime;
     }
 
     [Serializable]
-    public struct CatsSettings
+    public class CatsSettings
     {
         public GameObject CatPrefab;
         [Range(0f, 10f)]
         public float CatsFallingSpeed;
-        [MinMaxSlider(0f, 20f, width: 45f)]
+        [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 SpawnInterval;
     }
 
     [Serializable]
-    public struct PlayerSettings
+    public class PlayerSettings
     {
         public GameObject BulletPrefab;
-        [Range(0f, 10f)]
+        [Min(0f)]
+        public float BulletForce;
+        [Min(0f)]
         public float ReloadTime;
         [Range(0f, 10f)]
         public float MovementSpeed;
     }
 
     [Serializable]
-    public struct EnemySettings
+    public class EnemySettings
     {
 
     }
@@ -46,6 +47,8 @@ namespace Core.Models
         private PlayerSettings _playerSettings;
         [SerializeField]
         private CatsSettings _catsSettings;
+        [SerializeField]
+        private EnemySettings _enemySettings;
 
         public override void InstallBindings()
         {
@@ -53,7 +56,7 @@ namespace Core.Models
 
             Container.Bind<ILogger>().To<StandaloneLogger>().AsCached();
 
-            Container.BindInstances(_gameSettings, _playerSettings, _catsSettings);
+            Container.BindInstances(_gameSettings, _playerSettings, _catsSettings, _enemySettings);
         }
     }
 }

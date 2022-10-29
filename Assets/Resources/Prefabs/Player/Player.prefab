@@ -99,8 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c5c41eee40ed94886bc5dabe757832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _mainCamera: {fileID: 0}
-  _firePoint: {fileID: 0}
+  _firePoint: {fileID: 1927998029781973188}
 --- !u!95 &6403834438591660201
 Animator:
   serializedVersion: 4

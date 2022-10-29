@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpots: []
+  _firePoint: {fileID: 3618576503454355716}
 --- !u!1 &8328780421100195569
 GameObject:
   m_ObjectHideFlags: 0

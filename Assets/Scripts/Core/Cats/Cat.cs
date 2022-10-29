@@ -26,7 +26,7 @@ namespace Core.Cats
         public void Dispose()
         {
             _disposed = true;
-            _pool.Despawn(this);
+            _pool?.Despawn(this);
         }
 
         void IPoolable<IMemoryPool>.OnDespawned()

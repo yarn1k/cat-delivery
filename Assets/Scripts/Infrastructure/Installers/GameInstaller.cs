@@ -4,6 +4,7 @@ using Core.Match;
 using Core.Enemy;
 using Core.Cats;
 using Core.Models;
+using Core.Input;
 using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.Cats;
 
@@ -67,7 +68,7 @@ namespace Core.Infrastructure.Installers
         }
         private void BindPlayer()
         {
-            Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<StandaloneInputController>().AsSingle();
         }
         private void BindPools()
         {

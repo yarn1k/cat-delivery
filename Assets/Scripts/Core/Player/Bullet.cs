@@ -37,7 +37,11 @@ namespace Core
         private void OnBecameInvisible() => Dispose();
         public void Dispose()
         {
-            _pool.Despawn(this);
+            _pool?.Despawn(this);
+        }
+        public void Blast(Vector2 direction, float force)
+        {
+            _rigidbody.velocity = direction * force;
         }
 
         void IPoolable<IMemoryPool>.OnDespawned()

@@ -375,7 +375,7 @@ GameObject:
   m_Component:
   - component: {fileID: 202783560}
   - component: {fileID: 202783559}
-  - component: {fileID: 202783558}
+  - component: {fileID: 202783561}
   m_Layer: 0
   m_Name: EventSystem
   m_TagString: Untagged
@@ -383,25 +383,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &202783558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 202783557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_HorizontalAxis: Horizontal
-  m_VerticalAxis: Vertical
-  m_SubmitButton: Submit
-  m_CancelButton: Cancel
-  m_InputActionsPerSecond: 10
-  m_RepeatDelay: 0.5
-  m_ForceModuleActive: 0
 --- !u!114 &202783559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -432,6 +413,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &202783561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202783557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
 --- !u!1 &388849117
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +452,6 @@ GameObject:
   - component: {fileID: 388849118}
   - component: {fileID: 388849122}
   - component: {fileID: 388849121}
-  - component: {fileID: 388849120}
   - component: {fileID: 388849124}
   - component: {fileID: 388849126}
   - component: {fileID: 388849125}
@@ -469,20 +477,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &388849120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388849117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56c0b49034922fb41a5fb48a95c27d56, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _cats:
-  - {fileID: 7422731246145602450, guid: 56638018684905240a4d0e525e61f95e, type: 3}
 --- !u!114 &388849121
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -512,7 +506,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 86920438ab5294742b94bbb33c3a6560, type: 2}
   _monoInstallers:
   - {fileID: 388849121}
-  - {fileID: 388849120}
   - {fileID: 388849124}
   - {fileID: 388849126}
   _installerPrefabs: []
@@ -544,7 +537,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4e576cb415266af469a7cd3d18d7bf61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bullet: {fileID: 5470945230265388933, guid: cc59c9268c971df4eb2c498d5e322a7e, type: 3}
 --- !u!114 &388849125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -557,7 +549,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 444880682dc364e409eb53229e03d8ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _level: {fileID: 1227369850}
   _enemyFirePoint: {fileID: 1453741656}
 --- !u!114 &388849126
 MonoBehaviour:
@@ -1152,6 +1143,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1227369850}
     m_Modifications:
+    - target: {fileID: 1941678605, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
+      propertyPath: _firePoint
+      value: 
+      objectReference: {fileID: 1453741656}
     - target: {fileID: 1941678605, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
       propertyPath: _moveSpots.Array.size
       value: 2
