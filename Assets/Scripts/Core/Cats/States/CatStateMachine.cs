@@ -9,7 +9,6 @@ namespace Core.Cats.States
     {
         private List<IState<CatView>> _states;
         private CatView _context;
-        private CatsSettings _settings;
         private IState<CatView> _currentState;
 
         public CatView Context => _context;
@@ -19,13 +18,12 @@ namespace Core.Cats.States
         private void Construct(CatView catView, CatsSettings settings)
         {
             _context = catView;
-            _settings = settings;
             _states = new List<IState<CatView>>()
             {
-                new FallingState(this, _settings.CatsFallingSpeed),
-                new KidnapState(this, _settings.CatsFallingSpeed),
-                new SaveState(this, _settings.CatsFallingSpeed),
-                new NeutralState(this, _settings.CatsFallingSpeed)
+                new FallingState(this, settings.CatsFallingSpeed),
+                new KidnapState(this, settings.CatsFallingSpeed),
+                new SaveState(this, settings.CatsFallingSpeed),
+                new NeutralState(this, settings.CatsFallingSpeed)
             };
         }
 

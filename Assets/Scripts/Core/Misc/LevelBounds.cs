@@ -23,13 +23,6 @@ namespace Core
         {
             UpdateBounds();
         }
-
-#if UNITY_EDITOR
-        private void Update()
-        {
-            UpdateBounds();
-        }
-#endif
         private void OnTriggerExit2D(Collider2D collision)
         {
             if (collision.TryGetComponent(out IDisposable disposableObj))

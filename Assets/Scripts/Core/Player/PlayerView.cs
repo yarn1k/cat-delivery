@@ -47,8 +47,8 @@ namespace Core.Player
         {
             Vector3 lookDirection = worldPosition - transform.position;
             float rotationZ = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg - 90f;
-            float angle = Mathf.Clamp(rotationZ, -55, 55);
-            return Quaternion.Euler(0, 0, angle);
+            float angle = Mathf.Clamp(rotationZ, -55f, 55f);
+            return Quaternion.Euler(0f, 0f, angle);
         }
         private bool CheckFireCooldown()
         {

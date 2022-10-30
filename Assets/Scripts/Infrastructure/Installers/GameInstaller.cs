@@ -12,8 +12,6 @@ namespace Core.Infrastructure.Installers
 {
     public class GameInstaller : MonoInstaller
     {
-        [Inject]
-        private ILogger Logger;
         [SerializeField]
         private LevelBounds _levelBounds;
 
@@ -24,14 +22,8 @@ namespace Core.Infrastructure.Installers
 
         public override void InstallBindings()
         {
-            Container.DeclareSignal<EnemyWantsAttackSignal>();
             Container.DeclareSignal<GameScoreChangedSignal>();
-            Container.DeclareSignal<GameOverSignal>();
-
-#if UNITY_EDITOR
-            Container.BindSignal<EnemyWantsAttackSignal>().ToMethod(() => Logger.Log("EnemyWantsAttackSignal", LogType.Signal));
-            Container.BindSignal<GameOverSignal>().ToMethod(() => Logger.Log("GameOverSignal", LogType.Signal));
-#endif                    
+            Container.DeclareSignal<GameOverSignal>();              
 
             Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
             Container.Bind<IInitializable>().To<GameController>().AsSingle();

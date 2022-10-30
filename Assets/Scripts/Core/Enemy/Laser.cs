@@ -34,17 +34,11 @@ namespace Core.Enemy
         }
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.TryGetComponent(out CatView cat) && !cat.IsInvisible)
+            if (other.TryGetComponent(out CatView cat) && !cat.IsInvisible)
             {
                 _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = cat });
             }
         }
-#if UNITY_EDITOR
-        private void Update()
-        {
-            SetWidth(_levelBounds.Size.x * 2f);
-        }
-#endif
 
         private void SetWidth(float width)
         {

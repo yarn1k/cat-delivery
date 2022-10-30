@@ -9,7 +9,6 @@ namespace Core.Enemy.States
     {
         private List<IState<EnemyView>> _states;
         private EnemyView _context;
-        private EnemySettings _settings;
         private IState<EnemyView> _currentState;
 
         public EnemyView Context => _context;
@@ -19,7 +18,6 @@ namespace Core.Enemy.States
         private void Construct(EnemyView enemyView, EnemySettings settings)
         {
             _context = enemyView;
-            _settings = settings;
             _states = new List<IState<EnemyView>>()
             {
                 new UpAndDownState(this, settings),
