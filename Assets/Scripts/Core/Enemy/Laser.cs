@@ -48,9 +48,9 @@ namespace Core.Enemy
 
         private void SetWidth(float width)
         {
-            _lineRenderer.EndPos = new Vector3(0f, width, 0f);
+            _lineRenderer.EndPos = Vector3.up * width;
             _collider.offset = new Vector2(_collider.offset.x, width / 2f);
-            _collider.size = new Vector2(0.5f, width);
+            _collider.size = new Vector2(_collider.size.x, width);
         }
 
         public class Factory : PlaceholderFactory<Laser> { }

@@ -49,10 +49,10 @@ namespace Core.Match
         {
             while (!isGameOver)
             {
-                float timer = Random.Range(1, 10);
+                float timer = Random.Range(1f, 10f);
                 yield return new WaitForSeconds(timer);
                 _signalBus.Fire(new EnemyWantsAttackSignal { });
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(2f);
             }
         }
 
@@ -76,7 +76,7 @@ namespace Core.Match
             _signalBus.Fire(new UIScoreChangedSignal { Value = _score });
         }
 
-        IEnumerator GameOver()
+        private IEnumerator GameOver()
         {
             isGameOver = true;
             yield return new WaitForSeconds(3f);

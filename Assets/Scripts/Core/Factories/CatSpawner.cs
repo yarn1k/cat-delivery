@@ -5,7 +5,7 @@ using Core.Models;
 
 namespace Core
 {
-    public class CatSpawner : MonoBehaviour
+    public class CatSpawner : IInitializable, ITickable
     {
         private CatView.Factory _catFactory;
         private CatsSettings _settings;
@@ -19,25 +19,25 @@ namespace Core
             _settings = settings;
         }
 
-        public void Start()
+        private void SpawnCat()
         {
-            _spawnTime = UnityEngine.Random.Range(_settings.SpawnInterval.x, _settings.SpawnInterval.y);
+            Vector2 spawnPosition = new Vector2(Random.Range(-10.0f, 8.0f), 5.85f);
+            CatView cat = _catFactory.Create();
+            cat.transform.position = spawnPosition;
         }
-        private void Update()
+
+        void IInitializable.Initialize()
+        {
+            _spawnTime = Random.Range(_settings.SpawnInterval.x, _settings.SpawnInterval.y);
+        }
+        void ITickable.Tick()
         {
             if (Time.realtimeSinceStartup - _timer >= _spawnTime)
             {
                 SpawnCat();
                 _timer = Time.realtimeSinceStartup;
-                _spawnTime = UnityEngine.Random.Range(_settings.SpawnInterval.x, _settings.SpawnInterval.y);
+                _spawnTime = Random.Range(_settings.SpawnInterval.x, _settings.SpawnInterval.y);
             }
-        }
-
-        private void SpawnCat()
-        {
-            Vector2 spawnPosition = new Vector2(UnityEngine.Random.Range(-10.0f, 8.0f), 5.85f);
-            CatView cat = _catFactory.Create();
-            cat.transform.position = spawnPosition;
         }
     }
 }
