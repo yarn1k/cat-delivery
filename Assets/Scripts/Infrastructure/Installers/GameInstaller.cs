@@ -16,7 +16,7 @@ namespace Core.Infrastructure.Installers
         [Inject]
         private ILogger Logger;
         [SerializeField]
-        private Laser _laser;
+        private LevelBounds _levelBounds;
 
         [Inject]
         private CatsSettings _catsSettings;
@@ -25,7 +25,6 @@ namespace Core.Infrastructure.Installers
 
         public override void InstallBindings()
         {
-            Container.DeclareSignal<GameSpawnedCatSignal>();
             Container.DeclareSignal<EnemyWantsAttackSignal>();
             Container.DeclareSignal<GameSpawnedLaserSignal>();
             Container.DeclareSignal<GameScoreChangedSignal>();
@@ -36,6 +35,7 @@ namespace Core.Infrastructure.Installers
             Container.BindSignal<GameOverSignal>().ToMethod(() => Logger.Log("GameOverSignal", LogType.Signal));
 #endif                    
 
+            Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
             Container.Bind<IInitializable>().To<GameController>().AsSingle();
             Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
 
@@ -52,12 +52,11 @@ namespace Core.Infrastructure.Installers
         }
         private void BindEnemy()
         {
-            Container.BindInterfacesAndSelfTo<EnemyStateMachine>().AsSingle();
-            Container.BindFactory<Laser, Laser.Factory>().FromComponentInNewPrefab(_laser);
+            Container.BindInterfacesTo<EnemyStateMachine>().AsSingle();
         }
         private void BindPlayer()
         {
-            Container.BindInterfacesAndSelfTo<StandaloneInputController>().AsSingle();
+            Container.BindInterfacesTo<StandaloneInputController>().AsSingle();
         }
         private void BindPools()
         {

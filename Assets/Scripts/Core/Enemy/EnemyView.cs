@@ -10,9 +10,8 @@ namespace Core.Enemy
     {
         private SignalBus _signalBus;
 
-        private bool _isMoving = true;
         [SerializeField]
-        private Transform _firePoint;
+        private Laser _laser;
 
         [Inject]
         private void Construct(SignalBus signalBus)
@@ -29,19 +28,16 @@ namespace Core.Enemy
         {
             _signalBus.Subscribe<EnemyWantsAttackSignal>(OnEnemyWantsAttackSignal);
         }
+        private IEnumerator ShootLaser(float duration)
+        {
+            _laser.gameObject.SetActive(true);
+            yield return new WaitForSeconds(duration);
+            _laser.gameObject.SetActive(false);
+        }
 
         private void OnEnemyWantsAttackSignal(EnemyWantsAttackSignal signal)
         {
-            StartCoroutine(StopMoving());
-        }
-
-        private IEnumerator StopMoving()
-        {
-            _isMoving = false;
-            yield return new WaitForSeconds(1.5f);
-            _signalBus.Fire(new GameSpawnedLaserSignal { });
-            yield return new WaitForSeconds(2);
-            _isMoving = true;
+            StartCoroutine(ShootLaser(1.5f));
         }
     }
 }

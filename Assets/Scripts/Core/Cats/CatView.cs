@@ -5,6 +5,7 @@ using Core.Cats.States;
 
 namespace Core.Cats
 {
+    [RequireComponent(typeof(Rigidbody2D))]
     [RequireComponent(typeof(Collider2D))]
     public class CatView : MonoBehaviour, IPoolable<IMemoryPool>, IDisposable
     {
@@ -17,10 +18,6 @@ namespace Core.Cats
         private void Construct(IStateMachine<CatView> stateMachine)
         {
             _stateMachine = stateMachine;
-        }
-        private void OnBecameInvisible()
-        {
-            Dispose();
         }
         public void Kidnap()
         {

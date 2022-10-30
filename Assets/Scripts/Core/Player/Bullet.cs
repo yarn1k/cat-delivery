@@ -34,7 +34,6 @@ namespace Core
                 _signalBus.Fire(new CatSavedSignal { SavedCat = cat });
             }
         }
-        private void OnBecameInvisible() => Dispose();
         public void Dispose()
         {
             _pool?.Despawn(this);
