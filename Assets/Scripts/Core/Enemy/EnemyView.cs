@@ -1,43 +1,22 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using Zenject;
-using Core.Infrastructure.Signals.Game;
 
 namespace Core.Enemy
 {
-    public class EnemyView : MonoBehaviour, IDisposable
+    public class EnemyView : MonoBehaviour
     {
-        private SignalBus _signalBus;
-
         [SerializeField]
         private Laser _laser;
 
-        [Inject]
-        private void Construct(SignalBus signalBus)
+        public void ShootLaser()
         {
-            _signalBus = signalBus;
+            StartCoroutine(LaserCoroutine(1.5f));
         }
-
-        private void Start()
-        {
-            _signalBus.Subscribe<EnemyWantsAttackSignal>(OnEnemyWantsAttackSignal);
-        }
-
-        public void Dispose()
-        {
-            _signalBus.Subscribe<EnemyWantsAttackSignal>(OnEnemyWantsAttackSignal);
-        }
-        private IEnumerator ShootLaser(float duration)
+        private IEnumerator LaserCoroutine(float duration)
         {
             _laser.gameObject.SetActive(true);
             yield return new WaitForSeconds(duration);
             _laser.gameObject.SetActive(false);
-        }
-
-        private void OnEnemyWantsAttackSignal(EnemyWantsAttackSignal signal)
-        {
-            StartCoroutine(ShootLaser(1.5f));
-        }
+        }    
     }
 }

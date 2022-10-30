@@ -18,8 +18,10 @@ MonoBehaviour:
     BulletPrefab: {fileID: 8336883893298939237, guid: cc59c9268c971df4eb2c498d5e322a7e, type: 3}
     BulletForce: 20
     ReloadTime: 1.5
-    MovementSpeed: 3
+    MovementSpeed: 5.8
   _catsSettings:
     CatPrefab: {fileID: 7617580221496467112, guid: 56638018684905240a4d0e525e61f95e, type: 3}
     CatsFallingSpeed: 1.13
     SpawnInterval: {x: 1, y: 5}
+  _enemySettings:
+    LaserCooldownInterval: {x: 1.7705927, y: 7.998461}

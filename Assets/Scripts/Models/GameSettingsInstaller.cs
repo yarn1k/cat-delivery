@@ -35,7 +35,8 @@ namespace Core.Models
     [Serializable]
     public class EnemySettings
     {
-
+        [Editor.MinMaxSlider(0f, 10f, width: 45f)]
+        public Vector2 LaserCooldownInterval;
     }
 
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Installers/Game Settings")]

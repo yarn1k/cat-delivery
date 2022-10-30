@@ -1,7 +1,6 @@
 using UnityEngine;
 using Zenject;
 using Core.Match;
-using Core.Enemy;
 using Core.Cats;
 using Core.Models;
 using Core.Input;
@@ -26,7 +25,6 @@ namespace Core.Infrastructure.Installers
         public override void InstallBindings()
         {
             Container.DeclareSignal<EnemyWantsAttackSignal>();
-            Container.DeclareSignal<GameSpawnedLaserSignal>();
             Container.DeclareSignal<GameScoreChangedSignal>();
             Container.DeclareSignal<GameOverSignal>();
 

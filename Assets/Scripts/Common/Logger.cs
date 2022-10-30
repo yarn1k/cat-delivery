@@ -18,7 +18,7 @@ namespace Core
 
     public class StandaloneLogger : ILogger
     {
-        public void Log(string message, LogType type)
+        public void Log(string message, LogType type = LogType.Default)
         {
         #if UNITY_EDITOR
             switch (type)

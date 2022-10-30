@@ -31,8 +31,6 @@ namespace Core.Match
             //_signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
-
-            _asyncProcessor.StartCoroutine(RandomLaserSpawn());
         }
 
         public void LateDispose()
@@ -40,21 +38,9 @@ namespace Core.Match
             //_signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.TryUnsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
-
-            _asyncProcessor.StopCoroutine(RandomLaserSpawn());
             _asyncProcessor.StopCoroutine(GameOver());
         }
 
-        IEnumerator RandomLaserSpawn()
-        {
-            while (!isGameOver)
-            {
-                float timer = Random.Range(1f, 10f);
-                yield return new WaitForSeconds(timer);
-                _signalBus.Fire(new EnemyWantsAttackSignal { });
-                yield return new WaitForSeconds(2f);
-            }
-        }
 
         //private void OnCatSavedSignal(CatSavedSignal signal)
         //{

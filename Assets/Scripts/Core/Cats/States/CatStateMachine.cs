@@ -20,10 +20,6 @@ namespace Core.Cats.States
         {
             _context = catView;
             _settings = settings;
-        }
-
-        void IInitializable.Initialize()
-        {
             _states = new List<IState<CatView>>()
             {
                 new FallingState(this, _settings.CatsFallingSpeed),
@@ -31,6 +27,10 @@ namespace Core.Cats.States
                 new SaveState(this, _settings.CatsFallingSpeed),
                 new NeutralState(this, _settings.CatsFallingSpeed)
             };
+        }
+
+        void IInitializable.Initialize()
+        {
             SwitchState<FallingState>();
         }
         void ITickable.Tick()

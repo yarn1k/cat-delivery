@@ -20,14 +20,14 @@ namespace Core.Enemy.States
         {
             _context = enemyView;
             _settings = settings;
-        }
-        void IInitializable.Initialize()
-        {
             _states = new List<IState<EnemyView>>()
             {
-                new UpAndDownState(this),
+                new UpAndDownState(this, settings),
                 new SwapPositionState(this),
             };
+        }
+        void IInitializable.Initialize()
+        {         
             SwitchState<UpAndDownState>();
         }
         void ITickable.Tick()

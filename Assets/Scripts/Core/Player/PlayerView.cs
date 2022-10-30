@@ -13,7 +13,6 @@ namespace Core.Player
         private Camera _cachedCamera;
 
         private Vector3 _mouseWorldPosition;
-        private bool _canFire = true;
         private float _reloadTimer;
 
         [SerializeField]
@@ -42,8 +41,6 @@ namespace Core.Player
 
             transform.rotation = LookAtRotation(_mouseWorldPosition);
 
-            _canFire = CheckFireCooldown();
-
             transform.Translate(Vector2.right * _inputSystem.HorizontalAxis * _settings.MovementSpeed * Time.deltaTime, Space.World);
         }
         private Quaternion LookAtRotation(Vector3 worldPosition)
@@ -55,13 +52,12 @@ namespace Core.Player
         }
         private bool CheckFireCooldown()
         {
-            return !_canFire && Time.realtimeSinceStartup - _reloadTimer >= _settings.ReloadTime;
+            return Time.realtimeSinceStartup - _reloadTimer >= _settings.ReloadTime;
         }
         private void Fire()
         {
-            if (!_canFire) return;
+            if (!CheckFireCooldown()) return;
 
-            _canFire = false;
             _reloadTimer = Time.realtimeSinceStartup;
 
             Bullet bullet = _bulletFactory.Create();
