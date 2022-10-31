@@ -80,7 +80,7 @@ namespace Core.Cats.States
         }
         public override void Update()
         {
-            Context.transform.Translate(_fallingSpeed * 2f * Vector3.down * Time.deltaTime, Space.World);
+            Context.transform.Translate(_fallingSpeed * 3f * Vector3.down * Time.deltaTime, Space.World);
         }
     }
     public class NeutralState : BaseCatState

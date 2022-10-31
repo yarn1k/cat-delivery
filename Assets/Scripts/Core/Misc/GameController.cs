@@ -17,8 +17,8 @@ namespace Core.Match
         private readonly SignalBus _signalBus;
         private AsyncProcessor _asyncProcessor;
         private int _score;
-        private int lives = 3;
-        private bool isGameOver;
+        private int _lives = 3;
+        private bool _isGameOver;
 
         public GameController(SignalBus signalBus, AsyncProcessor asyncProcessor)
         {
@@ -28,30 +28,30 @@ namespace Core.Match
 
         public void Initialize()
         {
-            //_signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
+            _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
         }
 
         public void LateDispose()
         {
-            //_signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
+            _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.TryUnsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
             _asyncProcessor.StopCoroutine(GameOver());
         }
 
 
-        //private void OnCatSavedSignal(CatSavedSignal signal)
-        //{
-        //    signal.SavedCat.SetSaveState();
-        //}
+        private void OnCatSavedSignal(CatSavedSignal signal)
+        {
+            signal.SavedCat.Save();
+        }
 
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
             signal.KidnappedCat.Kidnap();
-            if (lives - 1 != 0)
-                lives -= 1;
+            if (_lives - 1 != 0)
+                _lives -= 1;
             else
                 _asyncProcessor.StartCoroutine(GameOver());
         }
@@ -64,7 +64,7 @@ namespace Core.Match
 
         private IEnumerator GameOver()
         {
-            isGameOver = true;
+            _isGameOver = true;
             yield return new WaitForSeconds(3f);
             SceneManager.LoadScene(0);
         }
