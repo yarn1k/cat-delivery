@@ -1,43 +1,66 @@
-using Zenject;
-using Core.Infrastructure.Signals.Game;
-using Core.Match;
 using UnityEngine;
-using Core.Enemy;
-using Zenject.SpaceFighter;
+using Zenject;
+using Core.Match;
+using Core.Cats;
+using Core.Models;
+using Core.Input;
+using Core.Infrastructure.Signals.Game;
+using Core.Infrastructure.Signals.Cats;
+using Core.Enemy.States;
 
 namespace Core.Infrastructure.Installers
 {
     public class GameInstaller : MonoInstaller
     {
-        [Inject]
-        private ILogger Logger;
         [SerializeField]
-        private Laser _laser;
+        private LevelBounds _levelBounds;
+
+        [Inject]
+        private CatsSettings _catsSettings;
+        [Inject]
+        private PlayerSettings _playerSettings;
 
         public override void InstallBindings()
         {
-            // Declare all signals
-            Container.DeclareSignal<GameSpawnedCatSignal>();
-            Container.DeclareSignal<EnemyWantsAttackSignal>();
-            Container.DeclareSignal<GameSpawnedLaserSignal>();
             Container.DeclareSignal<GameScoreChangedSignal>();
-            Container.DeclareSignal<GameOverSignal>();
+            Container.DeclareSignal<GameOverSignal>();              
 
-#if UNITY_EDITOR
-            // Include these just to ensure BindSignal works
-            Container.BindSignal<GameSpawnedCatSignal>().ToMethod(() => Logger.Log("GameSpawnedCatSignal", LogType.Signal));
-            Container.BindSignal<EnemyWantsAttackSignal>().ToMethod(() => Logger.Log("EnemyWantsAttackSignal", LogType.Signal));
-            Container.BindSignal<GameSpawnedLaserSignal>().ToMethod(() => Logger.Log("GameSpawnedLaserSignal", LogType.Signal));
-            Container.BindSignal<GameOverSignal>().ToMethod(() => Logger.Log("GameOverSignal", LogType.Signal));
-#endif
-
-            Container.BindFactory<Laser, Laser.Factory>().FromComponentInNewPrefab(_laser);
-
+            Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
             Container.Bind<IInitializable>().To<GameController>().AsSingle();
             Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
 
-            //Container.BindInterfacesAndSelfTo<GameController>().AsSingle();
-            Container.BindInterfacesAndSelfTo<PlayerController>().AsSingle();
+            BindCats();
+            BindEnemy();
+            BindPlayer();
+            BindPools();
+        }
+
+        private void BindCats()
+        {
+            Container.DeclareSignal<CatSavedSignal>();
+            Container.DeclareSignal<CatKidnappedSignal>();
+            Container.BindInterfacesTo<CatSpawner>().AsSingle();
+        }
+        private void BindEnemy()
+        {
+            Container.BindInterfacesTo<EnemyStateMachine>().AsSingle();
+        }
+        private void BindPlayer()
+        {
+            Container.BindInterfacesTo<StandaloneInputController>().AsSingle();
+        }
+        private void BindPools()
+        {
+            Container.BindFactory<CatView, CatView.Factory>().FromMonoPoolableMemoryPool(x => x
+                .WithInitialSize(5)
+                .FromSubContainerResolve()
+                .ByNewPrefabInstaller<CatInstaller>(_catsSettings.CatPrefab)
+                .UnderTransformGroup("Cats"));
+
+            Container.BindFactory<Bullet, Bullet.Factory>().FromMonoPoolableMemoryPool(x => x
+                .WithInitialSize(5)
+                .FromComponentInNewPrefab(_playerSettings.BulletPrefab)
+                .UnderTransformGroup("Bullets"));
         }
     }
 }

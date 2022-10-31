@@ -7,19 +7,36 @@ namespace Core.Models
     [Serializable]
     public class GameSettings
     {
-        [SerializeField]
-        private float _catsFallingSpeed;
-        [SerializeField]
-        private float _bulletForce;
-        [SerializeField]
-        private float _reloadTime;
-        [SerializeField]
-        private float _movementSpeed;
+        public ushort GameTime;
+    }
 
-        public float CatsFallingSpeed => _catsFallingSpeed;
-        public float BulletForce => _bulletForce;
-        public float ReloadTime => _reloadTime;
-        public float MovementSpeed => _movementSpeed;
+    [Serializable]
+    public class CatsSettings
+    {
+        public GameObject CatPrefab;
+        [Range(0f, 10f)]
+        public float CatsFallingSpeed;
+        [Editor.MinMaxSlider(0f, 10f, width: 45f)]
+        public Vector2 SpawnInterval;
+    }
+
+    [Serializable]
+    public class PlayerSettings
+    {
+        public GameObject BulletPrefab;
+        [Min(0f)]
+        public float BulletForce;
+        [Min(0f)]
+        public float ReloadTime;
+        [Range(0f, 10f)]
+        public float MovementSpeed;
+    }
+
+    [Serializable]
+    public class EnemySettings
+    {
+        [Editor.MinMaxSlider(0f, 10f, width: 45f)]
+        public Vector2 LaserCooldownInterval;
     }
 
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Installers/Game Settings")]
@@ -27,6 +44,12 @@ namespace Core.Models
     {
         [SerializeField]
         private GameSettings _gameSettings;
+        [SerializeField]
+        private PlayerSettings _playerSettings;
+        [SerializeField]
+        private CatsSettings _catsSettings;
+        [SerializeField]
+        private EnemySettings _enemySettings;
 
         public override void InstallBindings()
         {
@@ -34,7 +57,7 @@ namespace Core.Models
 
             Container.Bind<ILogger>().To<StandaloneLogger>().AsCached();
 
-            Container.BindInstance(_gameSettings).IfNotBound();
+            Container.BindInstances(_gameSettings, _playerSettings, _catsSettings, _enemySettings);
         }
     }
 }
