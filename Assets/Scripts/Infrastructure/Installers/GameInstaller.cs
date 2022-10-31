@@ -37,6 +37,7 @@ namespace Core.Infrastructure.Installers
 
         private void BindCats()
         {
+            Container.DeclareSignal<CatFellSignal>();
             Container.DeclareSignal<CatSavedSignal>();
             Container.DeclareSignal<CatKidnappedSignal>();
             Container.BindInterfacesTo<CatSpawner>().AsSingle();

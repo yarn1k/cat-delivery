@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 using Zenject;
 using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
-using Core.Infrastructure.Signals.UI;
 
 namespace Core.Match
 {
@@ -28,38 +27,41 @@ namespace Core.Match
 
         public void Initialize()
         {
+            _signalBus.Subscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
-            _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
         }
 
         public void LateDispose()
         {
+            _signalBus.TryUnsubscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
-            _signalBus.TryUnsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
             _asyncProcessor.StopCoroutine(GameOver());
         }
 
+        private void OnCatFellSignal(CatFellSignal signal)
+        {
+            _score += 10;
+            _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
+        }
 
         private void OnCatSavedSignal(CatSavedSignal signal)
         {
             signal.SavedCat.Save();
+            _score += 50;
+            _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
         }
 
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
             signal.KidnappedCat.Kidnap();
+            _score -= 30;
+            _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
             if (_lives - 1 != 0)
                 _lives -= 1;
             else
                 _asyncProcessor.StartCoroutine(GameOver());
-        }
-
-        private void OnGameScoreChangedSignal(GameScoreChangedSignal signal)
-        {
-            _score += signal.Value;
-            _signalBus.Fire(new UIScoreChangedSignal { Value = _score });
         }
 
         private IEnumerator GameOver()
