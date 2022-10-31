@@ -119,6 +119,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c5c41eee40ed94886bc5dabe757832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _spriteRenderer: {fileID: 184188967521832263}
+  _animator: {fileID: 6403834438591660201}
   _firePoint: {fileID: 1927998029781973188}
 --- !u!1 &7178795103758936380
 GameObject:
