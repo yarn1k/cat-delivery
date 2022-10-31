@@ -7,6 +7,7 @@ using Core.Input;
 using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.Cats;
 using Core.Enemy.States;
+using Core.UI;
 
 namespace Core.Infrastructure.Installers
 {
@@ -33,6 +34,7 @@ namespace Core.Infrastructure.Installers
             BindEnemy();
             BindPlayer();
             BindPools();
+            BindUI();
         }
 
         private void BindCats()
@@ -44,6 +46,10 @@ namespace Core.Infrastructure.Installers
         private void BindEnemy()
         {
             Container.BindInterfacesTo<EnemyStateMachine>().AsSingle();
+        }
+        private void BindUI()
+        {
+            Container.Bind<Score>().AsSingle();
         }
         private void BindPlayer()
         {

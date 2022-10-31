@@ -36,7 +36,7 @@ namespace Core.Cats.States
         }
         public override void Update()
         {
-            Context.transform.Translate(_fallingSpeed * Vector3.down * Time.fixedDeltaTime, Space.World);
+            Context.transform.Translate(_fallingSpeed * Vector3.down * Time.deltaTime, Space.World);
         }
     }
     public class KidnapState : BaseCatState
