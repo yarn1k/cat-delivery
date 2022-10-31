@@ -21,7 +21,6 @@ namespace Core.UI
         {
             _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
         }
-
         private void OnDisable()
         {
             _signalBus.Unsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);

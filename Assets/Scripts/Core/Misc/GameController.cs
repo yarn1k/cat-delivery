@@ -25,14 +25,13 @@ namespace Core.Match
             _asyncProcessor = asyncProcessor;
         }
 
-        public void Initialize()
+        void IInitializable.Initialize()
         {
             _signalBus.Subscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
         }
-
-        public void LateDispose()
+        void ILateDisposable.LateDispose()
         {
             _signalBus.TryUnsubscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
