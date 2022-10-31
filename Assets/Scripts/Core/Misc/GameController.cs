@@ -4,7 +4,6 @@ using UnityEngine.SceneManagement;
 using Zenject;
 using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
-using Core.Infrastructure.Signals.UI;
 
 namespace Core.Match
 {
@@ -26,27 +25,30 @@ namespace Core.Match
             _asyncProcessor = asyncProcessor;
         }
 
-        public void Initialize()
+        void IInitializable.Initialize()
         {
-            //_signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
+            _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
-            _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
         }
-
-        public void LateDispose()
+        void ILateDisposable.LateDispose()
         {
-            //_signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
+            _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
-            _signalBus.TryUnsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
             _asyncProcessor.StopCoroutine(GameOver());
         }
 
-
-        //private void OnCatSavedSignal(CatSavedSignal signal)
+        // TODO
+        //private void OnCatFaltSignal(CatFaltSignal signal)
         //{
-        //    signal.SavedCat.SetSaveState();
+        //    _score += 10;
+        //    _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
         //}
 
+        private void OnCatSavedSignal(CatSavedSignal signal)
+        {
+            _score += 50;
+            _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
+        }
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
             signal.KidnappedCat.Kidnap();
@@ -54,12 +56,6 @@ namespace Core.Match
                 lives -= 1;
             else
                 _asyncProcessor.StartCoroutine(GameOver());
-        }
-
-        private void OnGameScoreChangedSignal(GameScoreChangedSignal signal)
-        {
-            _score += signal.Value;
-            _signalBus.Fire(new UIScoreChangedSignal { Value = _score });
         }
 
         private IEnumerator GameOver()
