@@ -16,8 +16,8 @@ namespace Core.Match
         private readonly SignalBus _signalBus;
         private AsyncProcessor _asyncProcessor;
         private int _score;
-        private int lives = 3;
-        private bool isGameOver;
+        private int _lives = 3;
+        private bool _isGameOver;
 
         public GameController(SignalBus signalBus, AsyncProcessor asyncProcessor)
         {
@@ -27,40 +27,45 @@ namespace Core.Match
 
         void IInitializable.Initialize()
         {
+            _signalBus.Subscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
         }
         void ILateDisposable.LateDispose()
         {
+            _signalBus.TryUnsubscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _asyncProcessor.StopCoroutine(GameOver());
         }
 
-        // TODO
-        //private void OnCatFaltSignal(CatFaltSignal signal)
-        //{
-        //    _score += 10;
-        //    _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
-        //}
+        private void OnCatFellSignal(CatFellSignal signal)
+        {
+            _score += 10;
+            _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
+        }
 
         private void OnCatSavedSignal(CatSavedSignal signal)
         {
+            signal.SavedCat.Save();
             _score += 50;
             _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
         }
+
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
             signal.KidnappedCat.Kidnap();
-            if (lives - 1 != 0)
-                lives -= 1;
+            _score -= 30;
+            _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
+            if (_lives - 1 != 0)
+                _lives -= 1;
             else
                 _asyncProcessor.StartCoroutine(GameOver());
         }
 
         private IEnumerator GameOver()
         {
-            isGameOver = true;
+            _isGameOver = true;
             yield return new WaitForSeconds(3f);
             SceneManager.LoadScene(0);
         }

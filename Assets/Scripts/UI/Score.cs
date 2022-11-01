@@ -1,7 +1,7 @@
+using Core.Infrastructure.Signals.Game;
 using TMPro;
 using UnityEngine;
 using Zenject;
-using Core.Infrastructure.Signals.Game;
 
 namespace Core.UI
 {
@@ -19,14 +19,14 @@ namespace Core.UI
 
         private void Start()
         {
-            _signalBus.Subscribe<GameScoreChangedSignal>(OnUIScoreChangedSignal);
+            _signalBus.Subscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
         }
         private void OnDisable()
         {
-            _signalBus.Unsubscribe<GameScoreChangedSignal>(OnUIScoreChangedSignal);
+            _signalBus.Unsubscribe<GameScoreChangedSignal>(OnGameScoreChangedSignal);
         }
 
-        private void OnUIScoreChangedSignal(GameScoreChangedSignal signal)
+        private void OnGameScoreChangedSignal(GameScoreChangedSignal signal)
         {
             _textMeshPro.text = "Score: " + signal.Value;
         }

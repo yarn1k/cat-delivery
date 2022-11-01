@@ -14,7 +14,12 @@ namespace Core.Player
 
         private Vector3 _mouseWorldPosition;
         private float _reloadTimer;
+        private float _horizontalAxis;
 
+        [SerializeField]
+        private SpriteRenderer _spriteRenderer;
+        [SerializeField]
+        private Animator _animator;
         [SerializeField]
         private Transform _firePoint;
 
@@ -37,11 +42,28 @@ namespace Core.Player
         }
         private void Update()
         {
+            _horizontalAxis = _inputSystem.HorizontalAxis;
+
+            SetFlipX();
+            CheckRunningAnimation();
+
             _mouseWorldPosition = _cachedCamera.ScreenToWorldPoint(_inputSystem.MousePosition);
 
             transform.rotation = LookAtRotation(_mouseWorldPosition);
 
-            transform.Translate(Vector2.right * _inputSystem.HorizontalAxis * _settings.MovementSpeed * Time.deltaTime, Space.World);
+            transform.Translate(Vector2.right * _horizontalAxis * _settings.MovementSpeed * Time.deltaTime, Space.World);
+        }
+        private void SetFlipX()
+        {
+            if (_horizontalAxis > 0)
+                _spriteRenderer.flipX = true;
+            else if (_horizontalAxis < 0)
+                _spriteRenderer.flipX = false;
+        }
+        private void CheckRunningAnimation()
+        {
+            var movement = _horizontalAxis != 0;
+            _animator.SetBool("IsMoving", movement);
         }
         private Quaternion LookAtRotation(Vector3 worldPosition)
         {

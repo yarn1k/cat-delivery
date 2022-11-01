@@ -40,6 +40,6 @@ namespace Core.Cats.States
             _currentState?.Exit();
             _currentState = _states.FirstOrDefault(state => state is State);
             _currentState.Enter();
-        }       
+        }
     }
 }
