@@ -15,6 +15,8 @@ namespace Core.Infrastructure.Installers
     {
         [SerializeField]
         private LevelBounds _levelBounds;
+        [SerializeField]
+        private GameObject _labelVFXPrefab;
 
         [Inject]
         private CatsSettings _catsSettings;
@@ -68,6 +70,11 @@ namespace Core.Infrastructure.Installers
                 .WithInitialSize(5)
                 .FromComponentInNewPrefab(_playerSettings.BulletPrefab)
                 .UnderTransformGroup("Bullets"));
+
+            Container.BindFactory<string, Color, BulletLabelVFX, BulletLabelVFX.Factory>().FromMonoPoolableMemoryPool(x => x
+               .WithInitialSize(5)
+               .FromComponentInNewPrefab(_labelVFXPrefab)
+               .UnderTransformGroup("VFX"));
         }
     }
 }

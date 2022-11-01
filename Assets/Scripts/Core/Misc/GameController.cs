@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 using Zenject;
 using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
+using Core.UI;
+using Core.Models;
 
 namespace Core.Match
 {
@@ -15,14 +17,18 @@ namespace Core.Match
     {
         private readonly SignalBus _signalBus;
         private AsyncProcessor _asyncProcessor;
+        private BulletLabelVFX.Factory _labelFactory;
+        private GameSettings _settings;
         private int _score;
         private int _lives = 3;
-        private bool _isGameOver;
+        public bool IsGameOver => _lives == 0;
 
-        public GameController(SignalBus signalBus, AsyncProcessor asyncProcessor)
+        public GameController(SignalBus signalBus, AsyncProcessor asyncProcessor, BulletLabelVFX.Factory labelFactory, GameSettings settings)
         {
             _signalBus = signalBus;
             _asyncProcessor = asyncProcessor;
+            _labelFactory = labelFactory;
+            _settings = settings;
         }
 
         void IInitializable.Initialize()
@@ -48,16 +54,25 @@ namespace Core.Match
         private void OnCatSavedSignal(CatSavedSignal signal)
         {
             signal.SavedCat.Save();
-            _score += 50;
+
+            _score += _settings.SavedReward;
+            var label = _labelFactory.Create($"Saved\n+{_settings.SavedReward}", Color.green);
+            label.transform.position = signal.SavedCat.transform.position;
+
             _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
         }
 
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
             signal.KidnappedCat.Kidnap();
-            _score -= 30;
+
+            _score -= _settings.KidnapPenalty;
+            var label = _labelFactory.Create($"Kidnapped\n-{_settings.KidnapPenalty}", Color.red);
+            label.transform.position = signal.KidnappedCat.transform.position;
+
             _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
-            if (_lives - 1 != 0)
+
+            if (!IsGameOver)
                 _lives -= 1;
             else
                 _asyncProcessor.StartCoroutine(GameOver());
@@ -65,7 +80,6 @@ namespace Core.Match
 
         private IEnumerator GameOver()
         {
-            _isGameOver = true;
             yield return new WaitForSeconds(3f);
             SceneManager.LoadScene(0);
         }

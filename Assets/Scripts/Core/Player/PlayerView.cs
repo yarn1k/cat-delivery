@@ -7,6 +7,13 @@ namespace Core.Player
 {
     public class PlayerView : MonoBehaviour
     {
+        [SerializeField]
+        private SpriteRenderer _spriteRenderer;
+        [SerializeField]
+        private Animator _animator;
+        [SerializeField]
+        private Transform _firePoint;
+
         private PlayerSettings _settings;
         private IInputSystem _inputSystem;
         private Bullet.Factory _bulletFactory;
@@ -15,13 +22,6 @@ namespace Core.Player
         private Vector3 _mouseWorldPosition;
         private float _reloadTimer;
         private float _horizontalAxis;
-
-        [SerializeField]
-        private SpriteRenderer _spriteRenderer;
-        [SerializeField]
-        private Animator _animator;
-        [SerializeField]
-        private Transform _firePoint;
 
         [Inject]
         public void Construct(PlayerSettings settings, IInputSystem inputSystem, Bullet.Factory bulletFactory)
@@ -44,26 +44,14 @@ namespace Core.Player
         {
             _horizontalAxis = _inputSystem.HorizontalAxis;
 
-            SetFlipX();
-            CheckRunningAnimation();
+            _spriteRenderer.flipX = _horizontalAxis > 0;
+            _animator.SetBool("IsMoving", _horizontalAxis != 0);
 
             _mouseWorldPosition = _cachedCamera.ScreenToWorldPoint(_inputSystem.MousePosition);
 
             transform.rotation = LookAtRotation(_mouseWorldPosition);
 
             transform.Translate(Vector2.right * _horizontalAxis * _settings.MovementSpeed * Time.deltaTime, Space.World);
-        }
-        private void SetFlipX()
-        {
-            if (_horizontalAxis > 0)
-                _spriteRenderer.flipX = true;
-            else if (_horizontalAxis < 0)
-                _spriteRenderer.flipX = false;
-        }
-        private void CheckRunningAnimation()
-        {
-            var movement = _horizontalAxis != 0;
-            _animator.SetBool("IsMoving", movement);
         }
         private Quaternion LookAtRotation(Vector3 worldPosition)
         {

@@ -12,7 +12,6 @@ namespace Core
     {
         private SignalBus _signalBus;
         private Collider2D _collider;
-        private Rigidbody2D _rigidbody;
         private IMemoryPool _pool;
 
         [Inject]
@@ -24,14 +23,13 @@ namespace Core
         private void Awake()
         {
             _collider = GetComponent<Collider2D>();
-            _rigidbody = GetComponent<Rigidbody2D>();
         }
         private void OnCollisionEnter2D(Collision2D collision)
         {
             if (collision.collider.TryGetComponent(out CatView cat))
             {
                 Dispose();
-                _signalBus.Fire(new CatSavedSignal { SavedCat = cat });
+                if (cat.Interactable) _signalBus.Fire(new CatSavedSignal { SavedCat = cat });
             }
         }
         public void Dispose()
@@ -40,22 +38,22 @@ namespace Core
         }
         public void Blast(Vector2 direction, float force)
         {
-            _rigidbody.velocity = direction * force;
+            _collider.attachedRigidbody.velocity = direction * force;
         }
 
         void IPoolable<IMemoryPool>.OnDespawned()
         {
             _pool = null;
             _collider.enabled = false;
-            _rigidbody.simulated = false;
-            _rigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            _collider.attachedRigidbody.simulated = false;
+            _collider.attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
         }
         void IPoolable<IMemoryPool>.OnSpawned(IMemoryPool pool)
         {
             _pool = pool;
             _collider.enabled = true;
-            _rigidbody.simulated = true;
-            _rigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            _collider.attachedRigidbody.simulated = true;
+            _collider.attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
         public class Factory : PlaceholderFactory<Bullet> { }
