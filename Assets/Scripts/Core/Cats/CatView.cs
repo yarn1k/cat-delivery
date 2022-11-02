@@ -9,6 +9,9 @@ namespace Core.Cats
     [RequireComponent(typeof(Collider2D))]
     public class CatView : MonoBehaviour, IPoolable<IMemoryPool>, IDisposable
     {
+        [SerializeField]
+        private SpriteRenderer _shield;
+
         private IMemoryPool _pool;
         private bool _disposed;
         private IStateMachine<CatView> _stateMachine;
@@ -26,6 +29,7 @@ namespace Core.Cats
         }
         public void Save()
         {
+            _shield.gameObject.SetActive(true);
             _stateMachine.SwitchState<SaveState>();
         }
         public void Dispose()
@@ -42,6 +46,7 @@ namespace Core.Cats
         {
             _pool = pool;
             _disposed = false;
+            _shield.gameObject.SetActive(false);
             _stateMachine.SwitchState<FallingState>();
         }
 
