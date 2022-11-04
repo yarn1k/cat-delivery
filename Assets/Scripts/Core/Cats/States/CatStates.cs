@@ -41,11 +41,11 @@ namespace Core.Cats.States
     }
     public class KidnapState : BaseCatState
     {
-        private readonly float _fallingSpeed;
+        private readonly float _kidnapSpeed;
 
-        public KidnapState(IStateMachine<CatView> stateMachine, float fallingSpeed) : base(stateMachine)
+        public KidnapState(IStateMachine<CatView> stateMachine, float kidnapSpeed) : base(stateMachine)
         {
-            _fallingSpeed = fallingSpeed;
+            _kidnapSpeed = kidnapSpeed;
         }
 
         public override void Enter()
@@ -58,16 +58,16 @@ namespace Core.Cats.States
         }
         public override void Update()
         {
-            Context.transform.Translate(_fallingSpeed * 3f * Vector3.right * Time.deltaTime, Space.World);
+            Context.transform.Translate(_kidnapSpeed * Vector3.right * Time.deltaTime, Space.World);
         }
     }
     public class SaveState : BaseCatState
     {
-        private readonly float _fallingSpeed;
+        private readonly float _saveSpeed;
 
-        public SaveState(IStateMachine<CatView> stateMachine, float fallingSpeed) : base(stateMachine)
+        public SaveState(IStateMachine<CatView> stateMachine, float saveSpeed) : base(stateMachine)
         {
-            _fallingSpeed = fallingSpeed;
+            _saveSpeed = saveSpeed;
         }
 
         public override void Enter()
@@ -80,7 +80,7 @@ namespace Core.Cats.States
         }
         public override void Update()
         {
-            Context.transform.Translate(_fallingSpeed * 3f * Vector3.down * Time.deltaTime, Space.World);
+            Context.transform.Translate(_saveSpeed * Vector3.down * Time.deltaTime, Space.World);
         }
     }
 }

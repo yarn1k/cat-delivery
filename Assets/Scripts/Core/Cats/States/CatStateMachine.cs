@@ -21,8 +21,8 @@ namespace Core.Cats.States
             _states = new List<IState<CatView>>()
             {
                 new FallingState(this, settings.CatsFallingSpeed),
-                new KidnapState(this, settings.CatsFallingSpeed),
-                new SaveState(this, settings.CatsFallingSpeed)
+                new KidnapState(this, settings.CatsKidnapSpeed),
+                new SaveState(this, settings.CatsSaveSpeed)
             };
         }
 

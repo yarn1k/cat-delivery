@@ -18,6 +18,10 @@ namespace Core.Models
         public GameObject CatPrefab;
         [Range(0f, 10f)]
         public float CatsFallingSpeed;
+        [Range(0f, 10f)]
+        public float CatsKidnapSpeed;
+        [Range(0f, 10f)]
+        public float CatsSaveSpeed;
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 SpawnInterval;
     }
@@ -28,10 +32,18 @@ namespace Core.Models
         public GameObject BulletPrefab;
         [Min(0f)]
         public float BulletForce;
+        [Range(0f, 1f)]
+        public float BulletLifetime;
         [Min(0f)]
         public float ReloadTime;
         [Range(0f, 10f)]
         public float MovementSpeed;
+        [Range(0f, 50f)]
+        public float JumpForce;
+        [Range(0f, 50f)]
+        public float NormalGravityScale;
+        [Range(0f, 50f)]
+        public float FallingGravityScale;
     }
 
     [Serializable]

@@ -14,6 +14,7 @@ namespace Core.Input
         public ref Vector2 MousePosition => ref _mousePosition;
         public bool Enabled => _playerControls.Player.enabled;
         public Action Fire { get; set; }
+        public Action Jump { get; set; }
 
         public StandaloneInputController()
         {
@@ -24,6 +25,7 @@ namespace Core.Input
         {
             _playerControls.Enable();
             _playerControls.Player.Fire.started += _ => Fire?.Invoke();
+            _playerControls.Player.Jump.started += _ => Jump?.Invoke();
         }
         void ILateDisposable.LateDispose()
         {

@@ -16,6 +16,12 @@ namespace Core.Player
         [SerializeField]
         private Animator _animator;
         [SerializeField]
+        private LayerMask _layerMask;
+        [SerializeField]
+        private BoxCollider2D _boxCollider;
+        [SerializeField]
+        private Rigidbody2D _rigidbody;
+        [SerializeField]
         private Transform _firePoint;
 
         private PlayerSettings _settings;
@@ -44,11 +50,14 @@ namespace Core.Player
         {
             _cachedCamera = Camera.main;
             _inputSystem.Fire += Fire;
+            _inputSystem.Jump += Jump;
+            _rigidbody.gravityScale = _settings.NormalGravityScale;
             _firePointStartX = _firePoint.localPosition.x;
         }
         private void OnDisable()
         {
             _inputSystem.Fire -= Fire;
+            _inputSystem.Jump -= Jump;
         }
         private void Update()
         {
@@ -63,6 +72,8 @@ namespace Core.Player
 
             Vector2 direction = Vector2.right * _inputSystem.HorizontalAxis * _settings.MovementSpeed * Time.deltaTime;
             transform.Translate(direction, Space.World);
+
+            CheckGravity();
         }
         private Quaternion TrackCursor(Vector3 worldPosition)
         {
@@ -98,6 +109,28 @@ namespace Core.Player
 
             Vector3 direction = Sign * -_firePoint.right;
             bullet.Blast(direction, _settings.BulletForce);
+        }
+        private void Jump()
+        {
+            if (!IsGrounded()) return;
+
+            _rigidbody.velocity = Vector2.up * _settings.JumpForce;
+        }
+        private void CheckGravity()
+        {
+            if (_rigidbody.velocity.y >= 0)
+            {
+                _rigidbody.gravityScale = _settings.NormalGravityScale;
+            }
+            else if (_rigidbody.velocity.y < 0)
+            {
+                _rigidbody.gravityScale = _settings.FallingGravityScale;
+            }
+        }
+        private bool IsGrounded()
+        {
+            RaycastHit2D raycastHit2d = Physics2D.BoxCast(_boxCollider.bounds.center, _boxCollider.bounds.size, 0f, Vector2.down, .1f, _layerMask);
+            return raycastHit2d.collider != null;
         }
     }
 }
