@@ -32,6 +32,8 @@ namespace Core.Models
         public GameObject BulletPrefab;
         [Min(0f)]
         public float BulletForce;
+        [Range(0f, 1f)]
+        public float BulletLifetime;
         [Min(0f)]
         public float ReloadTime;
         [Range(0f, 10f)]

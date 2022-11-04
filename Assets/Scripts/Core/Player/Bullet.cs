@@ -3,6 +3,7 @@ using UnityEngine;
 using Zenject;
 using Core.Cats;
 using Core.Infrastructure.Signals.Cats;
+using Core.Models;
 
 namespace Core
 {
@@ -11,13 +12,15 @@ namespace Core
     public class Bullet : MonoBehaviour, IPoolable<IMemoryPool>, IDisposable
     {
         private SignalBus _signalBus;
+        private PlayerSettings _settings;
         private Collider2D _collider;
         private IMemoryPool _pool;
 
         [Inject]
-        private void Construct(SignalBus signalBus)
+        private void Construct(SignalBus signalBus, PlayerSettings settings)
         {
             _signalBus = signalBus;
+            _settings = settings;
         }
 
         private void Awake()
@@ -38,6 +41,7 @@ namespace Core
         }
         public void Blast(Vector2 direction, float force)
         {
+            Invoke(nameof(Dispose), _settings.BulletLifetime);
             _collider.attachedRigidbody.velocity = direction * force;
         }
 
