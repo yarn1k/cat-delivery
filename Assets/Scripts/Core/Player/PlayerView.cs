@@ -23,6 +23,10 @@ namespace Core.Player
         private Bullet.Factory _bulletFactory;
         private Camera _cachedCamera;
 
+        private bool IsMoving => _inputSystem.HorizontalAxis != 0f;
+        private int Sign => _gun.flipX ? -1 : 1;
+        private float _oldAxis;
+        private float _firePointStartX;
         private Vector3 _mouseWorldPosition;
         private float _reloadTimer;
 
@@ -40,6 +44,7 @@ namespace Core.Player
         {
             _cachedCamera = Camera.main;
             _inputSystem.Fire += Fire;
+            _firePointStartX = _firePoint.localPosition.x;
         }
         private void OnDisable()
         {
@@ -47,8 +52,10 @@ namespace Core.Player
         }
         private void Update()
         {
-            FlipSprite(_inputSystem.HorizontalAxis > 0);
-            _animator.SetBool("IsMoving", _inputSystem.HorizontalAxis != 0);
+            if (IsMoving) _oldAxis = _inputSystem.HorizontalAxis;
+            FlipSprite(_oldAxis > 0f);
+
+            _animator.SetBool("IsMoving", IsMoving);
 
             _mouseWorldPosition = _cachedCamera.ScreenToWorldPoint(_inputSystem.MousePosition);
 
@@ -60,10 +67,10 @@ namespace Core.Player
         private Quaternion TrackCursor(Vector3 worldPosition)
         {
             Vector3 lookDirection = worldPosition - transform.position;
-            float radians = _gun.flipX ? 0f : 180f;
-            float rotationZ = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg - radians;
-            float angle = Mathf.Clamp(rotationZ, -ANGLE, ANGLE);
-            return Quaternion.Euler(0f, 0f, angle);
+            float degrees = _gun.flipX ? 0f : -180f;
+            float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg + degrees;
+            float clampedAngle = _gun.flipX ? Mathf.Clamp(angle, 0f, ANGLE) : Mathf.Clamp(angle, -ANGLE, 0f);
+            return Quaternion.Euler(0f, 0f, clampedAngle);
         }
         private bool CheckFireCooldown()
         {
@@ -74,19 +81,23 @@ namespace Core.Player
             _gun.flipX = flipX;
             _head.flipX = flipX;
             _body.flipX = flipX;
+
+            Vector3 localPos = _firePoint.localPosition;
+            localPos.x = _firePointStartX * Sign;
+            _firePoint.localPosition = localPos;
         }
         private void Fire()
         {
             if (!CheckFireCooldown()) return;
 
             _reloadTimer = Time.realtimeSinceStartup;
-            Vector2 direction = _mouseWorldPosition - transform.position;
 
             Bullet bullet = _bulletFactory.Create();
             bullet.transform.position = _firePoint.position;
-            bullet.transform.rotation = _gun.transform.rotation;
+            bullet.transform.rotation = _firePoint.rotation;
 
-            bullet.Blast(direction.normalized, _settings.BulletForce);
+            Vector3 direction = Sign * -_firePoint.right;
+            bullet.Blast(direction, _settings.BulletForce);
         }
     }
 }
