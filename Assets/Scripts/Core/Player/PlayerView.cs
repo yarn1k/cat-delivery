@@ -16,6 +16,12 @@ namespace Core.Player
         [SerializeField]
         private Animator _animator;
         [SerializeField]
+        private LayerMask _layerMask;
+        [SerializeField]
+        private BoxCollider2D _boxCollider;
+        [SerializeField]
+        private Rigidbody2D _rigidbody;
+        [SerializeField]
         private Transform _firePoint;
 
         private PlayerSettings _settings;
@@ -40,10 +46,12 @@ namespace Core.Player
         {
             _cachedCamera = Camera.main;
             _inputSystem.Fire += Fire;
+            _inputSystem.Jump += Jump;
         }
         private void OnDisable()
         {
             _inputSystem.Fire -= Fire;
+            _inputSystem.Jump -= Jump;
         }
         private void Update()
         {
@@ -87,6 +95,17 @@ namespace Core.Player
             bullet.transform.rotation = _gun.transform.rotation;
 
             bullet.Blast(direction.normalized, _settings.BulletForce);
+        }
+        private void Jump()
+        {
+            if (!IsGrounded()) return;
+
+            _rigidbody.velocity = Vector2.up * _settings.JumpForce;
+        }
+        private bool IsGrounded()
+        {
+            RaycastHit2D raycastHit2d = Physics2D.BoxCast(_boxCollider.bounds.center, _boxCollider.bounds.size, 0f, Vector2.down, .1f, _layerMask);
+            return raycastHit2d.collider != null;
         }
     }
 }

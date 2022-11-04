@@ -21,6 +21,7 @@ MonoBehaviour:
     BulletForce: 20
     ReloadTime: 1.5
     MovementSpeed: 5.8
+    JumpForce: 40
   _catsSettings:
     CatPrefab: {fileID: 7617580221496467112, guid: 56638018684905240a4d0e525e61f95e, type: 3}
     CatsFallingSpeed: 1.3

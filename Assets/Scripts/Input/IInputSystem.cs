@@ -9,5 +9,6 @@ namespace Core.Input
         public ref Vector2 MousePosition { get; }
         public bool Enabled { get; }
         public Action Fire { get; set; }
+        public Action Jump { get; set; }
     }
 }
