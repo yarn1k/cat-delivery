@@ -18,6 +18,10 @@ namespace Core.Models
         public GameObject CatPrefab;
         [Range(0f, 10f)]
         public float CatsFallingSpeed;
+        [Range(0f, 10f)]
+        public float CatsKidnapSpeed;
+        [Range(0f, 10f)]
+        public float CatsSaveSpeed;
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 SpawnInterval;
     }
