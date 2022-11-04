@@ -40,6 +40,10 @@ namespace Core.Models
         public float MovementSpeed;
         [Range(0f, 50f)]
         public float JumpForce;
+        [Range(0f, 50f)]
+        public float NormalGravityScale;
+        [Range(0f, 50f)]
+        public float FallingGravityScale;
     }
 
     [Serializable]

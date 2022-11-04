@@ -47,6 +47,7 @@ namespace Core.Player
             _cachedCamera = Camera.main;
             _inputSystem.Fire += Fire;
             _inputSystem.Jump += Jump;
+            _rigidbody.gravityScale = _settings.NormalGravityScale;
         }
         private void OnDisable()
         {
@@ -64,6 +65,8 @@ namespace Core.Player
 
             Vector2 direction = Vector2.right * _inputSystem.HorizontalAxis * _settings.MovementSpeed * Time.deltaTime;
             transform.Translate(direction, Space.World);
+
+            CheckGravity();
         }
         private Quaternion TrackCursor(Vector3 worldPosition)
         {
@@ -101,6 +104,17 @@ namespace Core.Player
             if (!IsGrounded()) return;
 
             _rigidbody.velocity = Vector2.up * _settings.JumpForce;
+        }
+        private void CheckGravity()
+        {
+            if (_rigidbody.velocity.y >= 0)
+            {
+                _rigidbody.gravityScale = _settings.NormalGravityScale;
+            }
+            else if (_rigidbody.velocity.y < 0)
+            {
+                _rigidbody.gravityScale = _settings.FallingGravityScale;
+            }
         }
         private bool IsGrounded()
         {
