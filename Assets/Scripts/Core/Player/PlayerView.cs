@@ -7,6 +7,17 @@ namespace Core.Player
 {
     public class PlayerView : MonoBehaviour
     {
+        [SerializeField]
+        private SpriteRenderer _gun;
+        [SerializeField]
+        private SpriteRenderer _head;
+        [SerializeField]
+        private SpriteRenderer _body;
+        [SerializeField]
+        private Animator _animator;
+        [SerializeField]
+        private Transform _firePoint;
+
         private PlayerSettings _settings;
         private IInputSystem _inputSystem;
         private Bullet.Factory _bulletFactory;
@@ -14,14 +25,8 @@ namespace Core.Player
 
         private Vector3 _mouseWorldPosition;
         private float _reloadTimer;
-        private float _horizontalAxis;
 
-        [SerializeField]
-        private SpriteRenderer _spriteRenderer;
-        [SerializeField]
-        private Animator _animator;
-        [SerializeField]
-        private Transform _firePoint;
+        private const float ANGLE = 55f;
 
         [Inject]
         public void Construct(PlayerSettings settings, IInputSystem inputSystem, Bullet.Factory bulletFactory)
@@ -42,52 +47,46 @@ namespace Core.Player
         }
         private void Update()
         {
-            _horizontalAxis = _inputSystem.HorizontalAxis;
-
-            SetFlipX();
-            CheckRunningAnimation();
+            FlipSprite(_inputSystem.HorizontalAxis > 0);
+            _animator.SetBool("IsMoving", _inputSystem.HorizontalAxis != 0);
 
             _mouseWorldPosition = _cachedCamera.ScreenToWorldPoint(_inputSystem.MousePosition);
 
-            transform.rotation = LookAtRotation(_mouseWorldPosition);
+            _gun.transform.rotation = TrackCursor(_mouseWorldPosition);
 
-            transform.Translate(Vector2.right * _horizontalAxis * _settings.MovementSpeed * Time.deltaTime, Space.World);
+            Vector2 direction = Vector2.right * _inputSystem.HorizontalAxis * _settings.MovementSpeed * Time.deltaTime;
+            transform.Translate(direction, Space.World);
         }
-        private void SetFlipX()
-        {
-            if (_horizontalAxis > 0)
-                _spriteRenderer.flipX = true;
-            else if (_horizontalAxis < 0)
-                _spriteRenderer.flipX = false;
-        }
-        private void CheckRunningAnimation()
-        {
-            var movement = _horizontalAxis != 0;
-            _animator.SetBool("IsMoving", movement);
-        }
-        private Quaternion LookAtRotation(Vector3 worldPosition)
+        private Quaternion TrackCursor(Vector3 worldPosition)
         {
             Vector3 lookDirection = worldPosition - transform.position;
-            float rotationZ = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg - 90f;
-            float angle = Mathf.Clamp(rotationZ, -55f, 55f);
+            float radians = _gun.flipX ? 0f : 180f;
+            float rotationZ = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg - radians;
+            float angle = Mathf.Clamp(rotationZ, -ANGLE, ANGLE);
             return Quaternion.Euler(0f, 0f, angle);
         }
         private bool CheckFireCooldown()
         {
             return Time.realtimeSinceStartup - _reloadTimer >= _settings.ReloadTime;
         }
+        private void FlipSprite(bool flipX)
+        {
+            _gun.flipX = flipX;
+            _head.flipX = flipX;
+            _body.flipX = flipX;
+        }
         private void Fire()
         {
             if (!CheckFireCooldown()) return;
 
             _reloadTimer = Time.realtimeSinceStartup;
+            Vector2 direction = _mouseWorldPosition - transform.position;
 
             Bullet bullet = _bulletFactory.Create();
             bullet.transform.position = _firePoint.position;
-            bullet.transform.rotation = transform.rotation;
+            bullet.transform.rotation = _gun.transform.rotation;
 
-            Vector2 direction = (_mouseWorldPosition - transform.position).normalized;
-            bullet.Blast(direction, _settings.BulletForce);
+            bullet.Blast(direction.normalized, _settings.BulletForce);
         }
     }
 }

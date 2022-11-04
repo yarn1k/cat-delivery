@@ -83,26 +83,4 @@ namespace Core.Cats.States
             Context.transform.Translate(_fallingSpeed * 3f * Vector3.down * Time.deltaTime, Space.World);
         }
     }
-    public class NeutralState : BaseCatState
-    {
-        private readonly float _fallingSpeed;
-
-        public NeutralState(IStateMachine<CatView> stateMachine, float fallingSpeed) : base(stateMachine)
-        {
-            _fallingSpeed = fallingSpeed;
-        }
-
-        public override void Enter()
-        {
-
-        }
-        public override void Exit()
-        {
-
-        }
-        public override void Update()
-        {
-
-        }
-    }
 }

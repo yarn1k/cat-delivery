@@ -34,7 +34,7 @@ namespace Core.Enemy
         }
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.TryGetComponent(out CatView cat) && !cat.IsInvisible)
+            if (other.TryGetComponent(out CatView cat) && cat.Interactable)
             {
                 _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = cat });
             }

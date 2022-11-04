@@ -22,8 +22,7 @@ namespace Core.Cats.States
             {
                 new FallingState(this, settings.CatsFallingSpeed),
                 new KidnapState(this, settings.CatsFallingSpeed),
-                new SaveState(this, settings.CatsFallingSpeed),
-                new NeutralState(this, settings.CatsFallingSpeed)
+                new SaveState(this, settings.CatsFallingSpeed)
             };
         }
 

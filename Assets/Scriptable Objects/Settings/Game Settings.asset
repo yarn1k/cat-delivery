@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameSettings:
     GameTime: 300
+    SavedReward: 50
+    KidnapPenalty: 30
   _playerSettings:
     BulletPrefab: {fileID: 8336883893298939237, guid: cc59c9268c971df4eb2c498d5e322a7e, type: 3}
     BulletForce: 20

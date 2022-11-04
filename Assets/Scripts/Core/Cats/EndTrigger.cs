@@ -16,7 +16,7 @@ namespace Core.Cats
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.TryGetComponent(out CatView cat) && !cat.IsInvisible)
+            if (collision.TryGetComponent(out CatView cat) && cat.Interactable)
             {
                 _signalBus.Fire(new CatFellSignal { FallenCat = cat });
             }

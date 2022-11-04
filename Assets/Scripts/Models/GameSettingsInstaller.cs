@@ -8,6 +8,8 @@ namespace Core.Models
     public class GameSettings
     {
         public ushort GameTime;
+        public ushort SavedReward;
+        public ushort KidnapPenalty;
     }
 
     [Serializable]
