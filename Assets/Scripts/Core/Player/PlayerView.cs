@@ -22,7 +22,10 @@ namespace Core.Player
         }
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            IsGrounded = collision.contacts.Any(x => x.normal == Vector2.up);
+            if (collision.contacts.Any(x => x.normal == Vector2.up))
+            {
+                IsGrounded = true;
+            }
         }
 
         public void FlipSprite(bool flipX)
@@ -36,6 +39,7 @@ namespace Core.Player
         }
         public void Jump(float force)
         {
+            IsGrounded = false;
             _rigidbody.velocity = Vector2.up * force;
         }
     }
