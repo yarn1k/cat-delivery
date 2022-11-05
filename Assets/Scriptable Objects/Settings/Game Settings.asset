@@ -17,9 +17,6 @@ MonoBehaviour:
     SavedReward: 50
     KidnapPenalty: 30
   _playerSettings:
-    BulletPrefab: {fileID: 8336883893298939237, guid: cc59c9268c971df4eb2c498d5e322a7e, type: 3}
-    BulletForce: 20
-    BulletLifetime: 0.25
     ReloadTime: 1.5
     MovementSpeed: 5.8
     JumpForce: 40
@@ -32,4 +29,5 @@ MonoBehaviour:
     CatsSaveSpeed: 3.9
     SpawnInterval: {x: 1, y: 5}
   _enemySettings:
-    LaserCooldownInterval: {x: 1.7705927, y: 7.998461}
+    MovementSpeed: 3
+    AttackCooldownInterval: {x: 1.7718331, y: 7.324583}

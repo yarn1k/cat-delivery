@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4520795343396928667}
   - component: {fileID: 3774151234430739616}
   - component: {fileID: 1793470423989614588}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -117,16 +117,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4c5c41eee40ed94886bc5dabe757832, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gun: {fileID: 3188277075093489484}
-  _head: {fileID: 4436487708586959298}
-  _body: {fileID: 4296866135677087302}
-  _animator: {fileID: 4703970524798164720}
-  _layerMask:
-    serializedVersion: 2
-    m_Bits: 8
-  _boxCollider: {fileID: 4520795343396928667}
   _rigidbody: {fileID: 3774151234430739616}
-  _firePoint: {fileID: 4296866135773746290}
+  _gun: {fileID: 3188277075093489484}
+  <Animator>k__BackingField: {fileID: 4703970524798164720}
+  <FirePoint>k__BackingField: {fileID: 4296866135773746290}
 --- !u!1 &1278832352451649102
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,7 +131,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1442824737617876319}
   - component: {fileID: 4436487708586959298}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -221,7 +215,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7571772309683693302}
   - component: {fileID: 3188277075093489484}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,7 +302,7 @@ GameObject:
   - component: {fileID: 4296866135677087297}
   - component: {fileID: 4296866135677087302}
   - component: {fileID: 4296866135677087296}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -411,7 +405,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4296866135773746290}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Fire Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -425,14 +419,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4296866135773746285}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: -0.28, y: -0.056, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7571772309683693302}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!1 &4661031238034177333
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +437,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1606511560942802593}
   - component: {fileID: 9214909991155472908}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: Hand
   m_TagString: Untagged
   m_Icon: {fileID: 0}

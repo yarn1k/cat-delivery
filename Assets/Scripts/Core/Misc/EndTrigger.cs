@@ -1,8 +1,9 @@
-using Core.Infrastructure.Signals.Cats;
 using UnityEngine;
 using Zenject;
+using Core.Cats;
+using Core.Infrastructure.Signals.Cats;
 
-namespace Core.Cats
+namespace Core
 {
     public class EndTrigger : MonoBehaviour
     {
@@ -16,8 +17,9 @@ namespace Core.Cats
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.TryGetComponent(out CatView cat) && cat.Interactable)
+            if (collision.TryGetComponent(out CatView cat))
             {
+                cat.Dispose();
                 _signalBus.Fire(new CatFellSignal { FallenCat = cat });
             }
         }

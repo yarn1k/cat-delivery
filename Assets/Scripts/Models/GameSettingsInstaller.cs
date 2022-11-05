@@ -29,11 +29,6 @@ namespace Core.Models
     [Serializable]
     public class PlayerSettings
     {
-        public GameObject BulletPrefab;
-        [Min(0f)]
-        public float BulletForce;
-        [Range(0f, 1f)]
-        public float BulletLifetime;
         [Min(0f)]
         public float ReloadTime;
         [Range(0f, 10f)]
@@ -49,8 +44,10 @@ namespace Core.Models
     [Serializable]
     public class EnemySettings
     {
+        [Range(0f, 10f)]
+        public float MovementSpeed;
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
-        public Vector2 LaserCooldownInterval;
+        public Vector2 AttackCooldownInterval;
     }
 
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Installers/Game Settings")]
@@ -71,7 +68,10 @@ namespace Core.Models
 
             Container.Bind<ILogger>().To<StandaloneLogger>().AsCached();
 
-            Container.BindInstances(_gameSettings, _playerSettings, _catsSettings, _enemySettings);
+            Container.Bind<GameSettings>().FromInstance(_gameSettings).IfNotBound();
+            Container.Bind<PlayerSettings>().FromInstance(_playerSettings).IfNotBound();
+            Container.Bind<CatsSettings>().FromInstance(_catsSettings).IfNotBound();
+            Container.Bind<EnemySettings>().FromInstance(_enemySettings).IfNotBound();
         }
     }
 }

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8341c660cf9ab54f9eac1ad51ff6efe, type: 3}
+  m_Name: Bullet Gun Config
+  m_EditorClassIdentifier: 
+  <DisplayName>k__BackingField: Bullet Gun
+  <Description>k__BackingField: 
+  <Prefab>k__BackingField: {fileID: 8336883893298939237, guid: cc59c9268c971df4eb2c498d5e322a7e, type: 3}
+  <BulletForce>k__BackingField: 15
+  <BulletLifetime>k__BackingField: 1

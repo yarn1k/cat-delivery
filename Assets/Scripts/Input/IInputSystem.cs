@@ -8,7 +8,9 @@ namespace Core.Input
         public ref float HorizontalAxis { get; }
         public ref Vector2 MousePosition { get; }
         public bool Enabled { get; }
-        public Action Fire { get; set; }
-        public Action Jump { get; set; }
+        public event Action Fire;
+        public event Action Jump;
+        public void Enable();
+        public void Disable();
     }
 }

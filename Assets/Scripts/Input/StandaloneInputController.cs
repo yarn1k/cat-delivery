@@ -13,8 +13,8 @@ namespace Core.Input
         public ref float HorizontalAxis => ref _horizontalAxis;
         public ref Vector2 MousePosition => ref _mousePosition;
         public bool Enabled => _playerControls.Player.enabled;
-        public Action Fire { get; set; }
-        public Action Jump { get; set; }
+        public event Action Fire;
+        public event Action Jump;
 
         public StandaloneInputController()
         {
@@ -30,6 +30,7 @@ namespace Core.Input
         void ILateDisposable.LateDispose()
         {
             _playerControls.Disable();
+            _playerControls.Dispose();
         }
         void ITickable.Tick()
         {
@@ -37,6 +38,15 @@ namespace Core.Input
 
             _horizontalAxis = _playerControls.Player.Movement.ReadValue<float>();
             _mousePosition = _playerControls.Player.MousePosition.ReadValue<Vector2>();
+        }
+
+        public void Enable()
+        {
+            _playerControls.Enable();
+        }
+        public void Disable()
+        {
+            _playerControls.Disable();
         }
     }
 }

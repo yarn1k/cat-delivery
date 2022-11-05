@@ -1,14 +1,14 @@
-using Core.Models;
 using UnityEngine;
+using Core.Weapons;
 
 namespace Core.Enemy.States
 {
-    public abstract class EnemyBaseState : IState<EnemyView>
+    public abstract class EnemyBaseState : IState<EnemyController>
     {
-        protected readonly IStateMachine<EnemyView> StateMachine;
-        protected EnemyView Context => StateMachine.Context;
+        protected readonly IStateMachine<EnemyController> StateMachine;
+        protected EnemyController Context => StateMachine.Context;
 
-        public EnemyBaseState(IStateMachine<EnemyView> stateMachine)
+        public EnemyBaseState(IStateMachine<EnemyController> stateMachine)
         {
             StateMachine = stateMachine;
         }
@@ -20,15 +20,18 @@ namespace Core.Enemy.States
 
     public class UpAndDownState : EnemyBaseState
     {
-        private readonly float _speed = 3f;
+        private readonly float _speed;
+        private readonly Vector2 _attackCooldownInterval;
+        private readonly IWeapon _weapon;
         private float _startTime;
         private float _reloadTimer;
         private float _reloadTime;
-        private readonly EnemySettings _settings;
 
-        public UpAndDownState(IStateMachine<EnemyView> stateMachine, EnemySettings settings) : base(stateMachine)
+        public UpAndDownState(IStateMachine<EnemyController> stateMachine, float speed, Vector2 attackCooldownInterval, IWeapon weapon) : base(stateMachine)
         {
-            _settings = settings;
+            _speed = speed;
+            _attackCooldownInterval = attackCooldownInterval;
+            _weapon = weapon;
         }
 
         private bool CheckFireCooldown()
@@ -48,19 +51,19 @@ namespace Core.Enemy.States
         {
             if (CheckFireCooldown())
             {
-                Context.ShootLaser();
+                _weapon.Shoot();
                 _reloadTimer = Time.realtimeSinceStartup;
-                _reloadTime = Random.Range(_settings.LaserCooldownInterval.x, _settings.LaserCooldownInterval.y);
+                _reloadTime = Random.Range(_attackCooldownInterval.x, _attackCooldownInterval.y);
             }
 
             float runningTime = Time.realtimeSinceStartup - _startTime;
             float deltaHeight = Mathf.Sin(runningTime + Time.deltaTime) - Mathf.Sin(runningTime);
-            Context.transform.position += Vector3.up * deltaHeight * _speed;
+            Context.Translate(Vector3.up * deltaHeight * _speed);
         }
     }
     public class SwapPositionState : EnemyBaseState
     {
-        public SwapPositionState(IStateMachine<EnemyView> stateMachine) : base(stateMachine)
+        public SwapPositionState(IStateMachine<EnemyController> stateMachine) : base(stateMachine)
         {
 
         }
