@@ -6,31 +6,39 @@ using Zenject;
 namespace Core.Models
 {
     [Serializable]
+    public class Audio
+    {
+        public AudioClip Clip;
+        [Range(0f, 1f)]
+        public float Volume;
+    }
+
+    [Serializable]
     public class AudioGameSettings
     {
-        public AudioClip GameBackground;
-        public AudioClip GameLevelStart;
-        public AudioClip GameBonus;
-        public AudioClip GameOver;
+        public Audio GameBackground;
+        public Audio GameLevelStart;
+        public Audio GameBonus;
+        public Audio GameOver;
     }
 
     [Serializable]
     public class AudioUISettings
     {
-        public AudioClip UIClick;
+        public Audio UIClick;
     }
 
     [Serializable]
     public class AudioPlayerSettings
     {
-        public AudioClip PlayerShoot;
-        public AudioClip PlayerOnHit;
+        public Audio PlayerShoot;
+        public Audio PlayerOnHit;
     }
 
     [Serializable]
     public class AudioCatsSettings
     {
-        public AudioClip CatGrabbed;
+        public Audio CatGrabbed;
     }
 
     [CreateAssetMenu(fileName = "Audio Settings", menuName = "Installers/Audio Settings")]

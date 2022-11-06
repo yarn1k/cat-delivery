@@ -27,7 +27,8 @@ namespace Core.Weapons
         {
             if (!_model.Cooldown.IsOver) return;
 
-            _audioSource.PlayOneShot(_audioPlayerSettings.PlayerShoot);
+            Audio playerShoot = _audioPlayerSettings.PlayerShoot;
+            _audioSource.PlayOneShot(playerShoot.Clip, playerShoot.Volume);
 
             Bullet bullet = _bulletFactory.Create
             (

@@ -39,7 +39,8 @@ namespace Core.Weapons
         {
             if (collision.TryGetComponent(out CatView target) && target.Interactable)
             {
-                _audioSource.PlayOneShot(_audioPlayerSettings.PlayerOnHit);
+                Audio playerOnHit = _audioPlayerSettings.PlayerOnHit;
+                _audioSource.PlayOneShot(playerOnHit.Clip, playerOnHit.Volume);
                 Hit?.Invoke(this, target);
             }
         }

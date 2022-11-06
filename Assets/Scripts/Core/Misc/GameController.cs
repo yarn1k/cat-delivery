@@ -44,7 +44,9 @@ namespace Core.Match
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
 
-            _audioSource.PlayOneShot(_audioGameSettings.GameLevelStart);
+            Audio gameLevelStart = _audioGameSettings.GameLevelStart;
+            _audioSource.PlayOneShot(gameLevelStart.Clip, gameLevelStart.Volume);
+            InitBackgroundMusic();
         }
         void ILateDisposable.LateDispose()
         {
@@ -54,6 +56,13 @@ namespace Core.Match
             _asyncProcessor.StopCoroutine(GameOver());
         }
 
+        private void InitBackgroundMusic()
+        {
+            Audio gameBackground = _audioGameSettings.GameBackground;
+            _audioSource.clip = gameBackground.Clip;
+            _audioSource.volume = gameBackground.Volume;
+            _audioSource.Play();
+        }
         private void OnCatFellSignal(CatFellSignal signal)
         {
             _score += 10;
@@ -71,7 +80,8 @@ namespace Core.Match
 
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
-            _audioSource.PlayOneShot(_audioCatsSettings.CatGrabbed);
+            Audio catGrabbed = _audioCatsSettings.CatGrabbed;
+            _audioSource.PlayOneShot(catGrabbed.Clip, catGrabbed.Volume);
             _score -= _settings.KidnapPenalty;
             var label = _labelFactory.Create($"Kidnapped\n-{_settings.KidnapPenalty}", Color.red);
             label.transform.position = signal.KidnappedCat.transform.position;
@@ -86,7 +96,8 @@ namespace Core.Match
 
         private IEnumerator GameOver()
         {
-            _audioSource.PlayOneShot(_audioGameSettings.GameOver);
+            Audio gameOver = _audioGameSettings.GameOver;
+            _audioSource.PlayOneShot(gameOver.Clip, gameOver.Volume);
             yield return new WaitForSeconds(3f);
             SceneManager.LoadScene(0);
         }
