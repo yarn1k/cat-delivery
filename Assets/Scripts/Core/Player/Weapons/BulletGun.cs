@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 using Core.Cats;
 
 namespace Core.Weapons
@@ -7,13 +8,15 @@ namespace Core.Weapons
     {
         private readonly BulletGunModel _model;
         private readonly Bullet.Factory _bulletFactory;
+        private readonly Bullet.ExplosionFactory _explosionFactory;
 
         public event Action<CatView> Hit;
 
-        public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory)
+        public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory, Bullet.ExplosionFactory explosionFactory)
         {
             _model = model;
             _bulletFactory = bulletFactory;
+            _explosionFactory = explosionFactory;
         }
 
         public void Shoot()
@@ -39,8 +42,16 @@ namespace Core.Weapons
             bullet.LifetimeElapsed -= DisposeBullet;
             bullet.Dispose();
         }
+        private void CreateExplosion(Vector2 position)
+        {
+            int rand = UnityEngine.Random.Range(0, _model.BulletGunConfig.Explosions.Length);
+            GameObject prefab = _model.BulletGunConfig.Explosions[rand];
+            GameObject explosion = _explosionFactory.Create(prefab, position);
+            GameObject.Destroy(explosion, 0.8f);
+        }
         private void OnBulletHit(Bullet bullet, CatView target)
         {
+            CreateExplosion(bullet.Center);
             DisposeBullet(bullet);
             Hit?.Invoke(target);
         }

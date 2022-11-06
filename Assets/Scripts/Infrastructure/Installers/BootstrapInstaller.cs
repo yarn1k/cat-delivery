@@ -24,6 +24,8 @@ namespace Core.Infrastructure.Installers
         [SerializeField]
         private GameObject _enemyPrefab;
         [SerializeField]
+        private GameObject _catPrefab;
+        [SerializeField]
         private BulletGunConfig _bulletGunConfig;
         [SerializeField]
         private LaserGunConfig _laserGunConfig;
@@ -44,6 +46,7 @@ namespace Core.Infrastructure.Installers
             Container.Bind<IInitializable>().To<GameController>().AsSingle();
             Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
 
+            BindFactories();
             BindPools();
             BindCats();
             BindEnemy();
@@ -60,7 +63,7 @@ namespace Core.Infrastructure.Installers
         }
         private void BindEnemy()
         {
-            Vector3 position = new Vector3(8f, 3f, 0f);
+            Vector3 position = new Vector3(8f, 1.5f, 0f);
             EnemyView view = Container.InstantiatePrefabForComponent<EnemyView>(_enemyPrefab, position, Quaternion.identity, null);
             EnemyModel model = new EnemyModel(_enemySettings.MovementSpeed, _enemySettings.AttackCooldownInterval);
             EnemyController controller = Container.Instantiate<EnemyController>(new object[] { model, view });
@@ -96,9 +99,13 @@ namespace Core.Infrastructure.Installers
 
             Container.BindInterfacesTo<PlayerController>().FromInstance(controller).AsSingle();
         }
+        private void BindFactories()
+        {
+            Container.BindFactory<GameObject, Vector2, GameObject, Bullet.ExplosionFactory>();
+        }
         private void BindPools()
         {
-            Container.BindFactory<Vector2, Quaternion, float, Laser, Laser.Factory>().FromMonoPoolableMemoryPool(x => x
+            Container.BindFactory<Vector2, Quaternion, float, float, Laser, Laser.Factory>().FromMonoPoolableMemoryPool(x => x
                 .WithInitialSize(2)
                 .FromComponentInNewPrefab(_laserGunConfig.Prefab)
                 .UnderTransformGroup("Lasers"));
@@ -106,7 +113,7 @@ namespace Core.Infrastructure.Installers
             Container.BindFactory<CatView, CatView.Factory>().FromMonoPoolableMemoryPool(x => x
                 .WithInitialSize(5)
                 .FromSubContainerResolve()
-                .ByNewPrefabInstaller<CatInstaller>(_catsSettings.CatPrefab)
+                .ByNewPrefabInstaller<CatInstaller>(_catPrefab)
                 .UnderTransformGroup("Cats"));
 
             Container.BindFactory<Vector2, Quaternion, float, float, Bullet, Bullet.Factory>().FromMonoPoolableMemoryPool(x => x

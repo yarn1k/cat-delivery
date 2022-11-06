@@ -24,6 +24,7 @@ namespace Core.Weapons
             (
                 _model.FirePoint.position,
                 _model.FirePoint.rotation,
+                _model.LaserGunConfig.PreparationTime,
                 _model.LaserGunConfig.LaserLifetime
             );
             laser.LifetimeElapsed += OnLifetimeElapsed;

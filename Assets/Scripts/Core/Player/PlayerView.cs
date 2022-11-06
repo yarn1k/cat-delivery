@@ -30,8 +30,10 @@ namespace Core.Player
 
         public void FlipSprite(bool flipX)
         {
-            int sign = flipX ? -1 : 1;       
+            int sign = flipX ? -1 : 1;
+            float firePointRotZ = flipX ? 0f : 180f;
             transform.localScale = new Vector3(_startLocalScaleX * sign, transform.localScale.y, transform.localScale.z);
+            FirePoint.localRotation = Quaternion.Euler(0f, 0f, firePointRotZ);
         } 
         public void RotateGun(Quaternion rotation)
         {

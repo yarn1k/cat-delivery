@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 using Zenject;
 
 namespace Core.Models
@@ -15,7 +16,7 @@ namespace Core.Models
     [Serializable]
     public class CatsSettings
     {
-        public GameObject CatPrefab;
+        public SpriteLibraryAsset[] Skins;
         [Range(0f, 10f)]
         public float CatsFallingSpeed;
         [Range(0f, 10f)]

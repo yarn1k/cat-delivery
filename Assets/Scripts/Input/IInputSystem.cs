@@ -6,7 +6,8 @@ namespace Core.Input
     public interface IInputSystem
     {
         public ref float HorizontalAxis { get; }
-        public ref Vector2 MousePosition { get; }
+        public ref Vector2 MouseScreenPosition { get; }
+        public ref Vector2 MouseWorldPosition { get; }
         public bool Enabled { get; }
         public event Action Fire;
         public event Action Jump;
