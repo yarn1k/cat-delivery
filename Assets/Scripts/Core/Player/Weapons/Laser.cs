@@ -1,23 +1,21 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using Zenject;
-using VolumetricLines;
 using Core.Cats;
+using DG.Tweening;
 
 namespace Core.Weapons
 {
     [RequireComponent(typeof(BoxCollider2D))]
-    [RequireComponent(typeof(VolumetricLineBehavior))]
+    [RequireComponent(typeof(SpriteRenderer))]
     public class Laser : MonoBehaviour, IPoolable<Vector2, Quaternion, float, float, IMemoryPool>, IDisposable
     {
         private BoxCollider2D _collider;
-        private VolumetricLineBehavior _lineRenderer;
+        private SpriteRenderer _renderer;
         private LevelBounds _levelBounds;
         private IMemoryPool _pool;
         private bool _prepared;
-        private float _width;
-        private Color _startColor;
+        private Vector3 _startPosition;
 
         public event Action<Laser> LifetimeElapsed;
         public event Action<CatView> Hit;
@@ -31,12 +29,7 @@ namespace Core.Weapons
         private void Awake()
         {
             _collider = GetComponent<BoxCollider2D>();
-            _lineRenderer = GetComponent<VolumetricLineBehavior>();
-        }
-        private void Start()
-        {
-            _width = _levelBounds.Size.x;
-            _startColor = _lineRenderer.LineColor;
+            _renderer = GetComponent<SpriteRenderer>();
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -47,32 +40,42 @@ namespace Core.Weapons
         }
         private void OnLifetimeElapsed()
         {
-            LifetimeElapsed?.Invoke(this);
+            ShowLaser(false, 0.5f)
+                .SetLink(gameObject)
+                .SetEase(Ease.Linear)
+                .OnComplete(() => LifetimeElapsed?.Invoke(this));
         }
 
         private void SetWidth(float width)
         {
-            _lineRenderer.EndPos = Vector3.up * width;
-            _collider.offset = new Vector2(_collider.offset.x, width / 2f);
-            _collider.size = new Vector2(_collider.size.x, width);
+            _renderer.size = new Vector2(width, _renderer.size.y);
+            _collider.size = new Vector2(width, _collider.size.y);
+            transform.position = _startPosition + transform.right * width / 2f;
         }
+
         public void Dispose()
         {
             _pool?.Despawn(this);
         }
 
-        private IEnumerator PreparationCoroutine(float width, float preparationTime)
+        private Tweener ShowLaser(bool isShow, float time)
         {
-            float factor = 0f;
-            float startWidth = 0f;
-            while (factor < 1f)
-            {
-                _lineRenderer.m_templateMaterial.color = Color.Lerp(Color.red, _startColor, Time.deltaTime / preparationTime);
-                float lerp = Mathf.Lerp(startWidth, width, factor += Time.deltaTime / preparationTime);
-                SetWidth(lerp);
-                yield return null;
-            }
-            _prepared = true;
+            float alpha = isShow ? 1f : 0f;
+            _renderer.color = _renderer.color.WithAlpha(1f - alpha);
+            return _renderer.DOColor(_renderer.color.WithAlpha(alpha), time);
+        }
+        private void PrepareLaser(float preparationTime)
+        {
+            float width = _levelBounds.Size.x;
+            _startPosition = transform.position;
+
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(ShowLaser(true, preparationTime));
+            sequence.Join(DOTween.To(() => 0f, x => SetWidth(x), width, preparationTime));
+            sequence.SetLink(gameObject);
+            sequence.SetEase(Ease.Linear);
+            sequence.OnComplete(() => _prepared = true);
+            sequence.Play();
         }
 
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnDespawned()
@@ -87,8 +90,10 @@ namespace Core.Weapons
             transform.position = position;
             transform.rotation = rotation;
             _collider.enabled = true;
-            if (preparationTime > 0f) StartCoroutine(PreparationCoroutine(_width, preparationTime));
+
+            if (preparationTime > 0f) PrepareLaser(preparationTime);
             else _prepared = true;
+
             Invoke(nameof(OnLifetimeElapsed), preparationTime + lifetime);
         }
 

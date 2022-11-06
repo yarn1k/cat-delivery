@@ -31,8 +31,6 @@ namespace Core.Infrastructure.Installers
         private LaserGunConfig _laserGunConfig;
 
         [Inject]
-        private CatsSettings _catsSettings;
-        [Inject]
         private PlayerSettings _playerSettings;
         [Inject]
         private EnemySettings _enemySettings;
