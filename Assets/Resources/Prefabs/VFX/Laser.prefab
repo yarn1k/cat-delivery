@@ -149,7 +149,7 @@ MonoBehaviour:
   m_templateMaterial: {fileID: 2100000, guid: a1950346da2817540a6756dacefcde75, type: 2}
   m_doNotOverwriteTemplateMaterialProperties: 0
   m_startPos: {x: -0, y: 0, z: 0}
-  m_endPos: {x: 0, y: 22, z: 0}
+  m_endPos: {x: 0, y: 45, z: 0}
   m_lineColor: {r: 0, g: 1, b: 1, a: 1}
   m_lineWidth: 1
   m_lightSaberFactor: 0.8

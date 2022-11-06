@@ -1,42 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Zenject;
-using Core.Models;
 
 namespace Core.Enemy.States
 {
-    public class EnemyStateMachine : IStateMachine<EnemyView>, IInitializable, ITickable
+    public class EnemyStateMachine : IStateMachine<EnemyController>
     {
-        private List<IState<EnemyView>> _states;
-        private EnemyView _context;
-        private IState<EnemyView> _currentState;
+        private List<IState<EnemyController>> _states;
+        public EnemyController Context { get; private set; }
+        public IState<EnemyController> CurrentState { get; private set; }
 
-        public EnemyView Context => _context;
-        public IState<EnemyView> CurrentState => _currentState;
-
-        [Inject]
-        private void Construct(EnemyView enemyView, EnemySettings settings)
+        public EnemyStateMachine(EnemyController controller, EnemyModel model)
         {
-            _context = enemyView;
-            _states = new List<IState<EnemyView>>()
+            Context = controller;
+            _states = new List<IState<EnemyController>>()
             {
-                new UpAndDownState(this, settings),
+                new UpAndDownState(this, model.MovementSpeed, model.AttackCooldownInterval, model.PrimaryWeapon),
                 new SwapPositionState(this),
             };
         }
-        void IInitializable.Initialize()
-        {         
-            SwitchState<UpAndDownState>();
-        }
-        void ITickable.Tick()
+
+        public void SwitchState<State>() where State : IState<EnemyController>
         {
-            _currentState?.Update();
-        }
-        public void SwitchState<State>() where State : IState<EnemyView>
-        {
-            _currentState?.Exit();
-            _currentState = _states.FirstOrDefault(state => state is State);
-            _currentState.Enter();
+            CurrentState?.Exit();
+            CurrentState = _states.FirstOrDefault(state => state is State);
+            CurrentState.Enter();
         }
     }
 }

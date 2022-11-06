@@ -8,16 +8,13 @@ namespace Core.Cats.States
     public class CatStateMachine : IStateMachine<CatView>, IInitializable, ITickable
     {
         private List<IState<CatView>> _states;
-        private CatView _context;
-        private IState<CatView> _currentState;
-
-        public CatView Context => _context;
-        public IState<CatView> CurrentState => _currentState;
+        public CatView Context { get; private set; }
+        public IState<CatView> CurrentState { get; private set; }
 
         [Inject]
         private void Construct(CatView catView, CatsSettings settings)
         {
-            _context = catView;
+            Context = catView;
             _states = new List<IState<CatView>>()
             {
                 new FallingState(this, settings.CatsFallingSpeed),
@@ -32,13 +29,13 @@ namespace Core.Cats.States
         }
         void ITickable.Tick()
         {
-            _currentState?.Update();
+            CurrentState.Update();
         }
         public void SwitchState<State>() where State : IState<CatView>
         {
-            _currentState?.Exit();
-            _currentState = _states.FirstOrDefault(state => state is State);
-            _currentState.Enter();
+            CurrentState?.Exit();
+            CurrentState = _states.FirstOrDefault(state => state is State);
+            CurrentState.Enter();
         }
     }
 }

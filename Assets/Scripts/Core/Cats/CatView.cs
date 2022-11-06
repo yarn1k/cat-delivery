@@ -13,9 +13,8 @@ namespace Core.Cats
         private SpriteRenderer _shield;
 
         private IMemoryPool _pool;
-        private bool _disposed;
         private IStateMachine<CatView> _stateMachine;
-        public bool Interactable => _stateMachine.CurrentState is FallingState && !_disposed;
+        public bool Interactable => _stateMachine.CurrentState is FallingState;
 
         [Inject]
         private void Construct(IStateMachine<CatView> stateMachine)
@@ -34,7 +33,6 @@ namespace Core.Cats
         }
         public void Dispose()
         {
-            _disposed = true;
             _pool?.Despawn(this);
         }
 
@@ -45,7 +43,6 @@ namespace Core.Cats
         void IPoolable<IMemoryPool>.OnSpawned(IMemoryPool pool)
         {
             _pool = pool;
-            _disposed = false;
             _shield.gameObject.SetActive(false);
             _stateMachine.SwitchState<FallingState>();
         }

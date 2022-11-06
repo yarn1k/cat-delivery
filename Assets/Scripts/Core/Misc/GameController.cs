@@ -53,8 +53,6 @@ namespace Core.Match
 
         private void OnCatSavedSignal(CatSavedSignal signal)
         {
-            signal.SavedCat.Save();
-
             _score += _settings.SavedReward;
             var label = _labelFactory.Create($"Saved\n+{_settings.SavedReward}", Color.green);
             label.transform.position = signal.SavedCat.transform.position;
@@ -64,8 +62,6 @@ namespace Core.Match
 
         private void OnCatKidnappedSignal(CatKidnappedSignal signal)
         {
-            signal.KidnappedCat.Kidnap();
-
             _score -= _settings.KidnapPenalty;
             var label = _labelFactory.Create($"Kidnapped\n-{_settings.KidnapPenalty}", Color.red);
             label.transform.position = signal.KidnappedCat.transform.position;

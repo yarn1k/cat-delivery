@@ -2,14 +2,14 @@ using UnityEngine;
 
 namespace Core
 {
-    public interface IState<T> where T : MonoBehaviour
+    public interface IState<T>
     {
         void Enter();
         void Exit();
         void Update();
     }
 
-    public interface IStateMachine<T> where T : MonoBehaviour
+    public interface IStateMachine<T>
     {
         T Context { get; }
         IState<T> CurrentState { get; }
