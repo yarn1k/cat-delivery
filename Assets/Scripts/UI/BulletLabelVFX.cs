@@ -17,15 +17,7 @@ namespace Core.UI
         {
             _text = GetComponent<TextMeshPro>();
         }
-        private void Update()
-        {
-            if (_disposed) return;
 
-            if (Time.realtimeSinceStartup - _timer >= 1f)
-            {
-                Dispose();
-            }
-        }
         public void Dispose()
         {
             _disposed = true;
@@ -42,6 +34,7 @@ namespace Core.UI
             _text.text = label;
             _text.color = color;
             _timer = Time.realtimeSinceStartup;
+            Invoke(nameof(Dispose), 1f);
         }
 
         public class Factory : PlaceholderFactory <string, Color, BulletLabelVFX> { }
