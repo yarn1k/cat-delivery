@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using Zenject;
 using Core.Cats;
+using Core.Models;
 
 namespace Core.Weapons
 {
@@ -16,6 +17,16 @@ namespace Core.Weapons
         public event Action<Bullet> LifetimeElapsed;
         public event Action<Bullet, CatView> Hit;
 
+        private AudioSource _audioSource;
+        private AudioPlayerSettings _audioPlayerSettings;
+
+        [Inject]
+        public void Construct(AudioSource audioSource, AudioPlayerSettings audioPlayerSettings)
+        {
+            _audioSource = audioSource;
+            _audioPlayerSettings = audioPlayerSettings;
+        }
+
         private void Awake()
         {
             _collider = GetComponent<Collider2D>();
@@ -28,6 +39,7 @@ namespace Core.Weapons
         {
             if (collision.TryGetComponent(out CatView target) && target.Interactable)
             {
+                _audioSource.PlayOneShot(_audioPlayerSettings.PlayerOnHit);
                 Hit?.Invoke(this, target);
             }
         }

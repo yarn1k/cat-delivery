@@ -553,6 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af0dce2600c2fe94c918af648cd16919, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _audioSource: {fileID: 1937202346}
   _levelBounds: {fileID: 1620562824}
   _labelVFXPrefab: {fileID: 4986500363753808753, guid: fe70263c9926cf046b57582ecdc37d4a, type: 3}
   _playerPrefab: {fileID: 184188967521832262, guid: 90e28cb68ee5e0d4e88f1527340f9133, type: 3}

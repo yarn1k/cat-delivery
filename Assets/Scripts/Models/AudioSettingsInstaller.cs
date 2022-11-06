@@ -1,3 +1,4 @@
+using Core.Match;
 using System;
 using UnityEngine;
 using Zenject;
@@ -5,7 +6,7 @@ using Zenject;
 namespace Core.Models
 {
     [Serializable]
-    public class AudioSettings
+    public class AudioGameSettings
     {
         public AudioClip GameBackground;
         public AudioClip GameLevelStart;
@@ -36,7 +37,7 @@ namespace Core.Models
     public class AudioSettingsInstaller : ScriptableObjectInstaller<AudioSettingsInstaller>
     {
         [SerializeField]
-        private AudioSettings _audioSettings;
+        private AudioGameSettings _audioSettings;
         [SerializeField]
         private AudioUISettings _audioUISettings;
         [SerializeField]
@@ -46,9 +47,7 @@ namespace Core.Models
 
         public override void InstallBindings()
         {
-            SignalBusInstaller.Install(Container);
-
-            Container.Bind<AudioSettings>().FromInstance(_audioSettings).IfNotBound();
+            Container.Bind<AudioGameSettings>().FromInstance(_audioSettings).IfNotBound();
             Container.Bind<AudioUISettings>().FromInstance(_audioUISettings).IfNotBound();
             Container.Bind<AudioPlayerSettings>().FromInstance(_audioPlayerSettings).IfNotBound();
             Container.Bind<AudioCatsSettings>().FromInstance(_audioCatsSettings).IfNotBound();

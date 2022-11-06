@@ -1,5 +1,7 @@
 ﻿using System;
 using Core.Cats;
+using Core.Models;
+using UnityEngine;
 
 namespace Core.Weapons
 {
@@ -10,15 +12,22 @@ namespace Core.Weapons
 
         public event Action<CatView> Hit;
 
-        public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory)
+        private AudioSource _audioSource;
+        private AudioPlayerSettings _audioPlayerSettings;
+
+        public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory, AudioSource audioSource, AudioPlayerSettings audioPlayerSettings)
         {
             _model = model;
             _bulletFactory = bulletFactory;
+            _audioSource = audioSource;
+            _audioPlayerSettings = audioPlayerSettings;
         }
 
         public void Shoot()
         {
             if (!_model.Cooldown.IsOver) return;
+
+            _audioSource.PlayOneShot(_audioPlayerSettings.PlayerShoot);
 
             Bullet bullet = _bulletFactory.Create
             (

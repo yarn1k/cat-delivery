@@ -16,6 +16,8 @@ namespace Core.Infrastructure.Installers
     public class BootstrapInstaller : MonoInstaller
     {
         [SerializeField]
+        private AudioSource _audioSource;
+        [SerializeField]
         private LevelBounds _levelBounds;
         [SerializeField]
         private GameObject _labelVFXPrefab;
@@ -38,8 +40,9 @@ namespace Core.Infrastructure.Installers
         public override void InstallBindings()
         {
             Container.DeclareSignal<GameScoreChangedSignal>();
-            Container.DeclareSignal<GameOverSignal>();              
+            Container.DeclareSignal<GameOverSignal>();
 
+            Container.Bind<AudioSource>().FromInstance(_audioSource).AsSingle();
             Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
             Container.Bind<IInitializable>().To<GameController>().AsSingle();
             Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
