@@ -557,6 +557,7 @@ MonoBehaviour:
   _labelVFXPrefab: {fileID: 4986500363753808753, guid: fe70263c9926cf046b57582ecdc37d4a, type: 3}
   _playerPrefab: {fileID: 184188967521832262, guid: 90e28cb68ee5e0d4e88f1527340f9133, type: 3}
   _enemyPrefab: {fileID: 4819100117537806066, guid: 581b7f08e1d791d44b974da839d849e3, type: 3}
+  _catPrefab: {fileID: 7617580221496467112, guid: 56638018684905240a4d0e525e61f95e, type: 3}
   _bulletGunConfig: {fileID: 11400000, guid: e31f510237e785f45870300f77235bec, type: 2}
   _laserGunConfig: {fileID: 11400000, guid: 70bf3517ba3cf82458fe1505c4becae9, type: 2}
 --- !u!114 &388849122

@@ -15,5 +15,5 @@ MonoBehaviour:
   <DisplayName>k__BackingField: Laser Gun
   <Description>k__BackingField: 
   <Prefab>k__BackingField: {fileID: 2490729838830125112, guid: be7cd8049ba435c46b822a24560913bf, type: 3}
-  <PreparationTime>k__BackingField: 1.5
+  <PreparationTime>k__BackingField: 0
   <LaserLifetime>k__BackingField: 1.5
