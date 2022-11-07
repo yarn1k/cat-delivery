@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Core.Player
 {
@@ -30,12 +31,23 @@ namespace Core.Player
 
         public void FlipSprite(bool flipX)
         {
-            int sign = flipX ? -1 : 1;       
+            int sign = flipX ? -1 : 1;
+            float firePointRotZ = flipX ? 0f : 180f;
             transform.localScale = new Vector3(_startLocalScaleX * sign, transform.localScale.y, transform.localScale.z);
+            FirePoint.localRotation = Quaternion.Euler(0f, 0f, firePointRotZ);
         } 
         public void RotateGun(Quaternion rotation)
         {
             _gun.transform.rotation = rotation;
+        }
+        public void ReloadGun(float cooldownTime)
+        {
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(_gun.DOColor(Color.red, cooldownTime / 2f));
+            sequence.Append(_gun.DOColor(Color.white, cooldownTime / 2f));
+            sequence.SetEase(Ease.Linear);
+            sequence.SetLink(gameObject);
+            sequence.Play();
         }
         public void Jump(float force)
         {

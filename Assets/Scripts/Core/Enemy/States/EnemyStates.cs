@@ -51,7 +51,7 @@ namespace Core.Enemy.States
         {
             if (CheckFireCooldown())
             {
-                _weapon.Shoot();
+                _weapon.TryShoot();
                 _reloadTimer = Time.realtimeSinceStartup;
                 _reloadTime = Random.Range(_attackCooldownInterval.x, _attackCooldownInterval.y);
             }

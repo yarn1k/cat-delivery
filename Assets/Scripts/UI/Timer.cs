@@ -19,7 +19,7 @@ namespace Core.UI
             SetTime(Time.realtimeSinceStartup);
         }
 
-        private void SetTime(float elapsedTime)
+        public void SetTime(float elapsedTime)
         {
             _builder.Clear();
 
@@ -36,5 +36,6 @@ namespace Core.UI
 
             _text.text = _builder.ToString();
         }
+        public void ResetTime() => _text.text = "00:00";
     }
 }

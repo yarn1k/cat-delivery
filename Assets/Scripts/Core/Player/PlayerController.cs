@@ -12,7 +12,6 @@ namespace Core.Player
         private readonly SignalBus _signalBus;
         private readonly PlayerModel _model;
         private readonly PlayerView _view;
-        private Camera _cachedCamera;
 
         private const float FIELD_OF_VIEW = 55f;
         private const string MOVING_KEY = "IsMoving";
@@ -27,7 +26,6 @@ namespace Core.Player
         void IInitializable.Initialize()
         {
             _model.InputSystem.Jump += OnJump;
-            _cachedCamera = Camera.main;
         }
         void ILateDisposable.LateDispose()
         {
@@ -48,6 +46,13 @@ namespace Core.Player
                 _view.Jump(_model.JumpForce);
             }
         }
+        private void OnFire()
+        {
+            if (_model.PrimaryWeapon.TryShoot())
+            {
+                _view.ReloadGun(_model.PrimaryWeapon.Cooldown);
+            }
+        }
         private void OnWeaponHit(CatView target)
         {
             target.Save();
@@ -57,18 +62,22 @@ namespace Core.Player
         private void ProcessMovementInput()
         {
             bool isMoving = _model.InputSystem.HorizontalAxis != 0f;
+            
+            _view.Animator.SetBool(MOVING_KEY, isMoving);
+
             if (isMoving)
             {
                 _view.FlipSprite(_model.InputSystem.HorizontalAxis > 0f);
             }
-            _view.Animator.SetBool(MOVING_KEY, isMoving);
+            bool isCursorRightThanPlayer = _model.InputSystem.MouseWorldPosition.x > _view.transform.position.x;
+            _view.FlipSprite(isCursorRightThanPlayer);
 
             Vector2 direction = Vector2.right * _model.InputSystem.HorizontalAxis * _model.MovementSpeed * Time.deltaTime;
             Translate(direction);
         }
         private void TrackCursor()
         {
-            Vector3 mouseWorldPosition = _cachedCamera.ScreenToWorldPoint(_model.InputSystem.MousePosition);
+            Vector3 mouseWorldPosition = _model.InputSystem.MouseWorldPosition;
             Vector3 lookDirection = mouseWorldPosition - _view.transform.position;
             float degrees = _view.FlipX ? 0f : -180f;
             float angle = Mathf.Atan2(lookDirection.y, lookDirection.x) * Mathf.Rad2Deg + degrees;
@@ -82,7 +91,7 @@ namespace Core.Player
             if (_model.PrimaryWeapon != null)
             {
                 _model.PrimaryWeapon.Hit -= OnWeaponHit;
-                _model.InputSystem.Fire -= _model.PrimaryWeapon.Shoot;
+                _model.InputSystem.Fire -= OnFire;
             }
         }
 
@@ -112,7 +121,7 @@ namespace Core.Player
 
             _model.PrimaryWeapon = weapon;
             _model.PrimaryWeapon.Hit += OnWeaponHit;
-            _model.InputSystem.Fire += weapon.Shoot;
+            _model.InputSystem.Fire += OnFire;
         } 
     }
 }
