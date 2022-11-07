@@ -1,7 +1,9 @@
 using System;
 using UnityEngine;
+using UnityEngine.U2D.Animation;
 using Zenject;
 using Core.Cats.States;
+using Core.Models;
 
 namespace Core.Cats
 {
@@ -11,15 +13,19 @@ namespace Core.Cats
     {
         [SerializeField]
         private SpriteRenderer _shield;
+        [SerializeField]
+        private SpriteLibrary _library;
 
         private IMemoryPool _pool;
         private IStateMachine<CatView> _stateMachine;
+        private SpriteLibraryAsset[] _skins;
         public bool Interactable => _stateMachine.CurrentState is FallingState;
 
         [Inject]
-        private void Construct(IStateMachine<CatView> stateMachine)
+        private void Construct(IStateMachine<CatView> stateMachine, CatsSettings settings)
         {
             _stateMachine = stateMachine;
+            _skins = settings.Skins;
         }
 
         public void Kidnap()
@@ -44,6 +50,8 @@ namespace Core.Cats
         {
             _pool = pool;
             _shield.gameObject.SetActive(false);
+            int rand = UnityEngine.Random.Range(0, _skins.Length);
+            _library.spriteLibraryAsset = _skins[rand];
             _stateMachine.SwitchState<FallingState>();
         }
 

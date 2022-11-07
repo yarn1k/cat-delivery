@@ -23,11 +23,16 @@ MonoBehaviour:
     NormalGravityScale: 25
     FallingGravityScale: 1
   _catsSettings:
-    CatPrefab: {fileID: 7617580221496467112, guid: 56638018684905240a4d0e525e61f95e, type: 3}
+    Skins:
+    - {fileID: 7108339969198208228, guid: e5b3f29acf45395409db96a67c731be6, type: 3}
+    - {fileID: 7108339969198208228, guid: 9edc208ae1547a941b7837fc50940455, type: 3}
     CatsFallingSpeed: 1.3
     CatsKidnapSpeed: 5
     CatsSaveSpeed: 3.9
     SpawnInterval: {x: 1, y: 5}
   _enemySettings:
     MovementSpeed: 3
-    AttackCooldownInterval: {x: 1.7718331, y: 7.324583}
+    AttackCooldownInterval: {x: 1.7718331, y: 4.186681}
+  _weaponsSettings:
+    BulletGunConfig: {fileID: 11400000, guid: e31f510237e785f45870300f77235bec, type: 2}
+    LaserGunConfig: {fileID: 11400000, guid: 70bf3517ba3cf82458fe1505c4becae9, type: 2}

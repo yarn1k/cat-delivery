@@ -14,6 +14,7 @@ namespace Core.Weapons
         private IMemoryPool _pool;
         private float _bulletForce;
 
+        public Vector2 Center => _collider.bounds.center;
         public event Action<Bullet> LifetimeElapsed;
         public event Action<Bullet, CatView> Hit;
 
@@ -33,7 +34,7 @@ namespace Core.Weapons
         }
         private void Update()
         {
-            transform.position += transform.up * _bulletForce * Time.deltaTime;
+            transform.position += transform.right * _bulletForce * Time.deltaTime;
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -73,5 +74,18 @@ namespace Core.Weapons
         }
 
         public class Factory : PlaceholderFactory<Vector2, Quaternion, float, float, Bullet> { }
+        public class ExplosionFactory : PlaceholderFactory<GameObject, Vector2, GameObject> 
+        {
+            private readonly DiContainer _container;
+            public ExplosionFactory(DiContainer container)
+            {
+                _container = container;
+            }
+
+            public override GameObject Create(GameObject prefab, Vector2 position)
+            {
+                return _container.InstantiatePrefab(prefab, position, Quaternion.identity, null);
+            }
+        }
     }
 }

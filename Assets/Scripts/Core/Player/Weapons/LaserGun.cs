@@ -8,6 +8,7 @@ namespace Core.Weapons
         private readonly LaserGunModel _model;
         private readonly Laser.Factory _laserFactory;
 
+        public float Cooldown => _model.CooldownTime;
         public event Action<CatView> Hit;
         public float Cooldown => _model.CooldownTime;
 
@@ -25,6 +26,7 @@ namespace Core.Weapons
             (
                 _model.FirePoint.position,
                 _model.FirePoint.rotation,
+                _model.LaserGunConfig.PreparationTime,
                 _model.LaserGunConfig.LaserLifetime
             );
             laser.LifetimeElapsed += OnLifetimeElapsed;

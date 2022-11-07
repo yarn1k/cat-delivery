@@ -8,10 +8,13 @@ namespace Core.Input
     {
         private PlayerControls _playerControls;
         private float _horizontalAxis;
-        private Vector2 _mousePosition;
+        private Camera _camera;
+        private Vector2 _mouseScreenPosition;
+        private Vector2 _mouseWorldPosition;
 
         public ref float HorizontalAxis => ref _horizontalAxis;
-        public ref Vector2 MousePosition => ref _mousePosition;
+        public ref Vector2 MouseScreenPosition => ref _mouseScreenPosition;
+        public ref Vector2 MouseWorldPosition => ref _mouseWorldPosition;
         public bool Enabled => _playerControls.Player.enabled;
         public event Action Fire;
         public event Action Jump;
@@ -26,6 +29,7 @@ namespace Core.Input
             _playerControls.Enable();
             _playerControls.Player.Fire.started += _ => Fire?.Invoke();
             _playerControls.Player.Jump.started += _ => Jump?.Invoke();
+            _camera = Camera.main;
         }
         void ILateDisposable.LateDispose()
         {
@@ -37,7 +41,8 @@ namespace Core.Input
             if (!Enabled) return;
 
             _horizontalAxis = _playerControls.Player.Movement.ReadValue<float>();
-            _mousePosition = _playerControls.Player.MousePosition.ReadValue<Vector2>();
+            _mouseScreenPosition = _playerControls.Player.MousePosition.ReadValue<Vector2>();
+            _mouseWorldPosition = _camera.ScreenToWorldPoint(_mouseScreenPosition);
         }
 
         public void Enable()
