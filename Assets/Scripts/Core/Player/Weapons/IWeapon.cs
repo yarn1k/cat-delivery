@@ -5,7 +5,8 @@ namespace Core.Weapons
 {
     public interface IWeapon
     {
+        float Cooldown { get; }
         event Action<CatView> Hit;
-        void Shoot();
+        bool TryShoot();
     }
 }

@@ -9,28 +9,26 @@ namespace Core.Weapons
 {
     public class BulletGun : IWeapon
     {
-        private SignalBus _signalBus;
-
         private readonly BulletGunModel _model;
         private readonly Bullet.Factory _bulletFactory;
 
         public event Action<CatView> Hit;
+        public float Cooldown => _model.CooldownTime;
 
         private AudioSource _audioSource;
         private AudioPlayerSettings _audioPlayerSettings;
 
-        public BulletGun(SignalBus signalBus, BulletGunModel model, Bullet.Factory bulletFactory, AudioSource audioSource, AudioPlayerSettings audioPlayerSettings)
+        public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory, AudioSource audioSource, AudioPlayerSettings audioPlayerSettings)
         {
-            _signalBus = signalBus;
             _model = model;
             _bulletFactory = bulletFactory;
             _audioSource = audioSource;
             _audioPlayerSettings = audioPlayerSettings;
         }
 
-        public void Shoot()
+        public bool TryShoot()
         {
-            if (!_model.Cooldown.IsOver) return;
+            if (!_model.Cooldown.IsOver) return false;
 
             Audio playerShoot = _audioPlayerSettings.PlayerShoot;
             _audioSource.PlayOneShot(playerShoot.Clip, playerShoot.Volume);
@@ -46,7 +44,7 @@ namespace Core.Weapons
             bullet.Hit += OnBulletHit;
 
             _model.Cooldown.Run(_model.CooldownTime);
-            _signalBus.Fire(new PlayerReloadingGunSignal { Cooldown = _model.Cooldown });
+            return true;
         }
 
         private void DisposeBullet(Bullet bullet)

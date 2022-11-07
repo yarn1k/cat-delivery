@@ -39,19 +39,17 @@ namespace Core.Player
         {
             _gun.transform.rotation = rotation;
         }
-        public void ReloadGun(Cooldown cooldown)
+        public void ReloadGun(float duration)
         {
-            if (cooldown.IsOver) return;
-
             _gun.color = Color.red;
-            StartCoroutine(ReloadEffect(cooldown.Duration, Color.red, Color.white));
+            StartCoroutine(ReloadEffect(duration, Color.red, Color.white));
         }
-        IEnumerator ReloadEffect(float cooldown, Color startColor, Color endColor)
+        IEnumerator ReloadEffect(float duration, Color startColor, Color endColor)
         {
             float timeElapsed = 0;
-            while (timeElapsed < cooldown)
+            while (timeElapsed < duration)
             {
-                _gun.color = Color.Lerp(startColor, endColor, timeElapsed / cooldown);
+                _gun.color = Color.Lerp(startColor, endColor, timeElapsed / duration);
                 timeElapsed += Time.deltaTime;
                 yield return null;
             }

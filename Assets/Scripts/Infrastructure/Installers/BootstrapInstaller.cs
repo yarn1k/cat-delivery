@@ -42,7 +42,6 @@ namespace Core.Infrastructure.Installers
         {
             Container.DeclareSignal<GameScoreChangedSignal>();
             Container.DeclareSignal<GameOverSignal>();
-            Container.DeclareSignal<PlayerReloadingGunSignal>();
 
             Container.Bind<AudioSource>().FromInstance(_audioSource).AsSingle();
             Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
@@ -90,9 +89,6 @@ namespace Core.Infrastructure.Installers
 
             BulletGunModel bulletGunModel = new BulletGunModel(model.ReloadTime, _bulletGunConfig, view.FirePoint);
             BulletGun bulletGun = Container.Instantiate<BulletGun>(new object[] { bulletGunModel });
-
-            LaserGunModel laserGunModel = new LaserGunModel(model.ReloadTime, _laserGunConfig, view.FirePoint);
-            LaserGun laserGun = Container.Instantiate<LaserGun>(new object[] { laserGunModel });
 
             controller.SetPrimaryWeapon(bulletGun);
 

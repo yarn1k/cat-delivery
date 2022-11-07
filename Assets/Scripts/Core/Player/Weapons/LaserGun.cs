@@ -9,6 +9,7 @@ namespace Core.Weapons
         private readonly Laser.Factory _laserFactory;
 
         public event Action<CatView> Hit;
+        public float Cooldown => _model.CooldownTime;
 
         public LaserGun(LaserGunModel model, Laser.Factory laserFactory)
         {
@@ -16,9 +17,9 @@ namespace Core.Weapons
             _laserFactory = laserFactory;
         }
 
-        public void Shoot()
+        public bool TryShoot()
         {
-            if (!_model.Cooldown.IsOver) return;
+            if (!_model.Cooldown.IsOver) return false;
             
             Laser laser = _laserFactory.Create
             (
@@ -30,6 +31,7 @@ namespace Core.Weapons
             laser.Hit += Hit.Invoke;
 
             _model.Cooldown.Run(_model.CooldownTime);
+            return true;
         }
 
         private void OnLifetimeElapsed(Laser laser)

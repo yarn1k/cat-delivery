@@ -27,13 +27,11 @@ namespace Core.Player
 
         void IInitializable.Initialize()
         {
-            _signalBus.Subscribe<PlayerReloadingGunSignal>(OnPlayerReloadingGunSignal);
             _model.InputSystem.Jump += OnJump;
             _cachedCamera = Camera.main;
         }
         void ILateDisposable.LateDispose()
         {
-            _signalBus.Unsubscribe<PlayerReloadingGunSignal>(OnPlayerReloadingGunSignal);
             UnbindWeapon();
             _model.InputSystem.Jump -= OnJump;
         }
@@ -49,6 +47,13 @@ namespace Core.Player
             if (_view.IsGrounded)
             {
                 _view.Jump(_model.JumpForce);
+            }
+        }
+        private void OnFire()
+        {
+            if (_model.PrimaryWeapon.TryShoot()) 
+            {
+                _view.ReloadGun(_model.PrimaryWeapon.Cooldown);
             }
         }
         private void OnWeaponHit(CatView target)
@@ -85,7 +90,7 @@ namespace Core.Player
             if (_model.PrimaryWeapon != null)
             {
                 _model.PrimaryWeapon.Hit -= OnWeaponHit;
-                _model.InputSystem.Fire -= _model.PrimaryWeapon.Shoot;
+                _model.InputSystem.Fire -= OnFire;
             }
         }
 
@@ -115,11 +120,7 @@ namespace Core.Player
 
             _model.PrimaryWeapon = weapon;
             _model.PrimaryWeapon.Hit += OnWeaponHit;
-            _model.InputSystem.Fire += weapon.Shoot;
+            _model.InputSystem.Fire += OnFire;
         } 
-        private void OnPlayerReloadingGunSignal(PlayerReloadingGunSignal signal)
-        {
-            _view.ReloadGun(signal.Cooldown);
-        }
     }
 }

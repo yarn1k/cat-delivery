@@ -7,7 +7,6 @@ namespace Core.Weapons
         private float _duration;
         private float _startTime;
 
-        public float Duration => _duration;
         public float CurrentTime => Time.time - _startTime;
         public float RemainingTime => _duration - CurrentTime;
         public bool IsOver => CurrentTime > _duration;
