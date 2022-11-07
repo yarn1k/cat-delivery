@@ -3,7 +3,8 @@
 	Properties
 	{
 		[PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-		_Color ("Tint", Color) = (1,1,1,1)
+		_Speed("Speed", Range(0, 5)) = 0.5
+		_Color ("Tint", Color) = (1,1,1,1)		
 		[MaterialToggle] PixelSnap ("Pixel snap", Float) = 0
 	}
 
@@ -47,12 +48,14 @@
 			};
 
 			fixed4 _Color;
+			float _Speed;
 
 			v2f vert(appdata_t IN)
 			{
 				v2f OUT;
 				OUT.vertex = UnityObjectToClipPos(IN.vertex);
 				OUT.texcoord = IN.texcoord;
+				OUT.texcoord.x -= _Time.y * _Speed;
 				OUT.color = IN.color * _Color;
 				#ifdef PIXELSNAP_ON
 				OUT.vertex = UnityPixelSnap (OUT.vertex);
