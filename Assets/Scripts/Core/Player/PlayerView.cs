@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
+using Cooldown = Core.Weapons.Cooldown;
 
 namespace Core.Player
 {
@@ -32,10 +34,27 @@ namespace Core.Player
         {
             int sign = flipX ? -1 : 1;       
             transform.localScale = new Vector3(_startLocalScaleX * sign, transform.localScale.y, transform.localScale.z);
-        } 
+        }
         public void RotateGun(Quaternion rotation)
         {
             _gun.transform.rotation = rotation;
+        }
+        public void ReloadGun(Cooldown cooldown)
+        {
+            if (cooldown.IsOver) return;
+
+            _gun.color = Color.red;
+            StartCoroutine(ReloadEffect(cooldown.Duration, Color.red, Color.white));
+        }
+        IEnumerator ReloadEffect(float cooldown, Color startColor, Color endColor)
+        {
+            float timeElapsed = 0;
+            while (timeElapsed < cooldown)
+            {
+                _gun.color = Color.Lerp(startColor, endColor, timeElapsed / cooldown);
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
         }
         public void Jump(float force)
         {

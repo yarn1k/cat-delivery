@@ -1,12 +1,16 @@
 ﻿using System;
 using Core.Cats;
+using Core.Infrastructure.Signals.Player;
 using Core.Models;
 using UnityEngine;
+using Zenject;
 
 namespace Core.Weapons
 {
     public class BulletGun : IWeapon
     {
+        private SignalBus _signalBus;
+
         private readonly BulletGunModel _model;
         private readonly Bullet.Factory _bulletFactory;
 
@@ -15,8 +19,9 @@ namespace Core.Weapons
         private AudioSource _audioSource;
         private AudioPlayerSettings _audioPlayerSettings;
 
-        public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory, AudioSource audioSource, AudioPlayerSettings audioPlayerSettings)
+        public BulletGun(SignalBus signalBus, BulletGunModel model, Bullet.Factory bulletFactory, AudioSource audioSource, AudioPlayerSettings audioPlayerSettings)
         {
+            _signalBus = signalBus;
             _model = model;
             _bulletFactory = bulletFactory;
             _audioSource = audioSource;
@@ -41,6 +46,7 @@ namespace Core.Weapons
             bullet.Hit += OnBulletHit;
 
             _model.Cooldown.Run(_model.CooldownTime);
+            _signalBus.Fire(new PlayerReloadingGunSignal { Cooldown = _model.Cooldown });
         }
 
         private void DisposeBullet(Bullet bullet)

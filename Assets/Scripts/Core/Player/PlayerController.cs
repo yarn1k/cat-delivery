@@ -4,6 +4,7 @@ using Zenject;
 using Core.Weapons;
 using Core.Cats;
 using Core.Infrastructure.Signals.Cats;
+using Core.Infrastructure.Signals.Player;
 
 namespace Core.Player
 {
@@ -26,11 +27,13 @@ namespace Core.Player
 
         void IInitializable.Initialize()
         {
+            _signalBus.Subscribe<PlayerReloadingGunSignal>(OnPlayerReloadingGunSignal);
             _model.InputSystem.Jump += OnJump;
             _cachedCamera = Camera.main;
         }
         void ILateDisposable.LateDispose()
         {
+            _signalBus.Unsubscribe<PlayerReloadingGunSignal>(OnPlayerReloadingGunSignal);
             UnbindWeapon();
             _model.InputSystem.Jump -= OnJump;
         }
@@ -114,5 +117,9 @@ namespace Core.Player
             _model.PrimaryWeapon.Hit += OnWeaponHit;
             _model.InputSystem.Fire += weapon.Shoot;
         } 
+        private void OnPlayerReloadingGunSignal(PlayerReloadingGunSignal signal)
+        {
+            _view.ReloadGun(signal.Cooldown);
+        }
     }
 }

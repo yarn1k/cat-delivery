@@ -10,6 +10,7 @@ using Core.UI;
 using Core.Weapons;
 using Core.Player;
 using Core.Enemy;
+using Core.Infrastructure.Signals.Player;
 
 namespace Core.Infrastructure.Installers
 {
@@ -41,6 +42,7 @@ namespace Core.Infrastructure.Installers
         {
             Container.DeclareSignal<GameScoreChangedSignal>();
             Container.DeclareSignal<GameOverSignal>();
+            Container.DeclareSignal<PlayerReloadingGunSignal>();
 
             Container.Bind<AudioSource>().FromInstance(_audioSource).AsSingle();
             Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
@@ -68,9 +70,6 @@ namespace Core.Infrastructure.Installers
             EnemyModel model = new EnemyModel(_enemySettings.MovementSpeed, _enemySettings.AttackCooldownInterval);
             EnemyController controller = Container.Instantiate<EnemyController>(new object[] { model, view });
 
-            BulletGunModel bulletGunModel = new BulletGunModel(model.AttackCooldownInterval.x, _bulletGunConfig, view.FirePoint);
-            BulletGun bulletGun = Container.Instantiate<BulletGun>(new object[] { bulletGunModel });
-
             LaserGunModel laserGunModel = new LaserGunModel(model.AttackCooldownInterval.x, _laserGunConfig, view.FirePoint);
             LaserGun laserGun = Container.Instantiate<LaserGun>(new object[] { laserGunModel });
 
@@ -87,7 +86,7 @@ namespace Core.Infrastructure.Installers
             Container.BindInterfacesTo<StandaloneInputController>().AsSingle();
             PlayerView view = Container.InstantiatePrefabForComponent<PlayerView>(_playerPrefab);
             PlayerModel model = Container.Instantiate<PlayerModel>(new object[] { _playerSettings.ReloadTime, _playerSettings.MovementSpeed, _playerSettings.JumpForce });
-            PlayerController controller = Container.Instantiate<PlayerController>(new object[] { model, view });          
+            PlayerController controller = Container.Instantiate<PlayerController>(new object[] { model, view });
 
             BulletGunModel bulletGunModel = new BulletGunModel(model.ReloadTime, _bulletGunConfig, view.FirePoint);
             BulletGun bulletGun = Container.Instantiate<BulletGun>(new object[] { bulletGunModel });
