@@ -10,6 +10,7 @@ namespace Core.Weapons
         private readonly Bullet.Factory _bulletFactory;
         private readonly Bullet.ExplosionFactory _explosionFactory;
 
+        public float Cooldown => _model.CooldownTime;
         public event Action<CatView> Hit;
 
         public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory, Bullet.ExplosionFactory explosionFactory)
@@ -19,9 +20,9 @@ namespace Core.Weapons
             _explosionFactory = explosionFactory;
         }
 
-        public void Shoot()
+        public bool TryShoot()
         {
-            if (!_model.Cooldown.IsOver) return;
+            if (!_model.Cooldown.IsOver) return false;
 
             Bullet bullet = _bulletFactory.Create
             (
@@ -34,6 +35,7 @@ namespace Core.Weapons
             bullet.Hit += OnBulletHit;
 
             _model.Cooldown.Run(_model.CooldownTime);
+            return true;
         }
 
         private void DisposeBullet(Bullet bullet)

@@ -51,6 +51,13 @@ namespace Core.Models
         public Vector2 AttackCooldownInterval;
     }
 
+    [Serializable]
+    public class WeaponsSettings
+    {
+        public BulletGunConfig BulletGunConfig;
+        public LaserGunConfig LaserGunConfig;
+    }
+
     [CreateAssetMenu(fileName = "Game Settings", menuName = "Installers/Game Settings")]
     public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInstaller>
     {
@@ -62,6 +69,8 @@ namespace Core.Models
         private CatsSettings _catsSettings;
         [SerializeField]
         private EnemySettings _enemySettings;
+        [SerializeField]
+        private WeaponsSettings _weaponsSettings;
 
         public override void InstallBindings()
         {
@@ -73,6 +82,7 @@ namespace Core.Models
             Container.Bind<PlayerSettings>().FromInstance(_playerSettings).IfNotBound();
             Container.Bind<CatsSettings>().FromInstance(_catsSettings).IfNotBound();
             Container.Bind<EnemySettings>().FromInstance(_enemySettings).IfNotBound();
+            Container.Bind<WeaponsSettings>().FromInstance(_weaponsSettings).IfNotBound();
         }
     }
 }

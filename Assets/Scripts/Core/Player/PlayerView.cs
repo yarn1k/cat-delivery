@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Core.Player
 {
@@ -38,6 +39,15 @@ namespace Core.Player
         public void RotateGun(Quaternion rotation)
         {
             _gun.transform.rotation = rotation;
+        }
+        public void ReloadGun(float cooldownTime)
+        {
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(_gun.DOColor(Color.red, cooldownTime / 2f));
+            sequence.Append(_gun.DOColor(Color.white, cooldownTime / 2f));
+            sequence.SetEase(Ease.Linear);
+            sequence.SetLink(gameObject);
+            sequence.Play();
         }
         public void Jump(float force)
         {

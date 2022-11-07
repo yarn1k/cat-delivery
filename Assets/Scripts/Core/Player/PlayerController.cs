@@ -46,6 +46,13 @@ namespace Core.Player
                 _view.Jump(_model.JumpForce);
             }
         }
+        private void OnFire()
+        {
+            if (_model.PrimaryWeapon.TryShoot())
+            {
+                _view.ReloadGun(_model.PrimaryWeapon.Cooldown);
+            }
+        }
         private void OnWeaponHit(CatView target)
         {
             target.Save();
@@ -84,7 +91,7 @@ namespace Core.Player
             if (_model.PrimaryWeapon != null)
             {
                 _model.PrimaryWeapon.Hit -= OnWeaponHit;
-                _model.InputSystem.Fire -= _model.PrimaryWeapon.Shoot;
+                _model.InputSystem.Fire -= OnFire;
             }
         }
 
@@ -114,7 +121,7 @@ namespace Core.Player
 
             _model.PrimaryWeapon = weapon;
             _model.PrimaryWeapon.Hit += OnWeaponHit;
-            _model.InputSystem.Fire += weapon.Shoot;
+            _model.InputSystem.Fire += OnFire;
         } 
     }
 }

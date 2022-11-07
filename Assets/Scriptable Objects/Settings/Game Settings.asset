@@ -33,3 +33,6 @@ MonoBehaviour:
   _enemySettings:
     MovementSpeed: 3
     AttackCooldownInterval: {x: 1.7718331, y: 4.186681}
+  _weaponsSettings:
+    BulletGunConfig: {fileID: 11400000, guid: e31f510237e785f45870300f77235bec, type: 2}
+    LaserGunConfig: {fileID: 11400000, guid: 70bf3517ba3cf82458fe1505c4becae9, type: 2}
