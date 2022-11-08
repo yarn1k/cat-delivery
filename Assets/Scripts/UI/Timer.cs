@@ -1,6 +1,8 @@
 using System.Text;
 using UnityEngine;
 using TMPro;
+using Zenject;
+using Core.Infrastructure.Signals.Game;
 
 namespace Core.UI
 {
@@ -9,16 +11,40 @@ namespace Core.UI
     {
         private StringBuilder _builder = new StringBuilder();
         private TextMeshProUGUI _text;
+        private SignalBus _signalBus;
+        private bool _enable = true;
 
+        [Inject]
+        private void Construct(SignalBus signalBus)
+        {
+            _signalBus = signalBus;
+        }
         private void Awake()
         {
             _text = GetComponent<TextMeshProUGUI>();
+            _signalBus.Subscribe<GameOverSignal>(OnGameOver);
+        }
+        private void OnDestroy()
+        {
+            _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOver);
         }
         private void Update()
         {
-            SetTime(Time.realtimeSinceStartup);
+            if (_enable)
+            {
+                SetTime(Time.realtimeSinceStartup);
+            }
         }
 
+        private void OnGameOver()
+        {
+            StopTimer();
+            ResetTime();
+        }
+        public void StopTimer()
+        {
+            _enable = false;
+        }
         public void SetTime(float elapsedTime)
         {
             _builder.Clear();

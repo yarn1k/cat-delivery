@@ -5,14 +5,14 @@ namespace Core.Weapons
 {
     public class BulletGunModel
     {
-        public readonly float CooldownTime;
+        public readonly float ReloadTime;
         public readonly BulletGunConfig BulletGunConfig;
         public readonly Transform FirePoint;
         public readonly Cooldown Cooldown;
 
-        public BulletGunModel(float cooldownTime, BulletGunConfig config, Transform firePoint)
+        public BulletGunModel(float reloadTime, BulletGunConfig config, Transform firePoint)
         {
-            CooldownTime = cooldownTime;
+            ReloadTime = reloadTime;
             BulletGunConfig = config;
             FirePoint = firePoint;
             Cooldown = new Cooldown();

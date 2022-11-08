@@ -10,7 +10,6 @@ namespace Core.UI
     {
         private TextMeshPro _text;
         private IMemoryPool _pool;
-        private float _timer;
 
         private void Awake()
         {
@@ -30,7 +29,6 @@ namespace Core.UI
             _pool = pool;
             _text.text = label;
             _text.color = color;
-            _timer = Time.realtimeSinceStartup;
             Invoke(nameof(Dispose), 1f);
         }
 

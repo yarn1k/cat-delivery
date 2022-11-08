@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <DisplayName>k__BackingField: Bullet Gun
   <Description>k__BackingField: 
-  <Prefab>k__BackingField: {fileID: 1614175174918676286, guid: d939c109bdf390d4f9b3c10cefbaed62, type: 3}
+  <Prefab>k__BackingField: {fileID: 7768844413886633855, guid: 5369b27e6ac71ec40afc978fa6e07b84, type: 3}
   <BulletForce>k__BackingField: 15
   <BulletLifetime>k__BackingField: 1
   <Explosions>k__BackingField:
@@ -24,3 +24,6 @@ MonoBehaviour:
   - {fileID: 8511244352010228435, guid: 42a64d07ccc20ab4da4dbb5dacd2edec, type: 3}
   - {fileID: 5716690281278141856, guid: e78f6ad6c322dc441a1a74ef7d69722c, type: 3}
   - {fileID: 5216005223235657019, guid: 9b566164f81f6394cad0c7447f8b6c6a, type: 3}
+  <ShootSounds>k__BackingField:
+  - Clip: {fileID: 8300000, guid: c30b2b899ff86be44b17fd1a866412ba, type: 3}
+    Volume: 1

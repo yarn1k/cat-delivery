@@ -36,6 +36,12 @@ namespace Core.Weapons
         {
             LifetimeElapsed?.Invoke(this);
         }
+        private void Enable(bool isEnabled)
+        {
+            _collider.enabled = isEnabled;
+            _collider.attachedRigidbody.simulated = isEnabled;
+            _collider.attachedRigidbody.constraints = isEnabled ? RigidbodyConstraints2D.FreezeRotation : RigidbodyConstraints2D.FreezeAll;
+        }
         public void Dispose()
         {
             _pool?.Despawn(this);
@@ -44,9 +50,7 @@ namespace Core.Weapons
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnDespawned()
         {
             _pool = null;
-            _collider.enabled = false;
-            _collider.attachedRigidbody.simulated = false;
-            _collider.attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            Enable(false);
         }
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnSpawned(Vector2 position, Quaternion rotation, float force, float lifetime, IMemoryPool pool)
         {
@@ -54,9 +58,7 @@ namespace Core.Weapons
             transform.position = position;
             transform.rotation = rotation;
             _bulletForce = force;
-            _collider.enabled = true;
-            _collider.attachedRigidbody.simulated = true;
-            _collider.attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            Enable(true);
             Invoke(nameof(OnLifetimeElapsed), lifetime);
         }
 

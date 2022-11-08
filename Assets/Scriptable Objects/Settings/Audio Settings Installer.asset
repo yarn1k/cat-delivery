@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0086078216e5c314a85bfde7ddfedc1e, type: 3}
+  m_Name: Audio Settings Installer
+  m_EditorClassIdentifier: 
+  _audioSettings:
+    PoolCapacity: 10
+    GlobalVolume: 1
+  _gameSounds:
+    GameBackground:
+      Clip: {fileID: 8300000, guid: 8a1c04ec4917e9a4e96b5f0d53631615, type: 3}
+      Volume: 1
+    GameLevelStart:
+      Clip: {fileID: 8300000, guid: f1876b5abb222b5499f63e47a4fe82a7, type: 3}
+      Volume: 1
+    GameBonus:
+      Clip: {fileID: 8300000, guid: 6159af0e5362f0d45957e7b29800e5d7, type: 3}
+      Volume: 1
+    GameOver:
+      Clip: {fileID: 8300000, guid: e4266b853803f324fabfa8d29e2d1c57, type: 3}
+      Volume: 0.5
+  _UISounds:
+    UIClick:
+      Clip: {fileID: 8300000, guid: 3b892c32e35c30342a2660e854ed5c8a, type: 3}
+      Volume: 1
+  _playerSounds:
+    PlayerOnHit:
+      Clip: {fileID: 8300000, guid: ec8826caec959394a9b9c7963554ddf1, type: 3}
+      Volume: 1
+  _catsSounds:
+    CatGrabbed:
+      Clip: {fileID: 8300000, guid: 9ae7dd0cde735024589bae6f567bb3cc, type: 3}
+      Volume: 1

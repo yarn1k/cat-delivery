@@ -6,8 +6,9 @@ using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
 using Core.UI;
 using Core.Models;
+using Core.Audio;
 
-namespace Core.Match
+namespace Core
 {
     public class AsyncProcessor : MonoBehaviour
     {
@@ -17,15 +18,17 @@ namespace Core.Match
     {
         private readonly SignalBus _signalBus;
         private AsyncProcessor _asyncProcessor;
+        private GameSounds _gameSounds;
         private BulletLabelVFX.Factory _labelFactory;
         private GameSettings _settings;
         private int _score;
         private int _lives = 3;
         public bool IsGameOver => _lives == 0;
 
-        public GameController(SignalBus signalBus, AsyncProcessor asyncProcessor, BulletLabelVFX.Factory labelFactory, GameSettings settings)
+        public GameController(SignalBus signalBus, GameSounds gameSounds, AsyncProcessor asyncProcessor, BulletLabelVFX.Factory labelFactory, GameSettings settings)
         {
             _signalBus = signalBus;
+            _gameSounds = gameSounds;
             _asyncProcessor = asyncProcessor;
             _labelFactory = labelFactory;
             _settings = settings;
@@ -76,6 +79,7 @@ namespace Core.Match
 
         private IEnumerator GameOver()
         {
+            SoundManager.PlayOneShot(_gameSounds.GameOver.Clip, _gameSounds.GameOver.Volume);
             yield return new WaitForSeconds(3f);
             SceneManager.LoadScene(0);
         }

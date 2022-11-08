@@ -58,7 +58,7 @@ namespace Core.Models
         public LaserGunConfig LaserGunConfig;
     }
 
-    [CreateAssetMenu(fileName = "Game Settings", menuName = "Installers/Game Settings")]
+    [CreateAssetMenu(menuName = "Configuration/Settings/Game Settings")]
     public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInstaller>
     {
         [SerializeField]
