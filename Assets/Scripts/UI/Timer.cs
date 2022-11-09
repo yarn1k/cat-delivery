@@ -12,6 +12,7 @@ namespace Core.UI
         private StringBuilder _builder = new StringBuilder();
         private TextMeshProUGUI _text;
         private SignalBus _signalBus;
+        private float _startTime;
         private bool _enable = true;
 
         [Inject]
@@ -24,6 +25,10 @@ namespace Core.UI
             _text = GetComponent<TextMeshProUGUI>();
             _signalBus.Subscribe<GameOverSignal>(OnGameOver);
         }
+        private void Start()
+        {
+            StartTimer();
+        }
         private void OnDestroy()
         {
             _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOver);
@@ -32,7 +37,7 @@ namespace Core.UI
         {
             if (_enable)
             {
-                SetTime(Time.realtimeSinceStartup);
+                SetTime(Time.realtimeSinceStartup - _startTime);
             }
         }
 
@@ -40,6 +45,10 @@ namespace Core.UI
         {
             StopTimer();
             ResetTime();
+        }
+        public void StartTimer()
+        {
+            _startTime = Time.realtimeSinceStartup;
         }
         public void StopTimer()
         {

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 using Core.Cats;
@@ -40,12 +42,29 @@ namespace Core.Weapons
         }
         private void OnLifetimeElapsed()
         {
+            _prepared = false;
             ShowLaser(false, 0.5f)
                 .SetLink(gameObject)
                 .SetEase(Ease.Linear)
                 .OnComplete(() => LifetimeElapsed?.Invoke(this));
         }
+        private void HitObjectsInsideLaser()
+        {
+            if (!_prepared) return;
 
+            Collider2D[] colliders = new Collider2D[3];
+            int hits = Physics2D.OverlapBoxNonAlloc(_collider.bounds.center, _collider.size, 0f, colliders, 1 << Constants.CatsLayer);
+            if (hits > 0)
+            {
+                foreach (Collider2D collider in colliders)
+                {
+                    if (collider != null && collider.TryGetComponent(out CatView cat) && cat.Interactable)
+                    {
+                        Hit?.Invoke(cat);
+                    }
+                }
+            }
+        }
         private void SetWidth(float width)
         {
             _renderer.size = new Vector2(width, _renderer.size.y);
@@ -74,7 +93,11 @@ namespace Core.Weapons
             sequence.Join(DOTween.To(() => 0f, x => SetWidth(x), width, preparationTime));
             sequence.SetLink(gameObject);
             sequence.SetEase(Ease.Linear);
-            sequence.OnComplete(() => _prepared = true);
+            sequence.OnComplete(() =>
+            { 
+                _prepared = true;
+                HitObjectsInsideLaser();
+            });
             sequence.Play();
         }
 
@@ -82,7 +105,6 @@ namespace Core.Weapons
         {
             _pool = null;
             _collider.enabled = false;
-            _prepared = false;
         }
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnSpawned(Vector2 position, Quaternion rotation, float preparationTime, float lifetime, IMemoryPool pool)
         {

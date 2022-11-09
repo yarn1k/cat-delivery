@@ -71,14 +71,14 @@ namespace Core
 
             _signalBus.Fire(new GameScoreChangedSignal { Value = _score });
 
-            if (!IsGameOver)
-                _lives -= 1;
-            else
-                _asyncProcessor.StartCoroutine(GameOver());
+            _lives--;
+
+            if (IsGameOver) _asyncProcessor.StartCoroutine(GameOver());
         }
 
         private IEnumerator GameOver()
         {
+            _signalBus.Fire<GameOverSignal>();
             SoundManager.PlayOneShot(_gameSounds.GameOver.Clip, _gameSounds.GameOver.Volume);
             yield return new WaitForSeconds(3f);
             SceneManager.LoadScene(0);

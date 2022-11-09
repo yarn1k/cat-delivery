@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4819100117537806068}
   - component: {fileID: 4819100117537806067}
   - component: {fileID: 1941678605}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Gyro
   m_TagString: Untagged
   m_Icon: {fileID: 0}

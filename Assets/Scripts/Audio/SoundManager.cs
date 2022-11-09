@@ -22,10 +22,6 @@ namespace Core.Audio
             if (_instance == null) _instance = this;
             _audioSource = GetComponent<AudioSource>();
         }
-        private void Start()
-        {
-            DontDestroyOnLoad(gameObject);
-        }
         private void OnClipPlayed(DisposableAudioClip clip)
         {
             clip.Dispose();
