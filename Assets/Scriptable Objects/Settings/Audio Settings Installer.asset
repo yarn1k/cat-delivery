@@ -27,7 +27,7 @@ MonoBehaviour:
       Volume: 1
     GameOver:
       Clip: {fileID: 8300000, guid: e4266b853803f324fabfa8d29e2d1c57, type: 3}
-      Volume: 0.5
+      Volume: 0.2
   _UISounds:
     UIClick:
       Clip: {fileID: 8300000, guid: 3b892c32e35c30342a2660e854ed5c8a, type: 3}
