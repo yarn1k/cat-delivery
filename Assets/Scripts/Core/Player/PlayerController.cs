@@ -50,7 +50,7 @@ namespace Core.Player
         {
             if (_model.PrimaryWeapon.TryShoot())
             {
-                _view.ReloadGun(_model.PrimaryWeapon.Cooldown);
+                _view.ReloadGun(_model.PrimaryWeapon.ReloadTime);
             }
         }
         private void OnWeaponHit(CatView target)

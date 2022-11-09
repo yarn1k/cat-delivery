@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Core.Cats;
+using Core.Audio;
 
 namespace Core.Weapons
 {
@@ -10,7 +11,7 @@ namespace Core.Weapons
         private readonly Bullet.Factory _bulletFactory;
         private readonly Bullet.ExplosionFactory _explosionFactory;
 
-        public float Cooldown => _model.CooldownTime;
+        public float ReloadTime => _model.ReloadTime;
         public event Action<CatView> Hit;
 
         public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory, Bullet.ExplosionFactory explosionFactory)
@@ -31,10 +32,14 @@ namespace Core.Weapons
                 _model.BulletGunConfig.BulletForce,
                 _model.BulletGunConfig.BulletLifetime
             );
+
+            var clip = _model.BulletGunConfig.ShootSounds.Random();
+            SoundManager.PlayOneShot(clip.Clip, clip.Volume);
+            
             bullet.LifetimeElapsed += DisposeBullet;
             bullet.Hit += OnBulletHit;
 
-            _model.Cooldown.Run(_model.CooldownTime);
+            _model.Cooldown.Run(_model.ReloadTime);
             return true;
         }
 
