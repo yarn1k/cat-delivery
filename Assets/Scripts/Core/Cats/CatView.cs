@@ -4,6 +4,7 @@ using UnityEngine.U2D.Animation;
 using Zenject;
 using Core.Cats.States;
 using Core.Models;
+using DG.Tweening;
 
 namespace Core.Cats
 {
@@ -11,6 +12,8 @@ namespace Core.Cats
     [RequireComponent(typeof(Collider2D))]
     public class CatView : MonoBehaviour, IPoolable<IMemoryPool>, IDisposable
     {
+        [SerializeField]
+        private SpriteRenderer _renderer;
         [SerializeField]
         private SpriteRenderer _shield;
         [SerializeField]
@@ -40,6 +43,20 @@ namespace Core.Cats
         public void Dispose()
         {
             _pool?.Despawn(this);
+        }
+        public void Show()
+        {
+            _renderer.color = _renderer.color.WithAlpha(1f);
+            _shield.color = _shield.color.WithAlpha(1f);
+        }
+        public void Hide(float time)
+        {
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(_renderer.DOColor(_renderer.color.WithAlpha(0f), time));
+            sequence.Join(_shield.DOColor(_renderer.color.WithAlpha(0f), time));
+            sequence.SetLink(gameObject);
+            sequence.SetEase(Ease.Linear);
+            sequence.Play();
         }
 
         void IPoolable<IMemoryPool>.OnDespawned()

@@ -33,7 +33,6 @@ namespace Core.Infrastructure.Installers
             BindFactories();
             BindPools();
             BindCats();
-            BindUI();
         }
 
         private void BindCats()
@@ -44,11 +43,6 @@ namespace Core.Infrastructure.Installers
             Container.BindInterfacesTo<CatSpawner>().AsSingle();
         }
       
-        private void BindUI()
-        {
-            Container.Bind<Score>().AsSingle();
-        }
-     
         private void BindFactories()
         {
             Container.BindFactory<GameObject, Vector2, GameObject, Bullet.ExplosionFactory>();
@@ -71,7 +65,7 @@ namespace Core.Infrastructure.Installers
                 .FromComponentInNewPrefab(_weaponsSettings.BulletGunConfig.Prefab)
                 .UnderTransformGroup("Bullets"));
 
-            Container.BindFactory<string, Color, BulletLabelVFX, BulletLabelVFX.Factory>().FromMonoPoolableMemoryPool(x => x
+            Container.BindFactory<string, Color, DisposableLabelVFX, DisposableLabelVFX.Factory>().FromMonoPoolableMemoryPool(x => x
                .WithInitialSize(5)
                .FromComponentInNewPrefab(_labelVFXPrefab)
                .UnderTransformGroup("UI VFX"));

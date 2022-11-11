@@ -6,7 +6,7 @@ using Zenject;
 namespace Core.UI
 {
     [RequireComponent(typeof(TextMeshPro))]
-    public class BulletLabelVFX : MonoBehaviour, IDisposable, IPoolable<string, Color, IMemoryPool>
+    public class DisposableLabelVFX : MonoBehaviour, IDisposable, IPoolable<string, Color, IMemoryPool>
     {
         private TextMeshPro _text;
         private IMemoryPool _pool;
@@ -32,6 +32,6 @@ namespace Core.UI
             Invoke(nameof(Dispose), 1f);
         }
 
-        public class Factory : PlaceholderFactory <string, Color, BulletLabelVFX> { }
+        public class Factory : PlaceholderFactory <string, Color, DisposableLabelVFX> { }
     }
 }

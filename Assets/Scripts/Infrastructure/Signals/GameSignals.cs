@@ -5,4 +5,8 @@ namespace Core.Infrastructure.Signals.Game
         public int Value;
     }
     public struct GameOverSignal { }
+    public struct HealthReducedSignal 
+    {
+        public byte Value; 
+    }
 }
