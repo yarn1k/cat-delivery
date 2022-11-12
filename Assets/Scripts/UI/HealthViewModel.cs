@@ -42,6 +42,8 @@ namespace Core.UI
         }
         public void AddHealth(byte value)
         {
+            if (_currentIndex == _maxHealth) return;
+
             int newValue = Math.Min(_currentIndex + value, _maxHealth);
             for (int i = _currentIndex - 1; i < newValue; i++)
             {
@@ -52,6 +54,8 @@ namespace Core.UI
         }
         public void RemoveHealth(byte value)
         {
+            if (_currentIndex == 0) return;
+
             int newValue = Math.Max(_currentIndex - value, 0);
             for (int i = _currentIndex - 1; i >= newValue; i--)
             {

@@ -23,7 +23,6 @@ namespace Core.Infrastructure.Installers
 
         public override void InstallBindings()
         {
-            Container.DeclareSignal<GameScoreChangedSignal>();
             Container.DeclareSignal<GameOverSignal>();              
 
             Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
@@ -46,6 +45,7 @@ namespace Core.Infrastructure.Installers
         private void BindFactories()
         {
             Container.BindFactory<GameObject, Vector2, GameObject, Bullet.ExplosionFactory>();
+            Container.BindInterfacesTo<LaserSpawner>().AsSingle();
         }
         private void BindPools()
         {

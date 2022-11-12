@@ -18,7 +18,7 @@ namespace Core.UI
         private SignalBus _signalBus;
         private GameSettings _settings;
         private float _startTime;
-        private float _time;
+        private int _time;
         private int _score;
 
         private HealthViewModel _healthVM;
@@ -47,7 +47,7 @@ namespace Core.UI
         }
 
         [Binding]
-        public float CurrentTime
+        public int CurrentTime
         {
             get => _time;
             set
@@ -60,7 +60,6 @@ namespace Core.UI
         }
 
         public bool IsGameOver => HealthVM.IsGameOver;
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         [Inject]
@@ -88,7 +87,7 @@ namespace Core.UI
         }
         private void Update()
         {
-            CurrentTime = Time.realtimeSinceStartup - _startTime;
+            CurrentTime = (int)Mathf.Floor(Time.realtimeSinceStartup - _startTime);
         }
         private void OnPropertyChanged(string propertyName)
         {

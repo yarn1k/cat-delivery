@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Zenject;
@@ -52,8 +51,9 @@ namespace Core.Weapons
         {
             if (!_prepared) return;
 
+            float angle = transform.eulerAngles.z;
             Collider2D[] colliders = new Collider2D[3];
-            int hits = Physics2D.OverlapBoxNonAlloc(_collider.bounds.center, _collider.size, 0f, colliders, 1 << Constants.CatsLayer);
+            int hits = Physics2D.OverlapBoxNonAlloc(_collider.bounds.center, _collider.size, angle, colliders, 1 << Constants.CatsLayer);
             if (hits > 0)
             {
                 foreach (Collider2D collider in colliders)

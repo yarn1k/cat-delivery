@@ -59,6 +59,7 @@ namespace Core.Cats.States
         public override void Update()
         {
             Context.transform.Translate(_kidnapSpeed * Vector3.right * Time.deltaTime, Space.World);
+            Context.transform.Rotate(Vector3.forward, 1f, Space.Self);
         }
     }
     public class SaveState : BaseCatState

@@ -69,6 +69,7 @@ namespace Core.Cats
             _shield.gameObject.SetActive(false);
             int rand = UnityEngine.Random.Range(0, _skins.Length);
             _library.spriteLibraryAsset = _skins[rand];
+            transform.rotation = Quaternion.identity;
             _stateMachine.SwitchState<FallingState>();
         }
 

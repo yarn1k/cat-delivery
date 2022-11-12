@@ -3,10 +3,10 @@
 namespace UnityWeld.Binding.Adapters
 {
     /// <summary>
-    /// Adapter that converts a float to a string.
+    /// Adapter that converts a int to a string.
     /// </summary>
-    [Adapter(typeof(float), typeof(string))]
-    public class FloatToTimeAdapter : IAdapter
+    [Adapter(typeof(int), typeof(string))]
+    public class IntToTimeAdapter : IAdapter
     {
         private StringBuilder _builder = new StringBuilder();
         public object Convert(object valueIn, AdapterOptions options)

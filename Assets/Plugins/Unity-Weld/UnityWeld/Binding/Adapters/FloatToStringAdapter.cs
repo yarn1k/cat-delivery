@@ -9,7 +9,7 @@
         public object Convert(object valueIn, AdapterOptions options)
         {
             var format = ((FloatToStringAdapterOptions) options).Format;
-            return ((float)valueIn).ToString(format);
+            return string.Format(format, valueIn);
         }
     }
 }
