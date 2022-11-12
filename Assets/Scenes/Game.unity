@@ -313,6 +313,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _healthParentTransform: {fileID: 1634786838}
   _healthPrefab: {fileID: 269829155046627472, guid: ff37225ba1e3d844a84f4042a953b380, type: 3}
+  _gameOverPanel: {fileID: 2076733778}
 --- !u!1 &388849117
 GameObject:
   m_ObjectHideFlags: 0
@@ -589,7 +590,6 @@ GameObject:
   m_Component:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
-  - component: {fileID: 519420029}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -597,14 +597,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &519420029
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -843,7 +835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f9073289c7daa4449c6f754f7771742, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewModelMethodName: 
+  viewModelMethodName: Core.UI.GameOverViewModel.BackToMainMenu
   viewEventName: UnityEngine.UI.Button.onClick
 --- !u!1 &1465670005
 GameObject:
@@ -980,7 +972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f9073289c7daa4449c6f754f7771742, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewModelMethodName: 
+  viewModelMethodName: Core.UI.GameOverViewModel.Restart
   viewEventName: UnityEngine.UI.Button.onClick
 --- !u!1 &1620562822
 GameObject:
@@ -1820,6 +1812,7 @@ GameObject:
   - component: {fileID: 2076733779}
   - component: {fileID: 2076733781}
   - component: {fileID: 2076733780}
+  - component: {fileID: 2076733782}
   m_Layer: 5
   m_Name: Game Over View
   m_TagString: Untagged
@@ -1888,6 +1881,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2076733778}
   m_CullTransparentMesh: 1
+--- !u!114 &2076733782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2076733778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49626dc5a75e18d47b9eedb772ba5906, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewModelPropertyName: Core.UI.GameViewModel.GameOverVM
+  viewModelTypeName: Core.UI.GameOverViewModel
 --- !u!1 &2087199895
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dcbd12f2f1c4404093187b7d99dd456, type: 3}
   m_Name: Score Adapter
   m_EditorClassIdentifier: 
-  Format: 'Score: 0'
+  Format: 'Score: {0}'

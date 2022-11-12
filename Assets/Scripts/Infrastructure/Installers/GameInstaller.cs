@@ -27,7 +27,6 @@ namespace Core.Infrastructure.Installers
 
             Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
             Container.Bind<IInitializable>().To<GameController>().AsSingle();
-            Container.Bind<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle();
 
             BindFactories();
             BindPools();

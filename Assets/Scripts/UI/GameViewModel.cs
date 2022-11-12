@@ -4,6 +4,7 @@ using UnityWeld.Binding;
 using Zenject;
 using Core.Models;
 using Core.Infrastructure.Signals.Cats;
+using Core.Infrastructure.Signals.Game;
 
 namespace Core.UI
 {
@@ -14,6 +15,8 @@ namespace Core.UI
         private Transform _healthParentTransform;
         [SerializeField]
         private GameObject _healthPrefab;
+        [SerializeField]
+        private GameObject _gameOverPanel;
 
         private SignalBus _signalBus;
         private GameSettings _settings;
@@ -22,6 +25,7 @@ namespace Core.UI
         private int _score;
 
         private HealthViewModel _healthVM;
+        private GameOverViewModel _gameOverVM;
 
         [Binding]
         public HealthViewModel HealthVM
@@ -30,6 +34,16 @@ namespace Core.UI
             {
                 _healthVM ??= new HealthViewModel(_healthParentTransform, _healthPrefab);
                 return _healthVM;
+            }
+        }
+
+        [Binding]
+        public GameOverViewModel GameOverVM
+        {
+            get
+            {
+                _gameOverVM ??= new GameOverViewModel(_gameOverPanel);
+                return _gameOverVM;
             }
         }
 
@@ -108,6 +122,20 @@ namespace Core.UI
         {
             Score -= _settings.KidnapPenalty;
             HealthVM.RemoveHealth(1);
+
+            if (IsGameOver)
+            {
+                _signalBus.Fire<GameOverSignal>();
+                OnGameOverSignal();
+            }
+        }
+        private void OnGameOverSignal()
+        {
+            _signalBus.TryUnsubscribe<CatFellSignal>(OnCatFellSignal);
+            _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
+            _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+
+            GameOverVM.Show();
         }
     }
 }

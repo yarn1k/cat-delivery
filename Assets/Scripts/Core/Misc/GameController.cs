@@ -1,6 +1,4 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Zenject;
 using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
@@ -10,23 +8,17 @@ using Core.Audio;
 
 namespace Core
 {
-    public class AsyncProcessor : MonoBehaviour
-    {
-    }
-
     public class GameController : IInitializable, ILateDisposable
     {
         private readonly SignalBus _signalBus;
-        private AsyncProcessor _asyncProcessor;
         private GameSounds _gameSounds;
         private DisposableLabelVFX.Factory _labelFactory;
         private GameSettings _settings;
 
-        public GameController(SignalBus signalBus, GameSounds gameSounds, AsyncProcessor asyncProcessor, DisposableLabelVFX.Factory labelFactory, GameSettings settings)
+        public GameController(SignalBus signalBus, GameSounds gameSounds, DisposableLabelVFX.Factory labelFactory, GameSettings settings)
         {
             _signalBus = signalBus;
             _gameSounds = gameSounds;
-            _asyncProcessor = asyncProcessor;
             _labelFactory = labelFactory;
             _settings = settings;
         }
@@ -35,13 +27,14 @@ namespace Core
         {
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+            _signalBus.Subscribe<GameOverSignal>(OnGameOverSignal);
             SoundManager.PlayMusic(_gameSounds.GameBackground.Clip, _gameSounds.GameBackground.Volume);
         }
         void ILateDisposable.LateDispose()
         {
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
-            _asyncProcessor.StopCoroutine(GameOver());
+            _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOverSignal);
         }
 
         private void OnCatSavedSignal(CatSavedSignal signal)
@@ -54,13 +47,10 @@ namespace Core
             var label = _labelFactory.Create($"Kidnapped\n-{_settings.KidnapPenalty}", Color.red);
             label.transform.position = signal.KidnappedCat.transform.position;
         }
-
-        private IEnumerator GameOver()
+        private void OnGameOverSignal()
         {
-            _signalBus.Fire<GameOverSignal>();
+            SoundManager.StopMusic();
             SoundManager.PlayOneShot(_gameSounds.GameOver.Clip, _gameSounds.GameOver.Volume);
-            yield return new WaitForSeconds(3f);
-            SceneManager.LoadScene(0);
         }
     }
 }

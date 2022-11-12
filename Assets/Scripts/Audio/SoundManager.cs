@@ -47,6 +47,11 @@ namespace Core.Audio
             _audioSource.ignoreListenerPause = true;
             _audioSource.Play();
         }
+        private void StopMusicInternal()
+        {
+            _audioSource.Stop();
+            _audioSource.clip = null;
+        }
         public static void PlayOneShot(AudioClip clip, float volume = 1f, bool pausable = true)
         {
             _instance.PlayOneShotInternal(clip, volume, pausable);
@@ -54,6 +59,10 @@ namespace Core.Audio
         public static void PlayMusic(AudioClip clip, float volume = 1f)
         {
             _instance.PlayMusicInternal(clip, volume);
+        }
+        public static void StopMusic()
+        {
+            _instance.StopMusicInternal();
         }
     }
 }

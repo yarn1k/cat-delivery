@@ -16,6 +16,7 @@ namespace Core.Infrastructure.Installers
 
         private void BindGlobalDependencies()
         {
+            Container.Bind<AudioListener>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             Container.Bind<SoundManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             Container.BindFactory<AudioClip, float, bool, DisposableAudioClip, DisposableAudioClip.Factory>().FromMonoPoolableMemoryPool(x => x
                   .WithInitialSize(_audioSettings.PoolCapacity)

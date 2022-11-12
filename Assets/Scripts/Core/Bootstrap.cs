@@ -21,7 +21,7 @@ namespace Core
         }
         private IEnumerator LoadProcess()
         {
-            yield return SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+            yield return SceneManager.LoadSceneAsync(Constants.Scenes.MainMenu, LoadSceneMode.Additive);
         }
     }
 }
