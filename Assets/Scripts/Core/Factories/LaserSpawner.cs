@@ -5,10 +5,11 @@ using Core.Models;
 using Core.Audio;
 using Core.Cats;
 using Core.Infrastructure.Signals.Cats;
+using Core.Infrastructure.Signals.Game;
 
 namespace Core
 {
-    public class LaserSpawner : IInitializable, ITickable
+    public class LaserSpawner : IInitializable, ITickable, ILateDisposable
     {
         private readonly SignalBus _signalBus;
         private readonly Laser.Factory _factory;
@@ -17,8 +18,10 @@ namespace Core
         private readonly float _spawnZone;
         private readonly LevelBounds _levelBounds;
 
+        private Vector2 _position;
         private float _timer;
         private float _spawnTime;
+        private bool _enabled = true;
 
         public LaserSpawner(SignalBus signalBus, Laser.Factory factory, EnemySettings enemySettings, WeaponsSettings weaponSettings, LevelBounds levelBounds)
         {
@@ -44,9 +47,11 @@ namespace Core
         }
         private void SpawnLaser(bool isLeft)
         {
+            _position = GetRandomPosition(isLeft);
+
             Laser laser = _factory.Create
             (
-                GetRandomPosition(isLeft),
+                _position,
                 GetRandomRotation(isLeft),
                 _laserConfig.PreparationTime,
                 _laserConfig.LaserLifetime
@@ -59,22 +64,6 @@ namespace Core
             laser.Hit += OnHit;
         }
 
-        void IInitializable.Initialize()
-        {
-            _spawnTime = Random.Range(_attackCooldownInterval.x, _attackCooldownInterval.y);
-        }
-        void ITickable.Tick()
-        {
-            if (Time.realtimeSinceStartup - _timer >= _spawnTime)
-            {
-                bool isLeft = Random.Range(0, 2) > 0.5f ? true : false;
-
-                SpawnLaser(isLeft);
-                _timer = Time.realtimeSinceStartup;
-                _spawnTime = Random.Range(_attackCooldownInterval.x, _attackCooldownInterval.y);
-            }
-        }
-
         private void OnLifetimeElapsed(Laser laser)
         {
             laser.Hit -= OnHit;
@@ -82,8 +71,34 @@ namespace Core
         }
         private void OnHit(CatView target)
         {
-            target.Kidnap();
+            Vector2 direction = _position - (Vector2)target.transform.position;
+            target.Kidnap(direction.normalized);
             _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = target });
+        }
+        private void OnGameOverSignal()
+        {
+            _enabled = false;
+        }
+
+        void IInitializable.Initialize()
+        {
+            _spawnTime = Random.Range(_attackCooldownInterval.x, _attackCooldownInterval.y);
+            _signalBus.Subscribe<GameOverSignal>(OnGameOverSignal);
+        }
+        void ILateDisposable.LateDispose()
+        {
+            _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOverSignal);
+        }
+        void ITickable.Tick()
+        {
+            if (_enabled && Time.realtimeSinceStartup - _timer >= _spawnTime)
+            {
+                bool isLeft = Random.Range(0, 2) > 0.5f ? true : false;
+
+                SpawnLaser(isLeft);
+                _timer = Time.realtimeSinceStartup;
+                _spawnTime = Random.Range(_attackCooldownInterval.x, _attackCooldownInterval.y);
+            }
         }
     }
 }

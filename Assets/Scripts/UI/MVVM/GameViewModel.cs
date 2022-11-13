@@ -66,7 +66,7 @@ namespace Core.UI
             get => _time;
             set
             {
-                if (_time.Equals(value)) return;
+                if (_time == value) return;
 
                 _time = value;
                 OnPropertyChanged("CurrentTime");
@@ -101,6 +101,8 @@ namespace Core.UI
         }
         private void Update()
         {
+            if (HealthVM.IsGameOver) return;
+
             CurrentTime = (int)Mathf.Floor(Time.realtimeSinceStartup - _startTime);
         }
         private void OnPropertyChanged(string propertyName)

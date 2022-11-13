@@ -26,7 +26,7 @@ namespace Core.UI
         [Binding]
         public void Restart()
         {
-            SceneManager.LoadScene(Constants.Scenes.Game);
+            SceneManager.LoadSceneAsync(Constants.Scenes.Game);
         }
 
         [Binding]

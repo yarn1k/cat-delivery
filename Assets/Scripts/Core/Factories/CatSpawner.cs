@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 using Core.Cats;
@@ -15,6 +16,8 @@ namespace Core
         private float _spawnTime;
         private bool _enabled = true;
 
+        private LinkedList<CatView> _cats = new LinkedList<CatView>();
+
         [Inject]
         private void Construct(SignalBus signalBus, CatView.Factory catFactory, CatsSettings settings)
         {
@@ -28,6 +31,16 @@ namespace Core
             Vector2 spawnPosition = new Vector2(Random.Range(-10.0f, 8.0f), 5.85f);
             CatView cat = _catFactory.Create();
             cat.transform.position = spawnPosition;
+
+            cat.Disposed += OnCatDisposed;
+
+            _cats.AddLast(cat);
+        }
+
+        private void OnCatDisposed(CatView cat)
+        {
+            cat.Disposed -= OnCatDisposed;
+            _cats.Remove(cat);
         }
 
         void IInitializable.Initialize()
@@ -52,6 +65,11 @@ namespace Core
         private void OnGameOverSignal()
         {
             _enabled = false;
+
+            foreach (CatView cat in _cats)
+            {
+                cat.Hide();
+            }
         }
     }
 }
