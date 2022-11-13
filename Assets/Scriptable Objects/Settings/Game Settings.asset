@@ -19,7 +19,7 @@ MonoBehaviour:
     KidnapPenalty: 30
     FallingReward: 10
   _playerSettings:
-    ReloadTime: 1.5
+    ReloadTime: 1
     MovementSpeed: 5.8
     JumpForce: 40
   _catsSettings:
