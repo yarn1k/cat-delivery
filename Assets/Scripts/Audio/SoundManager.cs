@@ -40,19 +40,29 @@ namespace Core.Audio
             );
             oneShotClip.ClipPlayed += OnClipPlayed;
         }
-        private void PlayMusicInternal(AudioClip clip)
+        private void PlayMusicInternal(AudioClip clip, float volume = 1f)
         {
             _audioSource.clip = clip;
+            _audioSource.volume = volume;
             _audioSource.ignoreListenerPause = true;
             _audioSource.Play();
+        }
+        private void StopMusicInternal()
+        {
+            _audioSource.Stop();
+            _audioSource.clip = null;
         }
         public static void PlayOneShot(AudioClip clip, float volume = 1f, bool pausable = true)
         {
             _instance.PlayOneShotInternal(clip, volume, pausable);
         }
-        public static void PlayMusic(AudioClip clip)
+        public static void PlayMusic(AudioClip clip, float volume = 1f)
         {
-            _instance.PlayMusicInternal(clip);
+            _instance.PlayMusicInternal(clip, volume);
+        }
+        public static void StopMusic()
+        {
+            _instance.StopMusicInternal();
         }
     }
 }

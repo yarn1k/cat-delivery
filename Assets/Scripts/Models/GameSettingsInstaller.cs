@@ -9,8 +9,10 @@ namespace Core.Models
     public class GameSettings
     {
         public ushort GameTime;
+        public byte Lifes;
         public ushort SavedReward;
         public ushort KidnapPenalty;
+        public ushort FallingReward;
     }
 
     [Serializable]
@@ -36,10 +38,6 @@ namespace Core.Models
         public float MovementSpeed;
         [Range(0f, 50f)]
         public float JumpForce;
-        [Range(0f, 50f)]
-        public float NormalGravityScale;
-        [Range(0f, 50f)]
-        public float FallingGravityScale;
     }
 
     [Serializable]
@@ -49,6 +47,8 @@ namespace Core.Models
         public float MovementSpeed;
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 AttackCooldownInterval;
+        [Min(0f)]
+        public float LaserSpawnZone;
     }
 
     [Serializable]
@@ -71,6 +71,8 @@ namespace Core.Models
         private EnemySettings _enemySettings;
         [SerializeField]
         private WeaponsSettings _weaponsSettings;
+
+        public EnemySettings EnemySettings => _enemySettings;
 
         public override void InstallBindings()
         {

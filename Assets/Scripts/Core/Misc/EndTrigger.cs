@@ -20,7 +20,7 @@ namespace Core
             if (collision.TryGetComponent(out CatView cat))
             {
                 cat.Dispose();
-                _signalBus.Fire(new CatFellSignal { FallenCat = cat });
+                if (cat.Interactable) _signalBus.Fire(new CatFellSignal { FallenCat = cat });
             }
         }
     }
