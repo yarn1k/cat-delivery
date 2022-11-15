@@ -50,14 +50,14 @@ namespace Core.Cats
 
         private void InitState()
         {
-            _interactable = true;
+            SetInteractable(true);
             _direction = Vector2.down;
             _velocity = _settings.CatsFallingSpeed;
             _shield.gameObject.SetActive(false);
         }
         private void ResetState()
         {
-            _interactable = false;
+            SetInteractable(false);
             _kidnapped = false;
             _direction = Vector2.zero;
             _velocity = 0f;
@@ -90,8 +90,10 @@ namespace Core.Cats
             _renderer.color = _renderer.color.WithAlpha(1f);
             _shield.color = _shield.color.WithAlpha(0.3f);
         }
-        public void Hide(float time = 2f)
+        public void Hide(float time = 1f)
         {
+            _direction = Vector3.zero;
+
             Sequence sequence = DOTween.Sequence();
             sequence.Append(_renderer.DOColor(_renderer.color.WithAlpha(0f), time));
             sequence.Join(_shield.DOColor(_shield.color.WithAlpha(0f), time));

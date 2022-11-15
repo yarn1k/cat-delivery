@@ -36,19 +36,14 @@ namespace Core.Weapons
             var clip = _model.BulletGunConfig.ShootSounds.Random();
             SoundManager.PlayOneShot(clip.Clip, clip.Volume);
             
-            bullet.LifetimeElapsed += DisposeBullet;
+            bullet.LifetimeElapsed += bullet.Dispose;
             bullet.Hit += OnBulletHit;
+            bullet.Disposed += OnDisposed;
 
             _model.Cooldown.Run(_model.ReloadTime);
             return true;
         }
 
-        private void DisposeBullet(Bullet bullet)
-        {
-            bullet.Hit -= OnBulletHit;
-            bullet.LifetimeElapsed -= DisposeBullet;
-            bullet.Dispose();
-        }
         private void CreateExplosion(Vector2 position)
         {
             int rand = UnityEngine.Random.Range(0, _model.BulletGunConfig.Explosions.Length);
@@ -56,10 +51,17 @@ namespace Core.Weapons
             GameObject explosion = _explosionFactory.Create(prefab, position);
             GameObject.Destroy(explosion, 0.8f);
         }
-        private void OnBulletHit(Bullet bullet, CatView target)
+
+        private void OnDisposed(Bullet bullet)
         {
             CreateExplosion(bullet.Center);
-            DisposeBullet(bullet);
+            bullet.LifetimeElapsed -= bullet.Dispose;
+            bullet.Hit -= OnBulletHit;
+            bullet.Disposed -= OnDisposed;
+        }
+        private void OnBulletHit(Bullet bullet, CatView target)
+        {
+            bullet.Dispose();
             Hit?.Invoke(target);
         }
     }

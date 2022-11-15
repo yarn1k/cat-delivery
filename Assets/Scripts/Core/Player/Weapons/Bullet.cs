@@ -14,8 +14,9 @@ namespace Core.Weapons
         private float _bulletForce;
 
         public Vector2 Center => _collider.bounds.center;
-        public event Action<Bullet> LifetimeElapsed;
+        public event Action LifetimeElapsed;
         public event Action<Bullet, CatView> Hit;
+        public event Action<Bullet> Disposed;
 
         private void Awake()
         {
@@ -34,7 +35,7 @@ namespace Core.Weapons
         }
         private void OnLifetimeElapsed()
         {
-            LifetimeElapsed?.Invoke(this);
+            LifetimeElapsed?.Invoke();
         }
         private void Enable(bool isEnabled)
         {
@@ -45,6 +46,7 @@ namespace Core.Weapons
         public void Dispose()
         {
             _pool?.Despawn(this);
+            Disposed?.Invoke(this);
         }
 
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnDespawned()

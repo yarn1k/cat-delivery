@@ -27,6 +27,8 @@ namespace Core.Models
         public float CatsSaveSpeed;
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 SpawnInterval;
+        [Min(0f)]
+        public float CatsSpawnWidth;
     }
 
     [Serializable]
@@ -48,7 +50,9 @@ namespace Core.Models
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 AttackCooldownInterval;
         [Min(0f)]
-        public float LaserSpawnZone;
+        public float LaserSpawnHeight;
+        [Range(0f, 45f)]
+        public float LaserAngle;
     }
 
     [Serializable]
@@ -72,6 +76,7 @@ namespace Core.Models
         [SerializeField]
         private WeaponsSettings _weaponsSettings;
 
+        public CatsSettings CatsSettings => _catsSettings;
         public EnemySettings EnemySettings => _enemySettings;
 
         public override void InstallBindings()

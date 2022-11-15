@@ -28,7 +28,7 @@ namespace Core
             _signalBus = signalBus;
             _factory = factory;
             _attackCooldownInterval = enemySettings.AttackCooldownInterval;
-            _spawnZone = enemySettings.LaserSpawnZone;
+            _spawnZone = enemySettings.LaserSpawnHeight;
             _laserConfig = weaponSettings.LaserGunConfig;
             _levelBounds = levelBounds;
         }
