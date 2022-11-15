@@ -50,14 +50,14 @@ namespace Core.Cats
 
         private void InitState()
         {
-            _interactable = true;
+            SetInteractable(true);
             _direction = Vector2.down;
             _velocity = _settings.CatsFallingSpeed;
             _shield.gameObject.SetActive(false);
         }
         private void ResetState()
         {
-            _interactable = false;
+            SetInteractable(false);
             _kidnapped = false;
             _direction = Vector2.zero;
             _velocity = 0f;
