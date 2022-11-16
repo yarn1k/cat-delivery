@@ -33,7 +33,7 @@ MonoBehaviour:
     CatsSpawnWidth: 12
   _enemySettings:
     MovementSpeed: 3
-    AttackCooldownInterval: {x: 1.7, y: 3}
+    AttackCooldownInterval: {x: 5.8726616, y: 7.1726613}
     LaserSpawnHeight: 3
     LaserAngle: 25
   _weaponsSettings:

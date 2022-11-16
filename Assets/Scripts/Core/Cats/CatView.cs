@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.U2D.Animation;
 using Zenject;
-using Core.Models;
 using DG.Tweening;
 
 namespace Core.Cats
@@ -19,20 +18,15 @@ namespace Core.Cats
 
         private SpriteRenderer _renderer;
         private IMemoryPool _pool;
-        private CatsSettings _settings;
         private bool _interactable;
         private Vector3 _direction = Vector3.zero;
         private float _velocity;
         private bool _kidnapped;
         public bool Interactable => _interactable;
 
+        public event Action<CatView> Saved;
+        public event Action<CatView, Vector2> Kidnapped;
         public event Action<CatView> Disposed;
-
-        [Inject]
-        private void Construct(CatsSettings settings)
-        {
-            _settings = settings;
-        }
 
         private void Awake()
         {
@@ -48,64 +42,50 @@ namespace Core.Cats
             if (_kidnapped) transform.Rotate(Vector3.forward, 1f, Space.Self);
         }
 
-        private void InitState()
-        {
-            SetInteractable(true);
-            _direction = Vector2.down;
-            _velocity = _settings.CatsFallingSpeed;
-            _shield.gameObject.SetActive(false);
-        }
         private void ResetState()
-        {
-            SetInteractable(false);
+        {          
             _kidnapped = false;
-            _direction = Vector2.zero;
-            _velocity = 0f;
             transform.rotation = Quaternion.identity;
         }
-        private void SetInteractable(bool isInteractable)
+        private void Show()
+        {
+            _renderer.color = _renderer.color.WithAlpha(1f);
+            _shield.color = _shield.color.WithAlpha(0.3f);
+        }
+        public void SetInteractable(bool isInteractable)
         {
             _interactable = isInteractable;
         }
-        private void SetDirection(Vector2 direction, float velocity)
+        public void SetDirection(Vector2 direction, float velocity)
         {
             _direction = direction;
             _velocity = velocity;
         }
         public void Kidnap(Vector2 direction)
         {
-            _kidnapped = true;
-            SetInteractable(false);
-            SetDirection(direction, _settings.CatsKidnapSpeed);
-            Hide();
+            _kidnapped = true;         
+            Kidnapped?.Invoke(this, direction);
         }
         public void Save()
         {
             _shield.gameObject.SetActive(true);
-            SetInteractable(false);
-            SetDirection(Vector2.down, _settings.CatsSaveSpeed);
+            Saved?.Invoke(this);
         }
-        public void Show()
+        public void SetSkin(SpriteLibraryAsset asset)
         {
-            _renderer.color = _renderer.color.WithAlpha(1f);
-            _shield.color = _shield.color.WithAlpha(0.3f);
-        }
-        public void Hide(float time = 1f)
-        {
-            _direction = Vector3.zero;
-
-            Sequence sequence = DOTween.Sequence();
-            sequence.Append(_renderer.DOColor(_renderer.color.WithAlpha(0f), time));
-            sequence.Join(_shield.DOColor(_shield.color.WithAlpha(0f), time));
-            sequence.SetLink(gameObject);
-            sequence.SetEase(Ease.Linear);
-            sequence.OnComplete(Dispose);
-            sequence.Play();
+            _library.spriteLibraryAsset = asset;
         }
         public void Dispose()
-        {
-            _pool?.Despawn(this);
+        {        
             Disposed?.Invoke(this);
+
+            Sequence sequence = DOTween.Sequence();
+            sequence.Append(_renderer.DOColor(_renderer.color.WithAlpha(0f), 1f));
+            sequence.Join(_shield.DOColor(_shield.color.WithAlpha(0f), 1f));
+            sequence.SetLink(gameObject);
+            sequence.SetEase(Ease.Linear);
+            sequence.OnComplete(() => _pool?.Despawn(this));
+            sequence.Play();
         }   
 
         void IPoolable<IMemoryPool>.OnDespawned()
@@ -116,11 +96,8 @@ namespace Core.Cats
         void IPoolable<IMemoryPool>.OnSpawned(IMemoryPool pool)
         {
             _pool = pool;
-            Show();
-            InitState();
-
-            int rand = UnityEngine.Random.Range(0, _settings.Skins.Length);
-            _library.spriteLibraryAsset = _settings.Skins[rand];
+            _shield.gameObject.SetActive(false);
+            Show();           
         }
 
         public class Factory : PlaceholderFactory<CatView> { }

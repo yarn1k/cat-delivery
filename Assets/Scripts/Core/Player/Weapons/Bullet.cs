@@ -12,11 +12,13 @@ namespace Core.Weapons
         private Collider2D _collider;
         private IMemoryPool _pool;
         private float _bulletForce;
+        private Vector2 _contactPoint;
 
-        public Vector2 Center => _collider.bounds.center;
         public event Action LifetimeElapsed;
         public event Action<Bullet, CatView> Hit;
         public event Action<Bullet> Disposed;
+
+        public ref Vector2 ContactPoint => ref _contactPoint;
 
         private void Awake()
         {
@@ -28,6 +30,8 @@ namespace Core.Weapons
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            _contactPoint = collision.ClosestPoint(transform.position);
+            
             if (collision.TryGetComponent(out CatView target) && target.Interactable)
             {
                 Hit?.Invoke(this, target);
@@ -45,6 +49,7 @@ namespace Core.Weapons
         }
         public void Dispose()
         {
+            _contactPoint = _collider.bounds.center;
             _pool?.Despawn(this);
             Disposed?.Invoke(this);
         }

@@ -1,10 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
 using Core.Enemy.States;
-using Core.Weapons;
-using Core.Cats;
-using Core.Infrastructure.Signals.Cats;
 
 namespace Core.Enemy
 {

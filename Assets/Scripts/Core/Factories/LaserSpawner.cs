@@ -4,7 +4,6 @@ using Core.Weapons;
 using Core.Models;
 using Core.Audio;
 using Core.Cats;
-using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
 
 namespace Core
@@ -15,7 +14,7 @@ namespace Core
         private readonly Laser.Factory _factory;
         private readonly LaserGunConfig _laserConfig;
         private readonly Vector2 _attackCooldownInterval;
-        private readonly float _spawnZone;
+        private readonly float _spawnHeight;
         private readonly LevelBounds _levelBounds;
 
         private Vector2 _position;
@@ -28,7 +27,7 @@ namespace Core
             _signalBus = signalBus;
             _factory = factory;
             _attackCooldownInterval = enemySettings.AttackCooldownInterval;
-            _spawnZone = enemySettings.LaserSpawnHeight;
+            _spawnHeight = enemySettings.LaserSpawnHeight;
             _laserConfig = weaponSettings.LaserGunConfig;
             _levelBounds = levelBounds;
         }
@@ -36,7 +35,7 @@ namespace Core
         private Vector2 GetRandomPosition(bool isLeft)
         {
             int sign = isLeft ? -1 : 1;
-            float y = Random.Range(-_spawnZone, _spawnZone);
+            float y = Random.Range(-_spawnHeight, _spawnHeight);
             return new Vector2(sign * _levelBounds.Size.x / 2, y);
         }
         private Quaternion GetRandomRotation(bool isLeft)
@@ -72,8 +71,7 @@ namespace Core
         private void OnHit(CatView target)
         {
             Vector2 direction = _position - (Vector2)target.transform.position;
-            target.Kidnap(direction.normalized);
-            _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = target });
+            target.Kidnap(direction.normalized);       
         }
         private void OnGameOverSignal()
         {
