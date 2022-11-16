@@ -4,6 +4,7 @@ using Zenject;
 using Core.Cats;
 using Core.Models;
 using Core.Infrastructure.Signals.Game;
+using Core.Infrastructure.Signals.Cats;
 
 namespace Core
 {
@@ -26,24 +27,6 @@ namespace Core
             _settings = settings;
         }
 
-        private void SpawnCat()
-        {
-            float width = _settings.CatsSpawnWidth / 2f;
-            Vector2 spawnPosition = new Vector2(Random.Range(-width, width), 5.85f);
-            CatView cat = _catFactory.Create();
-            cat.transform.position = spawnPosition;
-
-            cat.Disposed += OnCatDisposed;
-
-            _cats.AddLast(cat);
-        }
-
-        private void OnCatDisposed(CatView cat)
-        {
-            cat.Disposed -= OnCatDisposed;
-            _cats.Remove(cat);
-        }
-
         void IInitializable.Initialize()
         {
             _spawnTime = Random.Range(_settings.SpawnInterval.x, _settings.SpawnInterval.y);
@@ -62,15 +45,53 @@ namespace Core
         {
             _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOverSignal);
         }
+        private void SpawnCat()
+        {
+            float width = _settings.CatsSpawnWidth / 2f;
+            Vector2 spawnPosition = new Vector2(Random.Range(-width, width), 5.85f);
+            CatView cat = _catFactory.Create();
+            cat.transform.position = spawnPosition;
 
+            cat.Disposed += OnCatDisposed;
+            cat.Saved += OnCatSaved;
+            cat.Kidnapped += OnCatKidnapped;
+
+            cat.SetInteractable(true);
+            cat.SetDirection(Vector2.down, _settings.CatsFallingSpeed);
+
+            int rand = Random.Range(0, _settings.Skins.Length);
+            cat.SetSkin(_settings.Skins[rand]);
+
+            _cats.AddLast(cat);
+        }
+
+        private void OnCatKidnapped(CatView cat, Vector2 direction)
+        {
+            cat.SetInteractable(false);
+            cat.SetDirection(direction, _settings.CatsKidnapSpeed);
+            cat.Dispose();
+            _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = cat });
+        }
+        private void OnCatSaved(CatView cat)
+        {
+            cat.SetInteractable(false);
+            cat.SetDirection(Vector2.down, _settings.CatsSaveSpeed);
+            _signalBus.Fire(new CatSavedSignal { SavedCat = cat });
+        }
+        private void OnCatDisposed(CatView cat)
+        {
+            cat.Disposed -= OnCatDisposed;
+            cat.Saved -= OnCatSaved;
+            cat.Kidnapped -= OnCatKidnapped;
+            _cats.Remove(cat);
+        }
         private void OnGameOverSignal()
         {
             _enabled = false;
-
-            foreach (CatView cat in _cats)
+            while (_cats.Count > 0)
             {
-                cat.Hide();
+                _cats.First.Value.Dispose();
             }
-        }
+        } 
     }
 }

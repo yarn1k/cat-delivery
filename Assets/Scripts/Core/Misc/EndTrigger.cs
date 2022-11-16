@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Zenject;
 using Core.Cats;
@@ -17,11 +18,15 @@ namespace Core
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.TryGetComponent(out CatView cat))
+            if (collision.TryGetComponent(out IDisposable disposable))
             {
-                if (cat.Interactable) _signalBus.Fire(new CatFellSignal { FallenCat = cat });
-                cat.Hide();
-            }
+                if (disposable is CatView cat && cat.Interactable)
+                {
+                    _signalBus.Fire(new CatFellSignal { FallenCat = cat });
+                }
+
+                disposable.Dispose();
+            };
         }
     }
 }

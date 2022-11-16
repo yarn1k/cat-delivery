@@ -55,8 +55,7 @@ namespace Core.Infrastructure.Installers
 
             Container.BindFactory<CatView, CatView.Factory>().FromMonoPoolableMemoryPool(x => x
                 .WithInitialSize(5)
-                .FromSubContainerResolve()
-                .ByNewPrefabInstaller<CatInstaller>(_catPrefab)
+                .FromComponentInNewPrefab(_catPrefab)
                 .UnderTransformGroup("Cats"));
 
             Container.BindFactory<Vector2, Quaternion, float, float, Bullet, Bullet.Factory>().FromMonoPoolableMemoryPool(x => x

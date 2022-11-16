@@ -42,10 +42,7 @@ namespace Core.Weapons
         private void OnLifetimeElapsed()
         {
             _prepared = false;
-            ShowLaser(false, 0.5f)
-                .SetLink(gameObject)
-                .SetEase(Ease.Linear)
-                .OnComplete(() => LifetimeElapsed?.Invoke(this));
+            ShowLaser(false, 0.5f).OnComplete(() => LifetimeElapsed?.Invoke(this));
         }
         private void HitObjectsInsideLaser()
         {
@@ -80,8 +77,10 @@ namespace Core.Weapons
         private Tweener ShowLaser(bool isShow, float time)
         {
             float alpha = isShow ? 1f : 0f;
-            _renderer.color = _renderer.color.WithAlpha(1f - alpha);
-            return _renderer.DOColor(_renderer.color.WithAlpha(alpha), time);
+            return _renderer
+                .DOColor(_renderer.color.WithAlpha(alpha), time)
+                .SetLink(gameObject)
+                .SetEase(Ease.Linear);
         }
         private void PrepareLaser(float preparationTime)
         {

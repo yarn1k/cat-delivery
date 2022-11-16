@@ -54,7 +54,7 @@ namespace Core.Weapons
 
         private void OnDisposed(Bullet bullet)
         {
-            CreateExplosion(bullet.Center);
+            CreateExplosion(bullet.ContactPoint);
             bullet.LifetimeElapsed -= bullet.Dispose;
             bullet.Hit -= OnBulletHit;
             bullet.Disposed -= OnDisposed;

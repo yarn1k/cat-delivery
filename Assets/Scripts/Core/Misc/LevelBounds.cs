@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Core
 {
@@ -13,14 +12,6 @@ namespace Core
             GetComponent<BoxCollider2D>().isTrigger = true;
             Camera camera = Camera.main;
             Size = new Vector2(camera.orthographicSize * camera.aspect * 2f, camera.orthographicSize * 2f);
-        }
-
-        private void OnTriggerExit2D(Collider2D collision)
-        {
-            if (collision.TryGetComponent(out IDisposable disposableObj))
-            {
-                disposableObj.Dispose();
-            }
         }
     }
 }

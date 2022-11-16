@@ -58,8 +58,7 @@ namespace Core.Player
         }
         private void OnWeaponHit(CatView target)
         {
-            target.Save();
-            _signalBus.Fire(new CatSavedSignal { SavedCat = target });
+            target.Save();          
         }
         private void OnGameOverSignal()
         {
