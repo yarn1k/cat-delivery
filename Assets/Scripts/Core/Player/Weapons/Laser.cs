@@ -18,6 +18,8 @@ namespace Core.Weapons
         private bool _prepared;
         private Vector3 _startPosition;
 
+        private const byte KidnappedMax = 2;
+
         public event Action<Laser> LifetimeElapsed;
         public event Action<CatView> Hit;
 
@@ -49,7 +51,7 @@ namespace Core.Weapons
             if (!_prepared) return;
 
             float angle = transform.eulerAngles.z;
-            Collider2D[] colliders = new Collider2D[3];
+            Collider2D[] colliders = new Collider2D[KidnappedMax];
             int hits = Physics2D.OverlapBoxNonAlloc(_collider.bounds.center, _collider.size, angle, colliders, 1 << Constants.CatsLayer);
             if (hits > 0)
             {

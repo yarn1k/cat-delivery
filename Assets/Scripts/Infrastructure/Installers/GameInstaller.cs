@@ -26,7 +26,6 @@ namespace Core.Infrastructure.Installers
             Container.DeclareSignal<GameOverSignal>();              
 
             Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
-            Container.Bind<IInitializable>().To<GameController>().AsSingle();
 
             BindFactories();
             BindPools();

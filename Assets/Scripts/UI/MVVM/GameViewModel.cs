@@ -5,6 +5,7 @@ using Zenject;
 using Core.Models;
 using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
+using Core.Audio;
 
 namespace Core.UI
 {
@@ -19,7 +20,9 @@ namespace Core.UI
         private GameObject _gameOverPanel;
 
         private SignalBus _signalBus;
-        private GameSettings _settings;
+        private GameSettings _gameSettings;
+        private CatsSettings _catsSettings;
+        private GameSounds _gameSounds;
         private float _startTime;
         private int _time;
         private int _score;
@@ -77,21 +80,27 @@ namespace Core.UI
         public event PropertyChangedEventHandler PropertyChanged;
 
         [Inject]
-        private void Construct(SignalBus signalBus, GameSettings settings)
+        private void Construct(SignalBus signalBus, GameSettings gameSettings, GameSounds gameSounds, CatsSettings catsSettings)
         {
-            _settings = settings;
+            _gameSettings = gameSettings;
+            _gameSounds = gameSounds;
             _signalBus = signalBus;
+            _catsSettings = catsSettings;
         }
         private void Awake()
         {
             HealthVM.Clear();
-            HealthVM.Init(_settings.Lifes);
+            HealthVM.Init(_gameSettings.Lifes);
 
             _startTime = Time.realtimeSinceStartup;
 
             _signalBus.Subscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+        }
+        private void Start()
+        {
+            SoundManager.PlayMusic(_gameSounds.GameBackground.Clip, _gameSounds.GameBackground.Volume);
         }
         private void OnDisable()
         {
@@ -114,15 +123,15 @@ namespace Core.UI
         }
         private void OnCatFellSignal()
         {
-            Score += _settings.FallingReward;
+            Score += _catsSettings.FallingReward;
         }
         private void OnCatSavedSignal()
         {
-            Score += _settings.SavedReward;
+            Score += _catsSettings.SavedReward;
         }
         private void OnCatKidnappedSignal()
         {
-            Score -= _settings.KidnapPenalty;
+            Score -= _catsSettings.KidnapPenalty;
             HealthVM.RemoveHealth(1);
 
             if (IsGameOver)
@@ -137,6 +146,8 @@ namespace Core.UI
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
 
+            SoundManager.StopMusic();
+            SoundManager.PlayOneShot(_gameSounds.GameOver.Clip, _gameSounds.GameOver.Volume);
             GameOverVM.Show();
         }
     }

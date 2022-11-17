@@ -10,14 +10,14 @@ namespace Core.Models
     {
         public ushort GameTime;
         public byte Lifes;
-        public ushort SavedReward;
-        public ushort KidnapPenalty;
-        public ushort FallingReward;
     }
 
     [Serializable]
     public class CatsSettings
     {
+        public ushort SavedReward;
+        public ushort KidnapPenalty;
+        public ushort FallingReward;
         public SpriteLibraryAsset[] Skins;
         [Range(0f, 10f)]
         public float CatsFallingSpeed;
