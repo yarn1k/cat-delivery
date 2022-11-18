@@ -27,6 +27,7 @@ namespace Core.UI
         private float _startTime;
         private int _time;
         private int _score;
+        private int _streak;
 
         private HealthViewModel _healthVM;
         private GameOverViewModel _gameOverVM;
@@ -61,6 +62,19 @@ namespace Core.UI
 
                 _score = value;
                 OnPropertyChanged("Score");
+            }
+        }
+
+        [Binding]
+        public int Streak
+        {
+            get => _streak;
+            set
+            {
+                if (_streak == value) return;
+
+                _streak = value;
+                OnPropertyChanged("Streak");
             }
         }
 
@@ -104,6 +118,7 @@ namespace Core.UI
             _signalBus.Subscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+            _signalBus.Subscribe<PlayerWeaponMissedSignal>(OnPlayerWeaponMissed);
         }
         private void Start()
         {
@@ -115,6 +130,7 @@ namespace Core.UI
             _signalBus.TryUnsubscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
+            _signalBus.TryUnsubscribe<PlayerWeaponMissedSignal>(OnPlayerWeaponMissed);
         }
         private void Update()
         {
@@ -136,10 +152,12 @@ namespace Core.UI
         private void OnCatSavedSignal()
         {
             Score += _catsSettings.SavedReward;
+            Streak++;
         }
         private void OnCatKidnappedSignal()
         {
             Score -= _catsSettings.KidnapPenalty;
+            Streak = 0;
             HealthVM.RemoveHealth(1);
 
             if (IsGameOver)
@@ -147,6 +165,10 @@ namespace Core.UI
                 _signalBus.Fire<GameOverSignal>();
                 OnGameOverSignal();
             }
+        }
+        private void OnPlayerWeaponMissed()
+        {
+            Streak = 0;
         }
         private void OnGameOverSignal()
         {

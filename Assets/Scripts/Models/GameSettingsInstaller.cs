@@ -41,7 +41,7 @@ namespace Core.Models
         public float ReloadTime;
         [Range(0f, 10f)]
         public float MovementSpeed;
-        [Range(0f, 50f)]
+        [Range(0f, 20f)]
         public float JumpForce;
     }
 

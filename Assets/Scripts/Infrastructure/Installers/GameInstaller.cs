@@ -25,7 +25,8 @@ namespace Core.Infrastructure.Installers
 
         public override void InstallBindings()
         {
-            Container.DeclareSignal<GameOverSignal>();              
+            Container.DeclareSignal<GameOverSignal>();
+            Container.DeclareSignal<PlayerWeaponMissedSignal>();
 
             Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
             Container.Bind<CameraView>().FromInstance(_cameraView).AsSingle();

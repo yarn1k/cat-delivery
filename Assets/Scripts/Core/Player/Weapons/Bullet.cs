@@ -12,13 +12,13 @@ namespace Core.Weapons
         private Collider2D _collider;
         private IMemoryPool _pool;
         private float _bulletForce;
-        private Vector2 _contactPoint;
 
         public event Action LifetimeElapsed;
         public event Action<Bullet, CatView> Hit;
         public event Action<Bullet> Disposed;
 
-        public ref Vector2 ContactPoint => ref _contactPoint;
+        public Vector2 ContactPoint { get; private set; }
+        public bool HitAnyTarget { get; private set; }
 
         private void Awake()
         {
@@ -30,10 +30,11 @@ namespace Core.Weapons
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            _contactPoint = collision.ClosestPoint(transform.position);
+            ContactPoint = collision.ClosestPoint(transform.position);
             
             if (collision.TryGetComponent(out CatView target) && target.Interactable)
             {
+                HitAnyTarget = true;
                 Hit?.Invoke(this, target);
             }
         }
@@ -49,14 +50,15 @@ namespace Core.Weapons
         }
         public void Dispose()
         {
-            _contactPoint = _collider.bounds.center;
-            _pool?.Despawn(this);
+            ContactPoint = _collider.bounds.center;
             Disposed?.Invoke(this);
+            _pool?.Despawn(this);
         }
 
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnDespawned()
         {
             _pool = null;
+            HitAnyTarget = false;
             Enable(false);
         }
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnSpawned(Vector2 position, Quaternion rotation, float force, float lifetime, IMemoryPool pool)

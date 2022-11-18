@@ -23,6 +23,7 @@ namespace Core.Weapons
         public event Action<Laser> LifetimeElapsed;
         public event Action<CatView> Hit;
         public event Action Prepared;
+        public bool HitAnyTarget { get; private set; }
 
         [Inject]
         private void Construct(LevelBounds levelBounds)
@@ -39,6 +40,7 @@ namespace Core.Weapons
         {
             if (_prepared && collision.TryGetComponent(out CatView target) && target.Interactable)
             {
+                HitAnyTarget = true;
                 Hit?.Invoke(target);
             }
         }
@@ -108,6 +110,7 @@ namespace Core.Weapons
         {
             _pool = null;
             _collider.enabled = false;
+            HitAnyTarget = false;
         }
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnSpawned(Vector2 position, Quaternion rotation, float preparationTime, float lifetime, IMemoryPool pool)
         {

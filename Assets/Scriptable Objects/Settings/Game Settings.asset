@@ -20,7 +20,7 @@ MonoBehaviour:
   _playerSettings:
     ReloadTime: 1
     MovementSpeed: 5.8
-    JumpForce: 40
+    JumpForce: 13
   _catsSettings:
     SavedReward: 50
     KidnapPenalty: 30
