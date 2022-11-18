@@ -3,7 +3,6 @@ using UnityEngine;
 using Zenject;
 using Core.Weapons;
 using Core.Cats;
-using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
 
 namespace Core.Player

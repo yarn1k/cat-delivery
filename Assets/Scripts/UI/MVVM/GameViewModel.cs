@@ -23,6 +23,7 @@ namespace Core.UI
         private GameSettings _gameSettings;
         private CatsSettings _catsSettings;
         private GameSounds _gameSounds;
+        private CameraView _camera;
         private float _startTime;
         private int _time;
         private int _score;
@@ -80,12 +81,18 @@ namespace Core.UI
         public event PropertyChangedEventHandler PropertyChanged;
 
         [Inject]
-        private void Construct(SignalBus signalBus, GameSettings gameSettings, GameSounds gameSounds, CatsSettings catsSettings)
+        private void Construct(
+            SignalBus signalBus, 
+            GameSettings gameSettings, 
+            GameSounds gameSounds, 
+            CatsSettings catsSettings,
+            CameraView cameraView)
         {
             _gameSettings = gameSettings;
             _gameSounds = gameSounds;
             _signalBus = signalBus;
             _catsSettings = catsSettings;
+            _camera = cameraView;
         }
         private void Awake()
         {
@@ -100,6 +107,7 @@ namespace Core.UI
         }
         private void Start()
         {
+            _camera.Fade(CameraView.FadeMode.On, _gameSettings.FadeTime);
             SoundManager.PlayMusic(_gameSounds.GameBackground.Clip, _gameSounds.GameBackground.Volume);
         }
         private void OnDisable()

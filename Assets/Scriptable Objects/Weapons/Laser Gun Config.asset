@@ -17,7 +17,10 @@ MonoBehaviour:
   <Prefab>k__BackingField: {fileID: 173960, guid: 7cabe2baa5a86b247b43c021e54035b6, type: 3}
   <PreparationTime>k__BackingField: 1.5
   <LaserLifetime>k__BackingField: 0.5
-  <KidnappingEffect>k__BackingField: {fileID: 0}
+  <LaserBeamPrefab>k__BackingField: {fileID: 0}
+  <CameraShake>k__BackingField: 1
+  <ShakeFrequence>k__BackingField: 0.1
+  <ShakeDuration>k__BackingField: 1
   <LaserSounds>k__BackingField:
   - Clip: {fileID: 8300000, guid: 34c638d8d99ccfd44a261f13505ab317, type: 3}
     Volume: 0.5

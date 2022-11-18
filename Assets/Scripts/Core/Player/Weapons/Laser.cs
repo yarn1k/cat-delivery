@@ -22,6 +22,7 @@ namespace Core.Weapons
 
         public event Action<Laser> LifetimeElapsed;
         public event Action<CatView> Hit;
+        public event Action Prepared;
 
         [Inject]
         private void Construct(LevelBounds levelBounds)
@@ -97,6 +98,7 @@ namespace Core.Weapons
             sequence.OnComplete(() =>
             { 
                 _prepared = true;
+                Prepared?.Invoke();
                 HitObjectsInsideLaser();
             });
             sequence.Play();

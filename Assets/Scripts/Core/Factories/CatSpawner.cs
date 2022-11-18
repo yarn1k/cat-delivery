@@ -54,7 +54,7 @@ namespace Core
         }
         private void SpawnCat()
         {
-            float width = _catsSettings.CatsSpawnWidth / 2f;
+            float width = _catsSettings.SpawnWidth / 2f;
             Vector2 spawnPosition = new Vector2(Random.Range(-width, width), 5.85f);
             CatView cat = _catFactory.Create();
             cat.transform.position = spawnPosition;

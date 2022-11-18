@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityWeld.Binding;
+using DG.Tweening;
 
 namespace Core.UI
 {
@@ -13,6 +14,7 @@ namespace Core.UI
 
         private int _currentIndex;
         private byte _maxHealth;
+        private Tweener _vibeTweener;
 
         public bool IsGameOver => _currentIndex == 0;
 
@@ -21,6 +23,15 @@ namespace Core.UI
             _parentPanel = parentPanel;
             _heathPrefab = heathPrefab;
 
+        }
+
+        private void VibeLastHealth(bool isVibing)
+        {
+            if (isVibing)
+            {
+                _vibeTweener = _parentPanel.GetChild(0).DOScale(1.5f, 0.5f).SetEase(Ease.InOutSine);
+            }
+            else _vibeTweener.Kill();
         }
 
         public void Init(byte maxHealth)

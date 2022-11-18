@@ -9,6 +9,9 @@ namespace Core.Models
     public class GameSettings
     {
         public ushort GameTime;
+        public float PreparationTime;
+        [Min(0f)]
+        public float FadeTime;
         public byte Lifes;
     }
 
@@ -28,7 +31,7 @@ namespace Core.Models
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 SpawnInterval;
         [Min(0f)]
-        public float CatsSpawnWidth;
+        public float SpawnWidth;
     }
 
     [Serializable]
