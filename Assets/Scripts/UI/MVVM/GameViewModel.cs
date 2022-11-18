@@ -156,6 +156,7 @@ namespace Core.UI
 
             SoundManager.StopMusic();
             SoundManager.PlayOneShot(_gameSounds.GameOver.Clip, _gameSounds.GameOver.Volume);
+            HealthVM.Reset();
             GameOverVM.Show();
         }
     }
