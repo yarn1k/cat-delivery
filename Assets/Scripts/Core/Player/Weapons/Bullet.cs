@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Zenject;
 using Core.Cats;
@@ -12,6 +13,7 @@ namespace Core.Weapons
         private Collider2D _collider;
         private IMemoryPool _pool;
         private float _bulletForce;
+        private Coroutine _lifetimeCoroutine;
 
         public event Action LifetimeElapsed;
         public event Action<Bullet, CatView> Hit;
@@ -38,10 +40,6 @@ namespace Core.Weapons
                 Hit?.Invoke(this, target);
             }
         }
-        private void OnLifetimeElapsed()
-        {
-            LifetimeElapsed?.Invoke();
-        }
         private void Enable(bool isEnabled)
         {
             _collider.enabled = isEnabled;
@@ -51,6 +49,11 @@ namespace Core.Weapons
         public void Dispose()
         {
             ContactPoint = _collider.bounds.center;
+            if (_lifetimeCoroutine != null)
+            {
+                StopCoroutine(_lifetimeCoroutine);
+                _lifetimeCoroutine = null;
+            }
             Disposed?.Invoke(this);
             _pool?.Despawn(this);
         }
@@ -68,7 +71,12 @@ namespace Core.Weapons
             transform.rotation = rotation;
             _bulletForce = force;
             Enable(true);
-            Invoke(nameof(OnLifetimeElapsed), lifetime);
+            _lifetimeCoroutine = StartCoroutine(LifetimeCoroutine(lifetime));
+        }
+        private IEnumerator LifetimeCoroutine(float lifetime)
+        {
+            yield return new WaitForSeconds(lifetime);
+            LifetimeElapsed?.Invoke();
         }
 
         public class Factory : PlaceholderFactory<Vector2, Quaternion, float, float, Bullet> { }

@@ -1,18 +1,13 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 
 namespace Core
 {
+    [RequireComponent(typeof(Camera))]
     public class CameraView : MonoBehaviour
     {
-        [SerializeField]
-        private RawImage _vignette;
-
-        public enum FadeMode { On, Off }
-
         public void Shake(float duration, float frequence)
         {
             StartCoroutine(ShakeCoroutine(duration, frequence));
@@ -55,19 +50,11 @@ namespace Core
             transform.localRotation = startRotation;
         }
 
-        public void Fade(FadeMode mode, float duration, Action onCompleted = null)
+        public async void FadeAsync(UI.FadeMode mode, float duration, Action onCompleted = null)
         {
-            _vignette.gameObject.SetActive(true);
-            float alpha = mode == FadeMode.On ? 0f : 1f;
-            _vignette.color = _vignette.color.WithAlpha(1f - alpha);
-            _vignette.DOFade(alpha, duration)
-                .SetEase(Ease.Linear)
-                .SetLink(gameObject)
-                .OnComplete(() =>
-                {
-                    _vignette.gameObject.SetActive(false);
-                    onCompleted?.Invoke();
-                });
+            var asset = Resources.Load("Prefabs/UI/Vignette") as GameObject;
+            var vignette = Instantiate(asset).GetComponentInChildren<UI.Vignette>();
+            await vignette.AwaitForFade(mode, duration, onCompleted);
         }
     }
 }
