@@ -1,13 +1,19 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using DG.Tweening;
+using Zenject;
 
 namespace Core
 {
     [RequireComponent(typeof(Camera))]
     public class CameraView : MonoBehaviour
     {
+        [Inject]
+        private void Construct(Models.GameSettings settings)
+        {
+            FadeAsync(UI.FadeMode.On, settings.FadeTime);
+        }
+
         public void Shake(float duration, float frequence)
         {
             StartCoroutine(ShakeCoroutine(duration, frequence));
@@ -52,8 +58,8 @@ namespace Core
 
         public async void FadeAsync(UI.FadeMode mode, float duration, Action onCompleted = null)
         {
-            var asset = Resources.Load("Prefabs/UI/Vignette") as GameObject;
-            var vignette = Instantiate(asset).GetComponentInChildren<UI.Vignette>();
+            var asset = Resources.Load<UI.Vignette>("Prefabs/UI/Vignette");
+            var vignette = Instantiate(asset);
             await vignette.AwaitForFade(mode, duration, onCompleted);
         }
     }

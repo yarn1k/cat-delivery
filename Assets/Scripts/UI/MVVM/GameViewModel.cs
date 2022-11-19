@@ -122,7 +122,6 @@ namespace Core.UI
         }
         private void Start()
         {
-            _camera.FadeAsync(FadeMode.On, _gameSettings.FadeTime);
             SoundManager.PlayMusic(_gameSounds.GameBackground.Clip, _gameSounds.GameBackground.Volume);
         }
         private void OnDisable()

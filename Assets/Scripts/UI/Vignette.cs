@@ -16,6 +16,7 @@ namespace Core.UI
         private void Awake()
         {
             _vignette = GetComponent<RawImage>();
+            DontDestroyOnLoad(gameObject);
         }
 
         public async Task AwaitForFade(FadeMode mode, float duration, Action onCompleted = null)
@@ -28,7 +29,7 @@ namespace Core.UI
                 .OnComplete(() =>
                 {
                     onCompleted?.Invoke();
-                    if (mode == FadeMode.On) Destroy(transform.root.gameObject);
+                    if (mode == FadeMode.On) Destroy(gameObject);
                 })
                 .AsyncWaitForCompletion();
         }
