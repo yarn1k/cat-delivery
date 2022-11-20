@@ -23,16 +23,6 @@ namespace Core.Weapons
         public Vector2 ContactPoint { get; private set; }
         public bool HitAnyTarget { get; private set; }
 
-        private AudioSource _audioSource;
-        private AudioPlayerSettings _audioPlayerSettings;
-
-        [Inject]
-        public void Construct(AudioSource audioSource, AudioPlayerSettings audioPlayerSettings)
-        {
-            _audioSource = audioSource;
-            _audioPlayerSettings = audioPlayerSettings;
-        }
-
         private void Awake()
         {
             _collider = GetComponent<Collider2D>();
