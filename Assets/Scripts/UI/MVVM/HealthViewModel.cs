@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityWeld.Binding;
-using DG.Tweening;
 
 namespace Core.UI
 {
@@ -14,8 +13,6 @@ namespace Core.UI
 
         private int _currentIndex;
         private byte _maxHealth;
-        private Tweener _vibeTweener;
-        private Transform _lastHealth;
 
         public bool IsGameOver => _currentIndex == 0;
 
@@ -24,22 +21,6 @@ namespace Core.UI
             _parentPanel = parentPanel;
             _heathPrefab = heathPrefab;
 
-        }
-
-        private void VibeLastHealth(bool isVibing)
-        {
-            if (isVibing)
-            {
-                _vibeTweener = _lastHealth
-                    .DOPunchScale(Vector3.one * 0.5f, duration: 1f, vibrato: 2, elasticity: 1f)
-                    .SetLoops(-1, LoopType.Yoyo)
-                    .SetLink(_lastHealth.gameObject);
-            }
-            else
-            {
-                _vibeTweener.Kill();
-                _lastHealth.DOScale(Vector3.one, 0.5f).SetEase(Ease.Linear).SetLink(_lastHealth.gameObject);
-            }
         }
 
         public void Init(byte maxHealth)
@@ -51,7 +32,6 @@ namespace Core.UI
                 GameObject prefab = GameObject.Instantiate(_heathPrefab, _parentPanel);
                 prefab.transform.SetAsFirstSibling();
             }
-            _lastHealth = _parentPanel.GetChild(0);
         }
         public void Clear()
         {
@@ -59,10 +39,6 @@ namespace Core.UI
             {
                 GameObject.Destroy(_parentPanel.GetChild(i).gameObject);
             }
-        }
-        public void Reset()
-        {
-            VibeLastHealth(false);
         }
         public void AddHealth(byte value)
         {
@@ -87,8 +63,6 @@ namespace Core.UI
                 image.color = Color.grey;
             }
             _currentIndex = newValue;
-
-            if (_currentIndex == 1) VibeLastHealth(true);
         }
     }
 }

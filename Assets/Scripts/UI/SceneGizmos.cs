@@ -52,7 +52,7 @@ namespace Core.UI
         }
         private void DrawCatsSpawnZone()
         {
-            Vector2 size = new Vector2(_settings.CatsSettings.SpawnWidth, 0.5f);
+            Vector2 size = new Vector2(_settings.CatsSettings.CatsSpawnWidth, 0.5f);
             Vector3 offset = new Vector3(0f, _camera.orthographicSize, 0f);
 
             Gizmos.color = Color.green;

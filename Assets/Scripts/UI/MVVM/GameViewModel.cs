@@ -5,7 +5,6 @@ using Zenject;
 using Core.Models;
 using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
-using Core.Audio;
 
 namespace Core.UI
 {
@@ -20,14 +19,10 @@ namespace Core.UI
         private GameObject _gameOverPanel;
 
         private SignalBus _signalBus;
-        private GameSettings _gameSettings;
-        private CatsSettings _catsSettings;
-        private GameSounds _gameSounds;
-        private CameraView _camera;
+        private GameSettings _settings;
         private float _startTime;
         private int _time;
         private int _score;
-        private int _streak;
 
         private HealthViewModel _healthVM;
         private GameOverViewModel _gameOverVM;
@@ -66,19 +61,6 @@ namespace Core.UI
         }
 
         [Binding]
-        public int Streak
-        {
-            get => _streak;
-            set
-            {
-                if (_streak == value) return;
-
-                _streak = value;
-                OnPropertyChanged("Streak");
-            }
-        }
-
-        [Binding]
         public int CurrentTime
         {
             get => _time;
@@ -95,41 +77,27 @@ namespace Core.UI
         public event PropertyChangedEventHandler PropertyChanged;
 
         [Inject]
-        private void Construct(
-            SignalBus signalBus, 
-            GameSettings gameSettings, 
-            GameSounds gameSounds, 
-            CatsSettings catsSettings,
-            CameraView cameraView)
+        private void Construct(SignalBus signalBus, GameSettings settings)
         {
-            _gameSettings = gameSettings;
-            _gameSounds = gameSounds;
+            _settings = settings;
             _signalBus = signalBus;
-            _catsSettings = catsSettings;
-            _camera = cameraView;
         }
         private void Awake()
         {
             HealthVM.Clear();
-            HealthVM.Init(_gameSettings.Lifes);
+            HealthVM.Init(_settings.Lifes);
 
             _startTime = Time.realtimeSinceStartup;
 
             _signalBus.Subscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
-            _signalBus.Subscribe<PlayerWeaponMissedSignal>(OnPlayerWeaponMissed);
-        }
-        private void Start()
-        {
-            SoundManager.PlayMusic(_gameSounds.GameBackground.Clip, _gameSounds.GameBackground.Volume);
         }
         private void OnDisable()
         {
             _signalBus.TryUnsubscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
-            _signalBus.TryUnsubscribe<PlayerWeaponMissedSignal>(OnPlayerWeaponMissed);
         }
         private void Update()
         {
@@ -146,17 +114,15 @@ namespace Core.UI
         }
         private void OnCatFellSignal()
         {
-            Score += _catsSettings.FallingReward;
+            Score += _settings.FallingReward;
         }
         private void OnCatSavedSignal()
         {
-            Score += _catsSettings.SavedReward;
-            Streak++;
+            Score += _settings.SavedReward;
         }
         private void OnCatKidnappedSignal()
         {
-            Score -= _catsSettings.KidnapPenalty;
-            Streak = 0;
+            Score -= _settings.KidnapPenalty;
             HealthVM.RemoveHealth(1);
 
             if (IsGameOver)
@@ -165,19 +131,12 @@ namespace Core.UI
                 OnGameOverSignal();
             }
         }
-        private void OnPlayerWeaponMissed()
-        {
-            Streak = 0;
-        }
         private void OnGameOverSignal()
         {
             _signalBus.TryUnsubscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
 
-            SoundManager.StopMusic();
-            SoundManager.PlayOneShot(_gameSounds.GameOver.Clip, _gameSounds.GameOver.Volume);
-            HealthVM.Reset();
             GameOverVM.Show();
         }
     }

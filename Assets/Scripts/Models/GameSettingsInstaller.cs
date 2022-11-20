@@ -9,18 +9,15 @@ namespace Core.Models
     public class GameSettings
     {
         public ushort GameTime;
-        public float PreparationTime;
-        [Min(0f)]
-        public float FadeTime;
         public byte Lifes;
+        public ushort SavedReward;
+        public ushort KidnapPenalty;
+        public ushort FallingReward;
     }
 
     [Serializable]
     public class CatsSettings
     {
-        public ushort SavedReward;
-        public ushort KidnapPenalty;
-        public ushort FallingReward;
         public SpriteLibraryAsset[] Skins;
         [Range(0f, 10f)]
         public float CatsFallingSpeed;
@@ -31,7 +28,7 @@ namespace Core.Models
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 SpawnInterval;
         [Min(0f)]
-        public float SpawnWidth;
+        public float CatsSpawnWidth;
     }
 
     [Serializable]
@@ -41,7 +38,7 @@ namespace Core.Models
         public float ReloadTime;
         [Range(0f, 10f)]
         public float MovementSpeed;
-        [Range(0f, 20f)]
+        [Range(0f, 50f)]
         public float JumpForce;
     }
 

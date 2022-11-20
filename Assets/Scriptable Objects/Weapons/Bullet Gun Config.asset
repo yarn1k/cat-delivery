@@ -15,7 +15,7 @@ MonoBehaviour:
   <DisplayName>k__BackingField: Bullet Gun
   <Description>k__BackingField: 
   <Prefab>k__BackingField: {fileID: 7768844413886633855, guid: 5369b27e6ac71ec40afc978fa6e07b84, type: 3}
-  <BulletForce>k__BackingField: 30
+  <BulletForce>k__BackingField: 15
   <BulletLifetime>k__BackingField: 0.7
   <Explosions>k__BackingField:
   - {fileID: 8662079162876358615, guid: 88af74dbec2470d4899ff442419b6a30, type: 3}
