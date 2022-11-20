@@ -7,10 +7,12 @@ using DG.Tweening;
 namespace Core.UI
 {
     [Binding]
-    public class HealthViewModel
+    public class HealthViewModel : MonoBehaviour
     {
-        private readonly Transform _parentPanel;
-        private readonly GameObject _heathPrefab;
+        [SerializeField]
+        private Transform _parentPanel;
+        [SerializeField]
+        private GameObject _heathPrefab;
 
         private int _currentIndex;
         private byte _maxHealth;
@@ -18,13 +20,6 @@ namespace Core.UI
         private Transform _lastHealth;
 
         public bool IsGameOver => _currentIndex == 0;
-
-        public HealthViewModel(Transform parentPanel, GameObject heathPrefab)
-        {
-            _parentPanel = parentPanel;
-            _heathPrefab = heathPrefab;
-
-        }
 
         private void VibeLastHealth(bool isVibing)
         {
