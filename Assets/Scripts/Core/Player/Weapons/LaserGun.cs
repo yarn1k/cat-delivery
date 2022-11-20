@@ -10,6 +10,7 @@ namespace Core.Weapons
         private readonly Laser.Factory _laserFactory;
 
         public float ReloadTime => _model.ReloadTime;
+        public event Action Missed;
         public event Action<CatView> Hit;
         public float Cooldown => _model.CooldownTime;
 
@@ -43,6 +44,8 @@ namespace Core.Weapons
 
         private void OnLifetimeElapsed(Laser laser)
         {
+            if (!laser.HitAnyTarget) Missed?.Invoke();
+            laser.LifetimeElapsed -= OnLifetimeElapsed;
             laser.Hit -= Hit.Invoke;
             laser.Dispose();
         }

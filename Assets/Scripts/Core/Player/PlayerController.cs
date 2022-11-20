@@ -3,7 +3,6 @@ using UnityEngine;
 using Zenject;
 using Core.Weapons;
 using Core.Cats;
-using Core.Infrastructure.Signals.Cats;
 using Core.Infrastructure.Signals.Game;
 
 namespace Core.Player
@@ -60,6 +59,10 @@ namespace Core.Player
         {
             target.Save();          
         }
+        private void OnWeaponMissed()
+        {
+            _signalBus.Fire<PlayerWeaponMissedSignal>();
+        }
         private void OnGameOverSignal()
         {
             _model.InputSystem.Disable();
@@ -97,6 +100,7 @@ namespace Core.Player
             if (_model.PrimaryWeapon != null)
             {
                 _model.PrimaryWeapon.Hit -= OnWeaponHit;
+                _model.PrimaryWeapon.Missed -= OnWeaponMissed;
                 _model.InputSystem.Fire -= OnFire;
             }
         }
@@ -127,6 +131,7 @@ namespace Core.Player
 
             _model.PrimaryWeapon = weapon;
             _model.PrimaryWeapon.Hit += OnWeaponHit;
+            _model.PrimaryWeapon.Missed += OnWeaponMissed;
             _model.InputSystem.Fire += OnFire;
         } 
     }

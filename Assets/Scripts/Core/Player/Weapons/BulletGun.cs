@@ -12,6 +12,7 @@ namespace Core.Weapons
         private readonly Bullet.ExplosionFactory _explosionFactory;
 
         public float ReloadTime => _model.ReloadTime;
+        public event Action Missed;
         public event Action<CatView> Hit;
 
         public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory, Bullet.ExplosionFactory explosionFactory)
@@ -58,6 +59,7 @@ namespace Core.Weapons
             bullet.LifetimeElapsed -= bullet.Dispose;
             bullet.Hit -= OnBulletHit;
             bullet.Disposed -= OnDisposed;
+            if (!bullet.HitAnyTarget) Missed?.Invoke();
         }
         private void OnBulletHit(Bullet bullet, CatView target)
         {

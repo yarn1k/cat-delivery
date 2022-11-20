@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using Zenject;
 using Core.Cats;
@@ -13,13 +14,14 @@ namespace Core.Weapons
         private Collider2D _collider;
         private IMemoryPool _pool;
         private float _bulletForce;
-        private Vector2 _contactPoint;
+        private Coroutine _lifetimeCoroutine;
 
         public event Action LifetimeElapsed;
         public event Action<Bullet, CatView> Hit;
         public event Action<Bullet> Disposed;
 
-        public ref Vector2 ContactPoint => ref _contactPoint;
+        public Vector2 ContactPoint { get; private set; }
+        public bool HitAnyTarget { get; private set; }
 
         private AudioSource _audioSource;
         private AudioPlayerSettings _audioPlayerSettings;
@@ -41,18 +43,13 @@ namespace Core.Weapons
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            _contactPoint = collision.ClosestPoint(transform.position);
+            ContactPoint = collision.ClosestPoint(transform.position);
             
             if (collision.TryGetComponent(out CatView target) && target.Interactable)
             {
-                Audio playerOnHit = _audioPlayerSettings.PlayerOnHit;
-                _audioSource.PlayOneShot(playerOnHit.Clip, playerOnHit.Volume);
+                HitAnyTarget = true;
                 Hit?.Invoke(this, target);
             }
-        }
-        private void OnLifetimeElapsed()
-        {
-            LifetimeElapsed?.Invoke();
         }
         private void Enable(bool isEnabled)
         {
@@ -62,14 +59,20 @@ namespace Core.Weapons
         }
         public void Dispose()
         {
-            _contactPoint = _collider.bounds.center;
-            _pool?.Despawn(this);
+            ContactPoint = _collider.bounds.center;
+            if (_lifetimeCoroutine != null)
+            {
+                StopCoroutine(_lifetimeCoroutine);
+                _lifetimeCoroutine = null;
+            }
             Disposed?.Invoke(this);
+            _pool?.Despawn(this);
         }
 
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnDespawned()
         {
             _pool = null;
+            HitAnyTarget = false;
             Enable(false);
         }
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnSpawned(Vector2 position, Quaternion rotation, float force, float lifetime, IMemoryPool pool)
@@ -79,7 +82,12 @@ namespace Core.Weapons
             transform.rotation = rotation;
             _bulletForce = force;
             Enable(true);
-            Invoke(nameof(OnLifetimeElapsed), lifetime);
+            _lifetimeCoroutine = StartCoroutine(LifetimeCoroutine(lifetime));
+        }
+        private IEnumerator LifetimeCoroutine(float lifetime)
+        {
+            yield return new WaitForSeconds(lifetime);
+            LifetimeElapsed?.Invoke();
         }
 
         public class Factory : PlaceholderFactory<Vector2, Quaternion, float, float, Bullet> { }
