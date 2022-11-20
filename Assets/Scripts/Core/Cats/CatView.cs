@@ -22,7 +22,7 @@ namespace Core.Cats
         private Vector3 _direction = Vector3.zero;
         private float _velocity;
         private bool _kidnapped;
-        public bool Interactable => _interactable;
+        public ref bool Interactable => ref _interactable;
 
         public event Action<CatView> Saved;
         public event Action<CatView, Vector2> Kidnapped;
