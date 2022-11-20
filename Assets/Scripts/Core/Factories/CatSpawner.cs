@@ -5,6 +5,7 @@ using Core.Cats;
 using Core.Models;
 using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.Cats;
+using Core.UI;
 
 namespace Core
 {
@@ -12,7 +13,8 @@ namespace Core
     {
         private SignalBus _signalBus;
         private CatView.Factory _catFactory;
-        private CatsSettings _settings;
+        private DisposableLabelVFX.Factory _labelFactory;
+        private CatsSettings _catsSettings;
         private float _timer;
         private float _spawnTime;
         private bool _enabled = true;
@@ -20,16 +22,21 @@ namespace Core
         private LinkedList<CatView> _cats = new LinkedList<CatView>();
 
         [Inject]
-        private void Construct(SignalBus signalBus, CatView.Factory catFactory, CatsSettings settings)
+        private void Construct(
+            SignalBus signalBus, 
+            CatView.Factory catFactory, 
+            DisposableLabelVFX.Factory labelFactory, 
+            CatsSettings catsSettings)
         {
             _signalBus = signalBus;
             _catFactory = catFactory;
-            _settings = settings;
+            _labelFactory = labelFactory;
+            _catsSettings = catsSettings;
         }
 
         void IInitializable.Initialize()
         {
-            _spawnTime = Random.Range(_settings.SpawnInterval.x, _settings.SpawnInterval.y);
+            _spawnTime = Random.Range(_catsSettings.SpawnInterval.x, _catsSettings.SpawnInterval.y);
             _signalBus.Subscribe<GameOverSignal>(OnGameOverSignal);
         }
         void ITickable.Tick()
@@ -38,7 +45,7 @@ namespace Core
             {
                 SpawnCat();
                 _timer = Time.realtimeSinceStartup;
-                _spawnTime = Random.Range(_settings.SpawnInterval.x, _settings.SpawnInterval.y);
+                _spawnTime = Random.Range(_catsSettings.SpawnInterval.x, _catsSettings.SpawnInterval.y);
             }
         }
         void ILateDisposable.LateDispose()
@@ -47,7 +54,7 @@ namespace Core
         }
         private void SpawnCat()
         {
-            float width = _settings.CatsSpawnWidth / 2f;
+            float width = _catsSettings.SpawnWidth / 2f;
             Vector2 spawnPosition = new Vector2(Random.Range(-width, width), 5.85f);
             CatView cat = _catFactory.Create();
             cat.transform.position = spawnPosition;
@@ -57,10 +64,10 @@ namespace Core
             cat.Kidnapped += OnCatKidnapped;
 
             cat.SetInteractable(true);
-            cat.SetDirection(Vector2.down, _settings.CatsFallingSpeed);
+            cat.SetDirection(Vector2.down, _catsSettings.CatsFallingSpeed);
 
-            int rand = Random.Range(0, _settings.Skins.Length);
-            cat.SetSkin(_settings.Skins[rand]);
+            int rand = Random.Range(0, _catsSettings.Skins.Length);
+            cat.SetSkin(_catsSettings.Skins[rand]);
 
             _cats.AddLast(cat);
         }
@@ -68,15 +75,21 @@ namespace Core
         private void OnCatKidnapped(CatView cat, Vector2 direction)
         {
             cat.SetInteractable(false);
-            cat.SetDirection(direction, _settings.CatsKidnapSpeed);
+            cat.SetDirection(direction, _catsSettings.CatsKidnapSpeed);
             cat.Dispose();
             _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = cat });
+
+            var label = _labelFactory.Create($"Kidnapped\n-{_catsSettings.KidnapPenalty}", Color.red);
+            label.transform.position = cat.transform.position;
         }
         private void OnCatSaved(CatView cat)
         {
             cat.SetInteractable(false);
-            cat.SetDirection(Vector2.down, _settings.CatsSaveSpeed);
+            cat.SetDirection(Vector2.down, _catsSettings.CatsSaveSpeed);
             _signalBus.Fire(new CatSavedSignal { SavedCat = cat });
+
+            var label = _labelFactory.Create($"Saved\n+{_catsSettings.SavedReward}", Color.green);
+            label.transform.position = cat.transform.position;
         }
         private void OnCatDisposed(CatView cat)
         {

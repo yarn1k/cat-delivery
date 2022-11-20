@@ -18,6 +18,7 @@ namespace Core.Input
         public bool Enabled => _playerControls.Player.enabled;
         public event Action Fire;
         public event Action Jump;
+        public event Action Pause;
 
         public StandaloneInputController()
         {
@@ -29,6 +30,7 @@ namespace Core.Input
             _playerControls.Enable();
             _playerControls.Player.Fire.started += _ => Fire?.Invoke();
             _playerControls.Player.Jump.started += _ => Jump?.Invoke();
+            _playerControls.Player.Pause.started += _ => Pause?.Invoke();
             _camera = Camera.main;
         }
         void ILateDisposable.LateDispose()

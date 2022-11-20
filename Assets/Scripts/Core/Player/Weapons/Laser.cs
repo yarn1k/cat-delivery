@@ -18,8 +18,12 @@ namespace Core.Weapons
         private bool _prepared;
         private Vector3 _startPosition;
 
+        private const byte KidnappedMax = 2;
+
         public event Action<Laser> LifetimeElapsed;
         public event Action<CatView> Hit;
+        public event Action Prepared;
+        public bool HitAnyTarget { get; private set; }
 
         [Inject]
         private void Construct(LevelBounds levelBounds)
@@ -36,6 +40,7 @@ namespace Core.Weapons
         {
             if (_prepared && collision.TryGetComponent(out CatView target) && target.Interactable)
             {
+                HitAnyTarget = true;
                 Hit?.Invoke(target);
             }
         }
@@ -49,7 +54,7 @@ namespace Core.Weapons
             if (!_prepared) return;
 
             float angle = transform.eulerAngles.z;
-            Collider2D[] colliders = new Collider2D[3];
+            Collider2D[] colliders = new Collider2D[KidnappedMax];
             int hits = Physics2D.OverlapBoxNonAlloc(_collider.bounds.center, _collider.size, angle, colliders, 1 << Constants.CatsLayer);
             if (hits > 0)
             {
@@ -95,6 +100,7 @@ namespace Core.Weapons
             sequence.OnComplete(() =>
             { 
                 _prepared = true;
+                Prepared?.Invoke();
                 HitObjectsInsideLaser();
             });
             sequence.Play();
@@ -104,6 +110,7 @@ namespace Core.Weapons
         {
             _pool = null;
             _collider.enabled = false;
+            HitAnyTarget = false;
         }
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnSpawned(Vector2 position, Quaternion rotation, float preparationTime, float lifetime, IMemoryPool pool)
         {

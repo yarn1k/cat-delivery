@@ -14,6 +14,8 @@ namespace Core.Infrastructure.Installers
         [SerializeField]
         private LevelBounds _levelBounds;
         [SerializeField]
+        private CameraView _cameraView;
+        [SerializeField]
         private GameObject _labelVFXPrefab;   
         [SerializeField]
         private GameObject _catPrefab;
@@ -23,10 +25,11 @@ namespace Core.Infrastructure.Installers
 
         public override void InstallBindings()
         {
-            Container.DeclareSignal<GameOverSignal>();              
+            Container.DeclareSignal<GameOverSignal>();
+            Container.DeclareSignal<PlayerWeaponMissedSignal>();
 
             Container.Bind<LevelBounds>().FromInstance(_levelBounds).AsSingle();
-            Container.Bind<IInitializable>().To<GameController>().AsSingle();
+            Container.Bind<CameraView>().FromInstance(_cameraView).AsSingle();
 
             BindFactories();
             BindPools();
