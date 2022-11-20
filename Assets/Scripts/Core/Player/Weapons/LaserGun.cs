@@ -12,6 +12,7 @@ namespace Core.Weapons
         public float ReloadTime => _model.ReloadTime;
         public event Action Missed;
         public event Action<CatView> Hit;
+        public float Cooldown => _model.CooldownTime;
 
         public LaserGun(LaserGunModel model, Laser.Factory laserFactory)
         {
