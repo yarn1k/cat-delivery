@@ -1,15 +1,26 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Zenject;
+using Core.Loading;
+using System;
 
 namespace Core
 {
     public class Bootstrap : MonoBehaviour
     {
+        private ILoadingScreenProvider _loadingScreenProvider;
+
+        [Inject]
+        private void Construct(ILoadingScreenProvider provider)
+        {
+            _loadingScreenProvider = provider;
+        }
+
         private IEnumerator Start()
         {
             yield return InitExternalServices();
-            yield return LoadProcess();
+            LoadProcess();
         }
 
         private IEnumerator InitExternalServices()
@@ -19,9 +30,12 @@ namespace Core
             // etc...
             yield return null;
         }
-        private IEnumerator LoadProcess()
+        private void LoadProcess()
         {
-            yield return SceneManager.LoadSceneAsync(Constants.Scenes.MainMenu, LoadSceneMode.Additive);
+            Queue<LazyLoadingOperation> operations = new Queue<LazyLoadingOperation>();
+            Func<ILoadingOperation> menuLoadingOperation = () => new SceneLoadingOperation(Constants.Scenes.MainMenu);
+            operations.Enqueue(menuLoadingOperation);
+            _loadingScreenProvider.LoadAndDestroyAsync(operations);
         }
     }
 }

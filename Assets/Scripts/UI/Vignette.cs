@@ -19,7 +19,7 @@ namespace Core.UI
             DontDestroyOnLoad(gameObject);
         }
 
-        public async Task AwaitForFade(FadeMode mode, float duration, Action onCompleted = null)
+        public async Task AwaitForFade(FadeMode mode, float duration)
         {
             float alpha = mode == FadeMode.On ? 0f : 1f;
             _vignette.color = _vignette.color.WithAlpha(1f - alpha);
@@ -28,7 +28,6 @@ namespace Core.UI
                 .SetLink(gameObject)
                 .OnComplete(() =>
                 {
-                    onCompleted?.Invoke();
                     if (mode == FadeMode.On) Destroy(gameObject);
                 })
                 .AsyncWaitForCompletion();

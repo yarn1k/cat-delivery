@@ -1604,9 +1604,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1759784de55d55144bee06dc637a7d2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _healthParentTransform: {fileID: 1634786838}
-  _healthPrefab: {fileID: 269829155046627472, guid: ff37225ba1e3d844a84f4042a953b380, type: 3}
-  _gameOverPanel: {fileID: 2076733778}
+  <HealthVM>k__BackingField: {fileID: 1634786840}
+  <GameOverVM>k__BackingField: {fileID: 2076733783}
 --- !u!224 &1068185762
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4717,7 +4716,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1407730572}
   m_OnClick:
     m_PersistentCalls:
@@ -5058,11 +5057,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1634786837}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49626dc5a75e18d47b9eedb772ba5906, type: 3}
+  m_Script: {fileID: 11500000, guid: d3989839743db8b4b859a5a392079852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewModelPropertyName: Core.UI.GameViewModel.HealthVM
-  viewModelTypeName: Core.UI.HealthViewModel
+  _parentPanel: {fileID: 1634786838}
+  _heathPrefab: {fileID: 269829155046627472, guid: ff37225ba1e3d844a84f4042a953b380, type: 3}
 --- !u!1 &1667142002
 GameObject:
   m_ObjectHideFlags: 0
@@ -5996,7 +5995,7 @@ GameObject:
   - component: {fileID: 2076733779}
   - component: {fileID: 2076733781}
   - component: {fileID: 2076733780}
-  - component: {fileID: 2076733782}
+  - component: {fileID: 2076733783}
   m_Layer: 5
   m_Name: Game Over View
   m_TagString: Untagged
@@ -6065,7 +6064,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2076733778}
   m_CullTransparentMesh: 1
---- !u!114 &2076733782
+--- !u!114 &2076733783
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6074,11 +6073,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2076733778}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49626dc5a75e18d47b9eedb772ba5906, type: 3}
+  m_Script: {fileID: 11500000, guid: 8bac434c3f0dd7e4d8a6f3452cc46ce4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  viewModelPropertyName: Core.UI.GameViewModel.GameOverVM
-  viewModelTypeName: Core.UI.GameOverViewModel
 --- !u!1 &2087199895
 GameObject:
   m_ObjectHideFlags: 0
