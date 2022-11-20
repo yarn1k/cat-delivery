@@ -56,11 +56,11 @@ namespace Core
             transform.localRotation = startRotation;
         }
 
-        public async void FadeAsync(UI.FadeMode mode, float duration, Action onCompleted = null)
+        public async void FadeAsync(UI.FadeMode mode, float duration)
         {
             var asset = Resources.Load<UI.Vignette>("Prefabs/UI/Vignette");
             var vignette = Instantiate(asset);
-            await vignette.AwaitForFade(mode, duration, onCompleted);
+            await vignette.AwaitForFade(mode, duration);
         }
     }
 }

@@ -1,26 +1,31 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityWeld.Binding;
+using Zenject;
+using Core.Loading;
 
 namespace Core.UI
 {
     [Binding]
-    public class GameOverViewModel
+    public class GameOverViewModel : MonoBehaviour
     {
-        private readonly GameObject _gameOverPanel;
+        private ILoadingScreenProvider _loadingScreenProvider;
 
-        public GameOverViewModel(GameObject gameOverPanel)
+        [Inject]
+        private void Construct(ILoadingScreenProvider provider)
         {
-            _gameOverPanel = gameOverPanel;
+            _loadingScreenProvider = provider;
         }
 
         public void Show()
         {
-            _gameOverPanel.SetActive(true);
+            gameObject.SetActive(true);
         }
         public void Hide()
         {
-            _gameOverPanel.SetActive(false);
+            gameObject.SetActive(false);
         }
 
         [Binding]
@@ -32,13 +37,12 @@ namespace Core.UI
         [Binding]
         public void BackToMainMenu()
         {
-            SceneManager.UnloadSceneAsync(Constants.Scenes.Game).completed += op =>
-            {
-                if (op.isDone)
-                {
-                    SceneManager.LoadSceneAsync(Constants.Scenes.MainMenu, LoadSceneMode.Additive);
-                }
-            };
+            var operations = new Queue<LazyLoadingOperation>();
+            Func<ILoadingOperation> sceneCleanupOperation = () => new SceneCleanupOperation(Constants.Scenes.Game);
+            Func<ILoadingOperation> gameLoadingOperation = () => new SceneLoadingOperation(Constants.Scenes.MainMenu);
+            operations.Enqueue(sceneCleanupOperation);
+            operations.Enqueue(gameLoadingOperation);
+            _loadingScreenProvider.LoadAndDestroyAsync(operations);
         }
     }
 }
