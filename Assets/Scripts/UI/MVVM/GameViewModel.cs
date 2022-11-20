@@ -24,6 +24,9 @@ namespace Core.UI
         private int _score;
         private int _streak;
 
+        private string _playerKeyOfHighScore = "HighScore";
+        private string _playerKeyOfBestTime = "BestTime";
+
         [Binding]
         public int Score
         {
@@ -60,6 +63,34 @@ namespace Core.UI
 
                 _time = value;
                 OnPropertyChanged("CurrentTime");
+            }
+        }
+
+        [Binding]
+        public int HighScore
+        {
+            get
+            {
+                return PlayerPrefs.GetInt(_playerKeyOfHighScore);
+            }
+            set
+            {
+                if (value > PlayerPrefs.GetInt(_playerKeyOfHighScore))
+                    PlayerPrefs.SetInt(_playerKeyOfHighScore, value);
+            }
+        }
+
+        [Binding]
+        public int BestTime
+        {
+            get
+            {
+                return PlayerPrefs.GetInt(_playerKeyOfBestTime);
+            }
+            set
+            {
+                if (value > PlayerPrefs.GetInt(_playerKeyOfBestTime))
+                    PlayerPrefs.SetInt(_playerKeyOfBestTime, value);
             }
         }
 
@@ -141,6 +172,9 @@ namespace Core.UI
         }
         private void OnGameOverSignal()
         {
+            HighScore = _score;
+            BestTime = _time;
+
             _signalBus.TryUnsubscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.TryUnsubscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.TryUnsubscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
