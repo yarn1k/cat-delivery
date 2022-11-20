@@ -1,14 +1,10 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using Zenject;
 using Core.Enemy.States;
-using Core.Weapons;
-using Core.Cats;
-using Core.Infrastructure.Signals.Cats;
 
 namespace Core.Enemy
 {
-    public class EnemyController : IInitializable, ITickable, ILateDisposable, IWeaponHolder
+    public class EnemyController : IInitializable, ITickable
     {
         private readonly EnemyModel _model;
         private readonly EnemyView _view;
@@ -27,28 +23,11 @@ namespace Core.Enemy
             _stateMachine = new EnemyStateMachine(this, _model);
             _stateMachine.SwitchState<UpAndDownState>();
         }
-        void ILateDisposable.LateDispose()
-        {
-            UnbindWeapon();
-        }
         void ITickable.Tick()
         {
             _stateMachine.CurrentState.Update();
         }
 
-        private void OnWeaponHit(CatView target)
-        {
-            target.Kidnap();
-            _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = target });
-        }
-
-        private void UnbindWeapon()
-        {
-            if (_model.PrimaryWeapon != null)
-            {
-                _model.PrimaryWeapon.Hit -= OnWeaponHit;
-            }
-        }
         public void Enable()
         {
             _view.gameObject.SetActive(true);
@@ -64,15 +43,6 @@ namespace Core.Enemy
         public void SetPosition(Vector2 position)
         {
             _view.transform.position = position;
-        }
-        public void SetPrimaryWeapon(IWeapon weapon)
-        {
-            if (weapon == null) throw new ArgumentNullException("Weapon is null!");
-
-            UnbindWeapon();
-
-            _model.PrimaryWeapon = weapon;
-            _model.PrimaryWeapon.Hit += OnWeaponHit;
         }
     }
 }

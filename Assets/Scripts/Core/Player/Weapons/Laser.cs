@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 using Core.Cats;
@@ -40,12 +41,27 @@ namespace Core.Weapons
         }
         private void OnLifetimeElapsed()
         {
-            ShowLaser(false, 0.5f)
-                .SetLink(gameObject)
-                .SetEase(Ease.Linear)
-                .OnComplete(() => LifetimeElapsed?.Invoke(this));
+            _prepared = false;
+            ShowLaser(false, 0.5f).OnComplete(() => LifetimeElapsed?.Invoke(this));
         }
+        private void HitObjectsInsideLaser()
+        {
+            if (!_prepared) return;
 
+            float angle = transform.eulerAngles.z;
+            Collider2D[] colliders = new Collider2D[3];
+            int hits = Physics2D.OverlapBoxNonAlloc(_collider.bounds.center, _collider.size, angle, colliders, 1 << Constants.CatsLayer);
+            if (hits > 0)
+            {
+                foreach (Collider2D collider in colliders)
+                {
+                    if (collider != null && collider.TryGetComponent(out CatView cat) && cat.Interactable)
+                    {
+                        Hit?.Invoke(cat);
+                    }
+                }
+            }
+        }
         private void SetWidth(float width)
         {
             _renderer.size = new Vector2(width, _renderer.size.y);
@@ -61,8 +77,10 @@ namespace Core.Weapons
         private Tweener ShowLaser(bool isShow, float time)
         {
             float alpha = isShow ? 1f : 0f;
-            _renderer.color = _renderer.color.WithAlpha(1f - alpha);
-            return _renderer.DOColor(_renderer.color.WithAlpha(alpha), time);
+            return _renderer
+                .DOColor(_renderer.color.WithAlpha(alpha), time)
+                .SetLink(gameObject)
+                .SetEase(Ease.Linear);
         }
         private void PrepareLaser(float preparationTime)
         {
@@ -74,7 +92,11 @@ namespace Core.Weapons
             sequence.Join(DOTween.To(() => 0f, x => SetWidth(x), width, preparationTime));
             sequence.SetLink(gameObject);
             sequence.SetEase(Ease.Linear);
-            sequence.OnComplete(() => _prepared = true);
+            sequence.OnComplete(() =>
+            { 
+                _prepared = true;
+                HitObjectsInsideLaser();
+            });
             sequence.Play();
         }
 
@@ -82,7 +104,6 @@ namespace Core.Weapons
         {
             _pool = null;
             _collider.enabled = false;
-            _prepared = false;
         }
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnSpawned(Vector2 position, Quaternion rotation, float preparationTime, float lifetime, IMemoryPool pool)
         {

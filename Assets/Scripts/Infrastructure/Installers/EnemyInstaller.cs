@@ -27,7 +27,7 @@ namespace Core.Infrastructure.Installers
             LaserGunModel laserGunModel = new LaserGunModel(model.AttackCooldownInterval.x, _weaponSettings.LaserGunConfig, view.FirePoint);
             LaserGun laserGun = Container.Instantiate<LaserGun>(new object[] { laserGunModel });
 
-            controller.SetPrimaryWeapon(laserGun);
+            //controller.SetPrimaryWeapon(laserGun);
 
             Container.BindInterfacesTo<EnemyController>().FromInstance(controller).AsSingle();
         }

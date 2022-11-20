@@ -1,4 +1,5 @@
 ﻿using System;
+using Core.Audio;
 using Core.Cats;
 
 namespace Core.Weapons
@@ -8,7 +9,7 @@ namespace Core.Weapons
         private readonly LaserGunModel _model;
         private readonly Laser.Factory _laserFactory;
 
-        public float Cooldown => _model.CooldownTime;
+        public float ReloadTime => _model.ReloadTime;
         public event Action<CatView> Hit;
         public float Cooldown => _model.CooldownTime;
 
@@ -29,10 +30,14 @@ namespace Core.Weapons
                 _model.LaserGunConfig.PreparationTime,
                 _model.LaserGunConfig.LaserLifetime
             );
+
+            var clip = _model.LaserGunConfig.LaserSounds.Random();
+            SoundManager.PlayOneShot(clip.Clip, clip.Volume);
+
             laser.LifetimeElapsed += OnLifetimeElapsed;
             laser.Hit += Hit.Invoke;
 
-            _model.Cooldown.Run(_model.CooldownTime);
+            _model.Cooldown.Run(_model.ReloadTime);
             return true;
         }
 

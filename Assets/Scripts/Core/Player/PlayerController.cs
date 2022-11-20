@@ -4,6 +4,7 @@ using Zenject;
 using Core.Weapons;
 using Core.Cats;
 using Core.Infrastructure.Signals.Cats;
+using Core.Infrastructure.Signals.Game;
 
 namespace Core.Player
 {
@@ -26,11 +27,13 @@ namespace Core.Player
         void IInitializable.Initialize()
         {
             _model.InputSystem.Jump += OnJump;
+            _signalBus.Subscribe<GameOverSignal>(OnGameOverSignal);
         }
         void ILateDisposable.LateDispose()
         {
             UnbindWeapon();
             _model.InputSystem.Jump -= OnJump;
+            _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOverSignal);
         }
         void ITickable.Tick()
         {
@@ -50,13 +53,16 @@ namespace Core.Player
         {
             if (_model.PrimaryWeapon.TryShoot())
             {
-                _view.ReloadGun(_model.PrimaryWeapon.Cooldown);
+                _view.ReloadGun(_model.PrimaryWeapon.ReloadTime);
             }
         }
         private void OnWeaponHit(CatView target)
         {
-            target.Save();
-            _signalBus.Fire(new CatSavedSignal { SavedCat = target });
+            target.Save();          
+        }
+        private void OnGameOverSignal()
+        {
+            _model.InputSystem.Disable();
         }
 
         private void ProcessMovementInput()

@@ -13,10 +13,13 @@ namespace Core.Weapons
         private Collider2D _collider;
         private IMemoryPool _pool;
         private float _bulletForce;
+        private Vector2 _contactPoint;
 
-        public Vector2 Center => _collider.bounds.center;
-        public event Action<Bullet> LifetimeElapsed;
+        public event Action LifetimeElapsed;
         public event Action<Bullet, CatView> Hit;
+        public event Action<Bullet> Disposed;
+
+        public ref Vector2 ContactPoint => ref _contactPoint;
 
         private AudioSource _audioSource;
         private AudioPlayerSettings _audioPlayerSettings;
@@ -38,6 +41,8 @@ namespace Core.Weapons
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            _contactPoint = collision.ClosestPoint(transform.position);
+            
             if (collision.TryGetComponent(out CatView target) && target.Interactable)
             {
                 Audio playerOnHit = _audioPlayerSettings.PlayerOnHit;
@@ -47,19 +52,25 @@ namespace Core.Weapons
         }
         private void OnLifetimeElapsed()
         {
-            LifetimeElapsed?.Invoke(this);
+            LifetimeElapsed?.Invoke();
+        }
+        private void Enable(bool isEnabled)
+        {
+            _collider.enabled = isEnabled;
+            _collider.attachedRigidbody.simulated = isEnabled;
+            _collider.attachedRigidbody.constraints = isEnabled ? RigidbodyConstraints2D.FreezeRotation : RigidbodyConstraints2D.FreezeAll;
         }
         public void Dispose()
         {
+            _contactPoint = _collider.bounds.center;
             _pool?.Despawn(this);
+            Disposed?.Invoke(this);
         }
 
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnDespawned()
         {
             _pool = null;
-            _collider.enabled = false;
-            _collider.attachedRigidbody.simulated = false;
-            _collider.attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeAll;
+            Enable(false);
         }
         void IPoolable<Vector2, Quaternion, float, float, IMemoryPool>.OnSpawned(Vector2 position, Quaternion rotation, float force, float lifetime, IMemoryPool pool)
         {
@@ -67,9 +78,7 @@ namespace Core.Weapons
             transform.position = position;
             transform.rotation = rotation;
             _bulletForce = force;
-            _collider.enabled = true;
-            _collider.attachedRigidbody.simulated = true;
-            _collider.attachedRigidbody.constraints = RigidbodyConstraints2D.FreezeRotation;
+            Enable(true);
             Invoke(nameof(OnLifetimeElapsed), lifetime);
         }
 

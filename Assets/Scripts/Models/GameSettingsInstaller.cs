@@ -9,8 +9,10 @@ namespace Core.Models
     public class GameSettings
     {
         public ushort GameTime;
+        public byte Lifes;
         public ushort SavedReward;
         public ushort KidnapPenalty;
+        public ushort FallingReward;
     }
 
     [Serializable]
@@ -25,6 +27,8 @@ namespace Core.Models
         public float CatsSaveSpeed;
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 SpawnInterval;
+        [Min(0f)]
+        public float CatsSpawnWidth;
     }
 
     [Serializable]
@@ -36,10 +40,6 @@ namespace Core.Models
         public float MovementSpeed;
         [Range(0f, 50f)]
         public float JumpForce;
-        [Range(0f, 50f)]
-        public float NormalGravityScale;
-        [Range(0f, 50f)]
-        public float FallingGravityScale;
     }
 
     [Serializable]
@@ -49,6 +49,10 @@ namespace Core.Models
         public float MovementSpeed;
         [Editor.MinMaxSlider(0f, 10f, width: 45f)]
         public Vector2 AttackCooldownInterval;
+        [Min(0f)]
+        public float LaserSpawnHeight;
+        [Range(0f, 45f)]
+        public float LaserAngle;
     }
 
     [Serializable]
@@ -58,7 +62,7 @@ namespace Core.Models
         public LaserGunConfig LaserGunConfig;
     }
 
-    [CreateAssetMenu(fileName = "Game Settings", menuName = "Installers/Game Settings")]
+    [CreateAssetMenu(menuName = "Configuration/Settings/Game Settings")]
     public class GameSettingsInstaller : ScriptableObjectInstaller<GameSettingsInstaller>
     {
         [SerializeField]
@@ -71,6 +75,9 @@ namespace Core.Models
         private EnemySettings _enemySettings;
         [SerializeField]
         private WeaponsSettings _weaponsSettings;
+
+        public CatsSettings CatsSettings => _catsSettings;
+        public EnemySettings EnemySettings => _enemySettings;
 
         public override void InstallBindings()
         {

@@ -1,4 +1,3 @@
-using Core.Match;
 using System;
 using UnityEngine;
 using Zenject;
@@ -6,7 +5,7 @@ using Zenject;
 namespace Core.Models
 {
     [Serializable]
-    public class Audio
+    public struct AudioSound
     {
         public AudioClip Clip;
         [Range(0f, 1f)]
@@ -14,51 +13,64 @@ namespace Core.Models
     }
 
     [Serializable]
-    public class AudioGameSettings
+    public class AudioSettings
     {
-        public Audio GameBackground;
-        public Audio GameLevelStart;
-        public Audio GameBonus;
-        public Audio GameOver;
+        public byte PoolCapacity;
+        [Range(0f, 1f)]
+        public float GlobalVolume;
     }
 
     [Serializable]
-    public class AudioUISettings
+    public class GameSounds
     {
-        public Audio UIClick;
+        public AudioSound GameBackground;
+        public AudioSound GameLevelStart;
+        public AudioSound GameBonus;
+        public AudioSound GameOver;
     }
 
     [Serializable]
-    public class AudioPlayerSettings
+    public class UISounds
     {
-        public Audio PlayerShoot;
-        public Audio PlayerOnHit;
+        public AudioSound UIClick;
     }
 
     [Serializable]
-    public class AudioCatsSettings
+    public class PlayerSounds
     {
-        public Audio CatGrabbed;
+        public AudioSound PlayerOnHit;
     }
 
-    [CreateAssetMenu(fileName = "Audio Settings", menuName = "Installers/Audio Settings")]
+    [Serializable]
+    public class CatsSounds
+    {
+        public AudioSound CatGrabbed;
+    }
+
+
+    [CreateAssetMenu(menuName = "Configuration/Settings/Audio Settings")]
     public class AudioSettingsInstaller : ScriptableObjectInstaller<AudioSettingsInstaller>
     {
         [SerializeField]
-        private AudioGameSettings _audioSettings;
+        private AudioSettings _audioSettings;
+
+        [Header("Sounds")]
         [SerializeField]
-        private AudioUISettings _audioUISettings;
+        private GameSounds _gameSounds;
         [SerializeField]
-        private AudioPlayerSettings _audioPlayerSettings;
+        private UISounds _UISounds;
         [SerializeField]
-        private AudioCatsSettings _audioCatsSettings;
+        private PlayerSounds _playerSounds;
+        [SerializeField]
+        private CatsSounds _catsSounds;
 
         public override void InstallBindings()
         {
-            Container.Bind<AudioGameSettings>().FromInstance(_audioSettings).IfNotBound();
-            Container.Bind<AudioUISettings>().FromInstance(_audioUISettings).IfNotBound();
-            Container.Bind<AudioPlayerSettings>().FromInstance(_audioPlayerSettings).IfNotBound();
-            Container.Bind<AudioCatsSettings>().FromInstance(_audioCatsSettings).IfNotBound();
+            Container.Bind<AudioSettings>().FromInstance(_audioSettings).IfNotBound();
+            Container.Bind<GameSounds>().FromInstance(_gameSounds).IfNotBound();
+            Container.Bind<UISounds>().FromInstance(_UISounds).IfNotBound();
+            Container.Bind<PlayerSounds>().FromInstance(_playerSounds).IfNotBound();
+            Container.Bind<CatsSounds>().FromInstance(_catsSounds).IfNotBound();
         }
     }
 }

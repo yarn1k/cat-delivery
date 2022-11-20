@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using Core.Cats;
+using Core.Audio;
 
 namespace Core.Weapons
 {
@@ -10,7 +11,7 @@ namespace Core.Weapons
         private readonly Bullet.Factory _bulletFactory;
         private readonly Bullet.ExplosionFactory _explosionFactory;
 
-        public float Cooldown => _model.CooldownTime;
+        public float ReloadTime => _model.ReloadTime;
         public event Action<CatView> Hit;
 
         public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory, Bullet.ExplosionFactory explosionFactory)
@@ -31,19 +32,18 @@ namespace Core.Weapons
                 _model.BulletGunConfig.BulletForce,
                 _model.BulletGunConfig.BulletLifetime
             );
-            bullet.LifetimeElapsed += DisposeBullet;
-            bullet.Hit += OnBulletHit;
 
-            _model.Cooldown.Run(_model.CooldownTime);
+            var clip = _model.BulletGunConfig.ShootSounds.Random();
+            SoundManager.PlayOneShot(clip.Clip, clip.Volume);
+            
+            bullet.LifetimeElapsed += bullet.Dispose;
+            bullet.Hit += OnBulletHit;
+            bullet.Disposed += OnDisposed;
+
+            _model.Cooldown.Run(_model.ReloadTime);
             return true;
         }
 
-        private void DisposeBullet(Bullet bullet)
-        {
-            bullet.Hit -= OnBulletHit;
-            bullet.LifetimeElapsed -= DisposeBullet;
-            bullet.Dispose();
-        }
         private void CreateExplosion(Vector2 position)
         {
             int rand = UnityEngine.Random.Range(0, _model.BulletGunConfig.Explosions.Length);
@@ -51,10 +51,17 @@ namespace Core.Weapons
             GameObject explosion = _explosionFactory.Create(prefab, position);
             GameObject.Destroy(explosion, 0.8f);
         }
+
+        private void OnDisposed(Bullet bullet)
+        {
+            CreateExplosion(bullet.ContactPoint);
+            bullet.LifetimeElapsed -= bullet.Dispose;
+            bullet.Hit -= OnBulletHit;
+            bullet.Disposed -= OnDisposed;
+        }
         private void OnBulletHit(Bullet bullet, CatView target)
         {
-            CreateExplosion(bullet.Center);
-            DisposeBullet(bullet);
+            bullet.Dispose();
             Hit?.Invoke(target);
         }
     }

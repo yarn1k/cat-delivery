@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -5,14 +6,22 @@ namespace Core
 {
     public class Bootstrap : MonoBehaviour
     {
-        private void Start()
+        private IEnumerator Start()
         {
-            LoadProcess();
+            yield return InitExternalServices();
+            yield return LoadProcess();
         }
 
-        private void LoadProcess()
+        private IEnumerator InitExternalServices()
         {
-            SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+            // init Steam API...
+            // init Battle.Net API...
+            // etc...
+            yield return null;
+        }
+        private IEnumerator LoadProcess()
+        {
+            yield return SceneManager.LoadSceneAsync(Constants.Scenes.MainMenu, LoadSceneMode.Additive);
         }
     }
 }

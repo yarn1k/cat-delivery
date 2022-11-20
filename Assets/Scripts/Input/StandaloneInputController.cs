@@ -52,6 +52,8 @@ namespace Core.Input
         public void Disable()
         {
             _playerControls.Disable();
+
+            _horizontalAxis = 0f;
         }
     }
 }
