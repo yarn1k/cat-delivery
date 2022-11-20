@@ -11,6 +11,7 @@ namespace Core.Input
         public bool Enabled { get; }
         public event Action Fire;
         public event Action Jump;
+        public event Action Pause;
         public void Enable();
         public void Disable();
     }

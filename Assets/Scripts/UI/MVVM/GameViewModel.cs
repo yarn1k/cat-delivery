@@ -12,48 +12,20 @@ namespace Core.UI
     [Binding]
     public class GameViewModel : MonoBehaviour, INotifyPropertyChanged
     {
-        [SerializeField]
-        private Transform _healthParentTransform;
-        [SerializeField]
-        private GameObject _healthPrefab;
-        [SerializeField]
-        private GameObject _gameOverPanel;
+        [field: SerializeField] private HealthViewModel HealthVM { get; set; }
+        [field: SerializeField] private GameOverViewModel GameOverVM { get; set; }
 
         private SignalBus _signalBus;
         private GameSettings _gameSettings;
         private CatsSettings _catsSettings;
         private GameSounds _gameSounds;
-        private CameraView _camera;
         private float _startTime;
         private int _time;
         private int _score;
         private int _streak;
 
-        private HealthViewModel _healthVM;
-        private GameOverViewModel _gameOverVM;
-
         private string _playerKeyOfHighScore = "HighScore";
         private string _playerKeyOfBestTime = "BestTime";
-
-        [Binding]
-        public HealthViewModel HealthVM
-        {
-            get
-            {
-                _healthVM ??= new HealthViewModel(_healthParentTransform, _healthPrefab);
-                return _healthVM;
-            }
-        }
-
-        [Binding]
-        public GameOverViewModel GameOverVM
-        {
-            get
-            {
-                _gameOverVM ??= new GameOverViewModel(_gameOverPanel);
-                return _gameOverVM;
-            }
-        }
 
         [Binding]
         public int Score
@@ -130,14 +102,12 @@ namespace Core.UI
             SignalBus signalBus, 
             GameSettings gameSettings, 
             GameSounds gameSounds, 
-            CatsSettings catsSettings,
-            CameraView cameraView)
+            CatsSettings catsSettings)
         {
             _gameSettings = gameSettings;
             _gameSounds = gameSounds;
             _signalBus = signalBus;
             _catsSettings = catsSettings;
-            _camera = cameraView;
         }
         private void Awake()
         {
