@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using Zenject;
@@ -24,7 +23,7 @@ namespace Core
             float factor = 0f;
             while (factor < 1f)
             {
-                transform.position = startPosition + (Vector3)UnityEngine.Random.insideUnitCircle * frequence;
+                transform.position = startPosition + (Vector3)Random.insideUnitCircle * frequence;
                 factor += Time.deltaTime / duration;
                 yield return null;
             }

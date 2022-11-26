@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine;
 using Zenject;
 using Core.Cats;
-using Core.Models;
 
 namespace Core.Weapons
 {
