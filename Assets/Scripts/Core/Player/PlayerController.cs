@@ -14,7 +14,6 @@ namespace Core.Player
         private readonly PlayerView _view;
 
         private const float FIELD_OF_VIEW = 55f;
-        private const string MOVING_KEY = "IsMoving";
 
         public PlayerController(SignalBus signalBus, PlayerModel playerModel, PlayerView playerView)
         {
@@ -70,14 +69,8 @@ namespace Core.Player
 
         private void ProcessMovementInput()
         {
-            bool isMoving = _model.InputSystem.HorizontalAxis != 0f;
-            
-            _view.Animator.SetBool(MOVING_KEY, isMoving);
+            _view.SetDirection(_model.InputSystem.HorizontalAxis);
 
-            if (isMoving)
-            {
-                _view.FlipSprite(_model.InputSystem.HorizontalAxis > 0f);
-            }
             bool isCursorRightThanPlayer = _model.InputSystem.MouseWorldPosition.x > _view.transform.position.x;
             _view.FlipSprite(isCursorRightThanPlayer);
 

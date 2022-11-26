@@ -10,12 +10,15 @@ namespace Core.Player
         private Rigidbody2D _rigidbody;
         [SerializeField] 
         private SpriteRenderer _gun;
-        [field: SerializeField] public Animator Animator { get; private set; }
+        [SerializeField]
+        private Animator _animator;
         [field: SerializeField] public Transform FirePoint { get; private set; }
 
         private float _startLocalScaleX;
+        private const string MOVING_KEY = "IsMoving";
         public bool IsGrounded { get; private set; }
         public bool FlipX => transform.localScale.x < 0f;
+
 
         private void Awake()
         {
@@ -36,6 +39,17 @@ namespace Core.Player
             transform.localScale = new Vector3(_startLocalScaleX * sign, transform.localScale.y, transform.localScale.z);
             FirePoint.localRotation = Quaternion.Euler(0f, 0f, firePointRotZ);
         } 
+        public void SetDirection(float horizontalAxis)
+        {
+            bool isMoving = horizontalAxis != 0f;
+
+            _animator.SetBool(MOVING_KEY, isMoving);
+
+            if (isMoving)
+            {
+                FlipSprite(horizontalAxis > 0f);
+            }
+        }
         public void RotateGun(Quaternion rotation)
         {
             _gun.transform.rotation = rotation;

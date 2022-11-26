@@ -118,7 +118,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 3774151234430739616}
   _gun: {fileID: 3188277075093489484}
-  <Animator>k__BackingField: {fileID: 4703970524798164720}
+  _animator: {fileID: 4703970524798164720}
   <FirePoint>k__BackingField: {fileID: 4296866135773746290}
 --- !u!1 &2684112283163175594
 GameObject:

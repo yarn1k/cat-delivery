@@ -44,7 +44,7 @@ namespace Core
         {
             int sign = isLeft ? -1 : 1;
             float y = Random.Range(-_spawnHeight, _spawnHeight);
-            return new Vector2(sign * _levelBounds.Size.x / 2, y);
+            return new Vector2(sign * _levelBounds.Size.x / 2f, y);
         }
         private Quaternion GetRandomRotation(bool isLeft)
         {
