@@ -10,7 +10,7 @@ using Core.Audio;
 namespace Core.UI
 {
     [Binding]
-    public class GameViewModel : MonoBehaviour, INotifyPropertyChanged
+    public class GameViewModel : MonoBehaviour, INotifyPropertyChanged, IPauseHandler
     {
         [field: SerializeField] private HealthViewModel HealthVM { get; set; }
         [field: SerializeField] private GameOverViewModel GameOverVM { get; set; }
@@ -102,12 +102,14 @@ namespace Core.UI
             SignalBus signalBus, 
             GameSettings gameSettings, 
             GameSounds gameSounds, 
-            CatsSettings catsSettings)
+            CatsSettings catsSettings,
+            IPauseProvider pauseProvider)
         {
             _gameSettings = gameSettings;
             _gameSounds = gameSounds;
             _signalBus = signalBus;
             _catsSettings = catsSettings;
+            pauseProvider.Register(this);
         }
         private void Awake()
         {
@@ -183,6 +185,11 @@ namespace Core.UI
             SoundManager.PlayOneShot(_gameSounds.GameOver.Clip, _gameSounds.GameOver.Volume);
             HealthVM.Reset();
             GameOverVM.Show();
+        }
+
+        void IPauseHandler.SetPaused(bool isPaused)
+        {
+            
         }
     }
 }

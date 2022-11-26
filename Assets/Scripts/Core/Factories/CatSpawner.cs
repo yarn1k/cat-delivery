@@ -9,7 +9,7 @@ using Core.UI;
 
 namespace Core
 {
-    public class CatSpawner : IInitializable, ITickable, ILateDisposable
+    public class CatSpawner : IInitializable, ITickable, ILateDisposable, IPauseHandler
     {
         private SignalBus _signalBus;
         private CatView.Factory _catFactory;
@@ -41,16 +41,23 @@ namespace Core
         }
         void ITickable.Tick()
         {
-            if (_enabled && Time.realtimeSinceStartup - _timer >= _spawnTime)
+            if (!_enabled) return;
+
+            if (_timer >= _spawnTime)
             {
                 SpawnCat();
-                _timer = Time.realtimeSinceStartup;
                 _spawnTime = Random.Range(_catsSettings.SpawnInterval.x, _catsSettings.SpawnInterval.y);
+                _timer = 0f;
             }
+            else _timer += Time.deltaTime;
         }
         void ILateDisposable.LateDispose()
         {
             _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOverSignal);
+        }
+        void IPauseHandler.SetPaused(bool isPaused)
+        {
+            _enabled = !isPaused;
         }
         private void SpawnCat()
         {
@@ -105,6 +112,6 @@ namespace Core
             {
                 _cats.First.Value.Dispose();
             }
-        } 
+        }
     }
 }

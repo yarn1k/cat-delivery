@@ -9,22 +9,21 @@ namespace Core.UI
 {
     [Binding]
     public class GamePauseViewModel : MonoBehaviour
-    {
+    {        
         private ILoadingScreenProvider _loadingScreenProvider;
+        private IPauseProvider _pauseProvider;
 
         [Inject]
-        private void Construct(ILoadingScreenProvider provider)
+        private void Construct(ILoadingScreenProvider loadingScreenProvider, IPauseProvider pauseProvider)
         {
-            _loadingScreenProvider = provider;
+            _loadingScreenProvider = loadingScreenProvider;
+            _pauseProvider = pauseProvider;
         }
 
-        public void Show()
+        public void Pause()
         {
             gameObject.SetActive(true);
-        }
-        public void Hide()
-        {
-            gameObject.SetActive(false);
+            _pauseProvider.SetPaused(true);
         }
 
         [Binding]

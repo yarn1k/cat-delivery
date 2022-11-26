@@ -8,14 +8,13 @@ using Core.Infrastructure.Signals.Game;
 
 namespace Core
 {
-    public class LaserSpawner : IInitializable, ITickable, ILateDisposable
+    public class LaserSpawner : IInitializable, ITickable, ILateDisposable, IPauseHandler
     {
         private readonly SignalBus _signalBus;
         private readonly Laser.Factory _factory;
         private readonly LaserGunConfig _laserConfig;
         private readonly Vector2 _attackCooldownInterval;
         private readonly float _spawnHeight;
-        private readonly LevelBounds _levelBounds;
         private readonly CameraView _camera;
 
         private Vector2 _position;
@@ -28,7 +27,6 @@ namespace Core
             Laser.Factory factory, 
             EnemySettings enemySettings, 
             WeaponsSettings weaponSettings, 
-            LevelBounds levelBounds,
             CameraView camera)
         {
             _signalBus = signalBus;
@@ -36,7 +34,6 @@ namespace Core
             _attackCooldownInterval = enemySettings.AttackCooldownInterval;
             _spawnHeight = enemySettings.LaserSpawnHeight;
             _laserConfig = weaponSettings.LaserGunConfig;
-            _levelBounds = levelBounds;
             _camera = camera;
         }
 
@@ -44,7 +41,7 @@ namespace Core
         {
             int sign = isLeft ? -1 : 1;
             float y = Random.Range(-_spawnHeight, _spawnHeight);
-            return new Vector2(sign * _levelBounds.Size.x / 2f, y);
+            return new Vector2(sign * 10f, y);
         }
         private Quaternion GetRandomRotation(bool isLeft)
         {
@@ -107,14 +104,21 @@ namespace Core
         }
         void ITickable.Tick()
         {
-            if (_enabled && Time.realtimeSinceStartup - _timer >= _spawnTime)
+            if (!_enabled) return;
+
+            if (_timer >= _spawnTime)
             {
                 bool isLeft = Random.Range(0f, 1f) > 0.5f ? true : false;
 
                 SpawnLaser(isLeft);
-                _timer = Time.realtimeSinceStartup;
                 _spawnTime = Random.Range(_attackCooldownInterval.x, _attackCooldownInterval.y);
+                _timer = 0f;
             }
+            else _timer += Time.deltaTime;
+        }
+        void IPauseHandler.SetPaused(bool isPaused)
+        {
+            _enabled = !isPaused;
         }
     }
 }
