@@ -6,6 +6,7 @@ using Core.UI;
 using Core.Weapons;
 using Core.Models;
 using Core.Infrastructure.Signals.Game;
+using Core.Input;
 
 namespace Core.Infrastructure.Installers
 {
@@ -26,6 +27,7 @@ namespace Core.Infrastructure.Installers
             BindFactories();
             BindPools();
             BindCats();
+            BindPlayer();
         }
 
         private void BindCats()
@@ -33,11 +35,17 @@ namespace Core.Infrastructure.Installers
             Container.DeclareSignal<CatFellSignal>();
             Container.DeclareSignal<CatSavedSignal>();
             Container.DeclareSignal<CatKidnappedSignal>();
-            Container.BindInterfacesAndSelfTo<CatSpawner>().AsSingle();
+        }
+        private void BindPlayer()
+        {
+            Container.DeclareSignal<PlayerWeaponMissedSignal>();
+            Container.BindInterfacesTo<StandaloneInputController>().AsSingle();
         }
         private void BindFactories()
         {
             Container.BindFactory<GameObject, Vector2, GameObject, Bullet.ExplosionFactory>();
+            Container.BindInterfacesAndSelfTo<PlayerFactory>().AsSingle();
+            Container.BindInterfacesAndSelfTo<CatSpawner>().AsSingle();
             Container.BindInterfacesAndSelfTo<LaserSpawner>().AsSingle();
         }
         private void BindPools()

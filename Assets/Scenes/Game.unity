@@ -752,7 +752,6 @@ GameObject:
   - component: {fileID: 388849118}
   - component: {fileID: 388849122}
   - component: {fileID: 388849121}
-  - component: {fileID: 388849124}
   - component: {fileID: 388849125}
   m_Layer: 0
   m_Name: SceneContext
@@ -807,7 +806,6 @@ MonoBehaviour:
   _scriptableObjectInstallers: []
   _monoInstallers:
   - {fileID: 388849121}
-  - {fileID: 388849124}
   - {fileID: 388849125}
   _installerPrefabs: []
   _autoRun: 1
@@ -826,19 +824,6 @@ MonoBehaviour:
   _parentNewObjectsUnderSceneContext: 0
   _contractNames: []
   _parentContractNames: []
---- !u!114 &388849124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 388849117}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79c7529f324cb6743984450606055ff4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playerPrefab: {fileID: 184188967521832262, guid: 90e28cb68ee5e0d4e88f1527340f9133, type: 3}
 --- !u!114 &388849125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -851,7 +836,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 907b310e5fabc8f4196bd2f5b9bca047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cameraView: {fileID: 519420033}
 --- !u!1 &399092020
 GameObject:
   m_ObjectHideFlags: 0

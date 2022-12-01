@@ -22,7 +22,7 @@ namespace Core
             {
                 if (disposable is CatView cat && cat.Interactable)
                 {
-                    _signalBus.Fire(new CatFellSignal { FallenCat = cat });
+                    _signalBus.Fire<CatFellSignal>();
                 }
 
                 disposable.Dispose();

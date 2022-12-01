@@ -84,7 +84,7 @@ namespace Core
             cat.SetInteractable(false);
             cat.SetDirection(direction, _catsSettings.CatsKidnapSpeed);
             cat.Dispose();
-            _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = cat });
+            _signalBus.Fire<CatKidnappedSignal>();
 
             var label = _labelFactory.Create($"Kidnapped\n-{_catsSettings.KidnapPenalty}", Color.red);
             label.transform.position = cat.transform.position;
@@ -93,7 +93,7 @@ namespace Core
         {
             cat.SetInteractable(false);
             cat.SetDirection(Vector2.down, _catsSettings.CatsSaveSpeed);
-            _signalBus.Fire(new CatSavedSignal { SavedCat = cat });
+            _signalBus.Fire<CatSavedSignal>();
 
             var label = _labelFactory.Create($"Saved\n+{_catsSettings.SavedReward}", Color.green);
             label.transform.position = cat.transform.position;

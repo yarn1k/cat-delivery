@@ -11,6 +11,8 @@ namespace Core.Player
         [SerializeField] 
         private SpriteRenderer _gun;
         [SerializeField]
+        private SpriteRenderer _head;
+        [SerializeField]
         private Animator _animator;
         [field: SerializeField] public Transform FirePoint { get; private set; }
 
@@ -42,7 +44,7 @@ namespace Core.Player
         public void SetDirection(float horizontalAxis)
         {
             bool isMoving = horizontalAxis != 0f;
-
+            _head.gameObject.SetActive(horizontalAxis != 0f);
             _animator.SetBool(MOVING_KEY, isMoving);
 
             if (isMoving)
