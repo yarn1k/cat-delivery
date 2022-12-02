@@ -3,13 +3,12 @@ using UnityEngine;
 using Zenject;
 using Core.Cats;
 using Core.Models;
-using Core.Infrastructure.Signals.Game;
 using Core.Infrastructure.Signals.Cats;
 using Core.UI;
 
 namespace Core
 {
-    public class CatSpawner : IInitializable, ITickable, ILateDisposable
+    public class CatSpawner : IInitializable, ITickable, IPauseHandler
     {
         private SignalBus _signalBus;
         private CatView.Factory _catFactory;
@@ -17,7 +16,7 @@ namespace Core
         private CatsSettings _catsSettings;
         private float _timer;
         private float _spawnTime;
-        private bool _enabled = true;
+        private bool _enabled;
 
         private LinkedList<CatView> _cats = new LinkedList<CatView>();
 
@@ -37,21 +36,20 @@ namespace Core
         void IInitializable.Initialize()
         {
             _spawnTime = Random.Range(_catsSettings.SpawnInterval.x, _catsSettings.SpawnInterval.y);
-            _signalBus.Subscribe<GameOverSignal>(OnGameOverSignal);
         }
         void ITickable.Tick()
         {
-            if (_enabled && Time.realtimeSinceStartup - _timer >= _spawnTime)
+            if (!_enabled) return;
+
+            if (_timer >= _spawnTime)
             {
                 SpawnCat();
-                _timer = Time.realtimeSinceStartup;
                 _spawnTime = Random.Range(_catsSettings.SpawnInterval.x, _catsSettings.SpawnInterval.y);
+                _timer = 0f;
             }
+            else _timer += Time.deltaTime;
         }
-        void ILateDisposable.LateDispose()
-        {
-            _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOverSignal);
-        }
+        void IPauseHandler.SetPaused(bool isPaused) => SetEnabled(!isPaused);
         private void SpawnCat()
         {
             float width = _catsSettings.SpawnWidth / 2f;
@@ -77,7 +75,7 @@ namespace Core
             cat.SetInteractable(false);
             cat.SetDirection(direction, _catsSettings.CatsKidnapSpeed);
             cat.Dispose();
-            _signalBus.Fire(new CatKidnappedSignal { KidnappedCat = cat });
+            _signalBus.Fire<CatKidnappedSignal>();
 
             var label = _labelFactory.Create($"Kidnapped\n-{_catsSettings.KidnapPenalty}", Color.red);
             label.transform.position = cat.transform.position;
@@ -86,7 +84,7 @@ namespace Core
         {
             cat.SetInteractable(false);
             cat.SetDirection(Vector2.down, _catsSettings.CatsSaveSpeed);
-            _signalBus.Fire(new CatSavedSignal { SavedCat = cat });
+            _signalBus.Fire<CatSavedSignal>();
 
             var label = _labelFactory.Create($"Saved\n+{_catsSettings.SavedReward}", Color.green);
             label.transform.position = cat.transform.position;
@@ -98,13 +96,16 @@ namespace Core
             cat.Kidnapped -= OnCatKidnapped;
             _cats.Remove(cat);
         }
-        private void OnGameOverSignal()
+        public void SetEnabled(bool isEnabled)
         {
-            _enabled = false;
+            _enabled = isEnabled;
+        }
+        public void Dispose()
+        {
             while (_cats.Count > 0)
             {
                 _cats.First.Value.Dispose();
             }
-        } 
+        }
     }
 }

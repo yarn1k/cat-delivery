@@ -6,7 +6,7 @@ using Core.Infrastructure.Signals.Cats;
 
 namespace Core
 {
-    public class EndTrigger : MonoBehaviour
+    public class DisposeCollisionDetector : MonoBehaviour
     {
         private SignalBus _signalBus;
 
@@ -22,7 +22,7 @@ namespace Core
             {
                 if (disposable is CatView cat && cat.Interactable)
                 {
-                    _signalBus.Fire(new CatFellSignal { FallenCat = cat });
+                    _signalBus.Fire<CatFellSignal>();
                 }
 
                 disposable.Dispose();

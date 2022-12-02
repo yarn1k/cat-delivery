@@ -1,19 +1,25 @@
 ﻿using Core.Input;
 using Core.Weapons;
+using Zenject;
 
 namespace Core.Player
 {
     public class PlayerModel
     {
-        public readonly IInputSystem InputSystem;
         public readonly float ReloadTime;
         public readonly float MovementSpeed;
         public readonly float JumpForce;
+        public IInputSystem InputSystem { get; private set; }
         public IWeapon PrimaryWeapon { get; set; }
 
-        public PlayerModel(IInputSystem inputSystem, float reloadTime, float movementSpeed, float jumpForce)
+        [Inject]
+        private void Construct(IInputSystem inputSystem)
         {
             InputSystem = inputSystem;
+        }
+
+        public PlayerModel(float reloadTime, float movementSpeed, float jumpForce)
+        {
             ReloadTime = reloadTime;
             MovementSpeed = movementSpeed;
             JumpForce = jumpForce;

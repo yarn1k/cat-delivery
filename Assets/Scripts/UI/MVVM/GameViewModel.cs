@@ -1,3 +1,4 @@
+using System.Collections;
 using System.ComponentModel;
 using UnityEngine;
 using UnityWeld.Binding;
@@ -10,7 +11,7 @@ using Core.Audio;
 namespace Core.UI
 {
     [Binding]
-    public class GameViewModel : MonoBehaviour, INotifyPropertyChanged
+    public class GameViewModel : MonoBehaviour, INotifyPropertyChanged, IPauseHandler
     {
         [field: SerializeField] private HealthViewModel HealthVM { get; set; }
         [field: SerializeField] private GameOverViewModel GameOverVM { get; set; }
@@ -19,13 +20,14 @@ namespace Core.UI
         private GameSettings _gameSettings;
         private CatsSettings _catsSettings;
         private GameSounds _gameSounds;
-        private float _startTime;
-        private int _time;
+        private Countdown _countdown;
+        private float _time;
         private int _score;
         private int _streak;
+        private bool _enabled;
 
-        private string _playerKeyOfHighScore = "HighScore";
-        private string _playerKeyOfBestTime = "BestTime";
+        private readonly string _playerKeyOfHighScore = "HighScore";
+        private readonly string _playerKeyOfBestTime = "BestTime";
 
         [Binding]
         public int Score
@@ -54,7 +56,7 @@ namespace Core.UI
         }
 
         [Binding]
-        public int CurrentTime
+        public float CurrentTime
         {
             get => _time;
             set
@@ -81,7 +83,7 @@ namespace Core.UI
         }
 
         [Binding]
-        public int BestTime
+        public float BestTime
         {
             get
             {
@@ -90,7 +92,7 @@ namespace Core.UI
             set
             {
                 if (value > PlayerPrefs.GetInt(_playerKeyOfBestTime))
-                    PlayerPrefs.SetInt(_playerKeyOfBestTime, value);
+                    PlayerPrefs.SetInt(_playerKeyOfBestTime, (int)value);
             }
         }
 
@@ -102,27 +104,31 @@ namespace Core.UI
             SignalBus signalBus, 
             GameSettings gameSettings, 
             GameSounds gameSounds, 
-            CatsSettings catsSettings)
+            CatsSettings catsSettings,
+            Countdown countdown,
+            IPauseProvider pauseProvider)
         {
             _gameSettings = gameSettings;
             _gameSounds = gameSounds;
             _signalBus = signalBus;
             _catsSettings = catsSettings;
+            _countdown = countdown;
+            pauseProvider.Register(this);
         }
         private void Awake()
         {
             HealthVM.Clear();
             HealthVM.Init(_gameSettings.Lifes);
 
-            _startTime = Time.realtimeSinceStartup;
-
             _signalBus.Subscribe<CatFellSignal>(OnCatFellSignal);
             _signalBus.Subscribe<CatSavedSignal>(OnCatSavedSignal);
             _signalBus.Subscribe<CatKidnappedSignal>(OnCatKidnappedSignal);
             _signalBus.Subscribe<PlayerWeaponMissedSignal>(OnPlayerWeaponMissed);
         }
-        private void Start()
+        private IEnumerator Start()
         {
+            yield return _countdown.StartCountdown(_gameSettings.PreparationTime);
+            _enabled = true;
             SoundManager.PlayMusic(_gameSounds.GameBackground.Clip, _gameSounds.GameBackground.Volume);
         }
         private void OnDisable()
@@ -134,9 +140,9 @@ namespace Core.UI
         }
         private void Update()
         {
-            if (HealthVM.IsGameOver) return;
+            if (!_enabled || HealthVM.IsGameOver) return;
 
-            CurrentTime = (int)Mathf.Floor(Time.realtimeSinceStartup - _startTime);
+            CurrentTime += Time.deltaTime;
         }
         private void OnPropertyChanged(string propertyName)
         {
@@ -160,11 +166,7 @@ namespace Core.UI
             Streak = 0;
             HealthVM.RemoveHealth(1);
 
-            if (IsGameOver)
-            {
-                _signalBus.Fire<GameOverSignal>();
-                OnGameOverSignal();
-            }
+            if (IsGameOver) OnGameOverSignal();
         }
         private void OnPlayerWeaponMissed()
         {
@@ -172,6 +174,8 @@ namespace Core.UI
         }
         private void OnGameOverSignal()
         {
+            _signalBus.Fire<GameOverSignal>();
+
             HighScore = _score;
             BestTime = _time;
 
@@ -183,6 +187,11 @@ namespace Core.UI
             SoundManager.PlayOneShot(_gameSounds.GameOver.Clip, _gameSounds.GameOver.Volume);
             HealthVM.Reset();
             GameOverVM.Show();
+        }
+
+        void IPauseHandler.SetPaused(bool isPaused)
+        {
+            _enabled = !isPaused;
         }
     }
 }

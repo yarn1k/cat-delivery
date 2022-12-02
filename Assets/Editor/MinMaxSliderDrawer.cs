@@ -14,46 +14,40 @@ internal sealed class MinMaxSliderAttributeDrawer : PropertyDrawer
             return;
         }
 
+        int originalIndentLevel = EditorGUI.indentLevel;
         var attr = (MinMaxSliderAttribute)attribute;
 
-        EditorGUI.LabelField(position, new GUIContent(property.displayName));
+        EditorGUI.BeginProperty(position, label, property);
 
-        Rect rect = new Rect(EditorGUIUtility.labelWidth, position.y, attr.Width / 2, EditorGUIUtility.singleLineHeight);
-        Rect minRect = GetRect(rect, attr.Width, 2f);
-        Rect sliderRect = GetRect(minRect, position.width - minRect.x - attr.Width * 2 + 8f);
-        Rect maxRect = GetRect(sliderRect, attr.Width);
-
+        position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
+        EditorGUI.indentLevel = 0;
         float min = isVector2Int ? property.vector2IntValue.x : property.vector2Value.x;
         float max = isVector2Int ? property.vector2IntValue.y : property.vector2Value.y;
+        float fieldWidth = position.width / 4f - 4f;
+        float sliderWidth = position.width / 2f;
+        position.width = fieldWidth;
+        min = EditorGUI.FloatField(position, min);
+        position.x += fieldWidth + 4f;
+        position.width = sliderWidth;
 
-        EditorGUI.BeginProperty(position, label, property);
-        EditorGUI.BeginChangeCheck();
-        min = EditorGUI.FloatField(minRect, min);
-        max = EditorGUI.FloatField(maxRect, max);
-        EditorGUI.MinMaxSlider(sliderRect, ref min, ref max, attr.MinLimit, attr.MaxLimit);
+        EditorGUI.MinMaxSlider(position, ref min, ref max, attr.MinLimit, attr.MaxLimit);
+        position.x += sliderWidth + 4f;
+        position.width = fieldWidth;
+        max = EditorGUI.FloatField(position, max);
+
         if (EditorGUI.EndChangeCheck())
         {
             if (isVector2Int)
-                property.vector2IntValue = CalculateIntRange(min, max);
+                property.vector2IntValue = new Vector2Int(Mathf.FloorToInt(min), Mathf.FloorToInt(max));
 
             else
                 property.vector2Value = new Vector2(min, max);
 
             property.serializedObject.ApplyModifiedProperties();
         }
-        EditorGUI.EndProperty();
-    }
 
-    private Vector2Int CalculateIntRange(float min, float max)
-    {
-        return new Vector2Int(Mathf.FloorToInt(min), Mathf.FloorToInt(max));
-    }
-    private Rect GetRect(Rect lastRect, float width, float padding = 5f)
-    {
-        return new Rect(
-            lastRect.position.x + lastRect.width + padding,
-            lastRect.position.y,
-            width,
-            lastRect.height);
+        EditorGUI.EndProperty();
+
+        EditorGUI.indentLevel = originalIndentLevel;
     }
 }

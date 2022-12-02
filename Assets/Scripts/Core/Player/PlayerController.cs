@@ -1,44 +1,31 @@
 ﻿using System;
 using UnityEngine;
-using Zenject;
 using Core.Weapons;
 using Core.Cats;
-using Core.Infrastructure.Signals.Game;
 
 namespace Core.Player
 {
-    public class PlayerController : IInitializable, ILateDisposable, ITickable, IWeaponHolder
+    public class PlayerController : IWeaponHolder, IPauseHandler
     {
-        private readonly SignalBus _signalBus;
         private readonly PlayerModel _model;
         private readonly PlayerView _view;
 
         private const float FIELD_OF_VIEW = 55f;
-        private const string MOVING_KEY = "IsMoving";
 
-        public PlayerController(SignalBus signalBus, PlayerModel playerModel, PlayerView playerView)
+        public event Action WeaponMissed;
+        public event Action<CatView> WeaponHit;
+
+        public PlayerController(PlayerModel playerModel, PlayerView playerView)
         {
-            _signalBus = signalBus;
             _model = playerModel;
             _view = playerView;
-        }
-
-        void IInitializable.Initialize()
-        {
             _model.InputSystem.Jump += OnJump;
-            _signalBus.Subscribe<GameOverSignal>(OnGameOverSignal);
         }
-        void ILateDisposable.LateDispose()
-        {
-            UnbindWeapon();
-            _model.InputSystem.Jump -= OnJump;
-            _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOverSignal);
-        }
-        void ITickable.Tick()
-        {
-            ProcessMovementInput();
 
-            TrackCursor();
+        void IPauseHandler.SetPaused(bool isPaused)
+        {
+            if (isPaused) Disable();
+            else Enable();
         }
 
         private void OnJump()
@@ -55,29 +42,10 @@ namespace Core.Player
                 _view.ReloadGun(_model.PrimaryWeapon.ReloadTime);
             }
         }
-        private void OnWeaponHit(CatView target)
-        {
-            target.Save();          
-        }
-        private void OnWeaponMissed()
-        {
-            _signalBus.Fire<PlayerWeaponMissedSignal>();
-        }
-        private void OnGameOverSignal()
-        {
-            _model.InputSystem.Disable();
-        }
-
         private void ProcessMovementInput()
         {
-            bool isMoving = _model.InputSystem.HorizontalAxis != 0f;
-            
-            _view.Animator.SetBool(MOVING_KEY, isMoving);
+            _view.SetDirection(_model.InputSystem.HorizontalAxis);
 
-            if (isMoving)
-            {
-                _view.FlipSprite(_model.InputSystem.HorizontalAxis > 0f);
-            }
             bool isCursorRightThanPlayer = _model.InputSystem.MouseWorldPosition.x > _view.transform.position.x;
             _view.FlipSprite(isCursorRightThanPlayer);
 
@@ -95,25 +63,41 @@ namespace Core.Player
                     Mathf.Clamp(angle, -FIELD_OF_VIEW, 0f);
             _view.RotateGun(Quaternion.Euler(0f, 0f, clampedAngle));
         }
-        private void UnbindWeapon()
+        private void BindWeapon(bool isBind)
         {
-            if (_model.PrimaryWeapon != null)
+            if (_model.PrimaryWeapon == null) return;
+
+            if (isBind)
             {
-                _model.PrimaryWeapon.Hit -= OnWeaponHit;
-                _model.PrimaryWeapon.Missed -= OnWeaponMissed;
+                _model.PrimaryWeapon.Hit += WeaponHit;
+                _model.PrimaryWeapon.Missed += WeaponMissed;
+                _model.InputSystem.Fire += OnFire;
+            }
+            else
+            {
+                _model.PrimaryWeapon.Hit -= WeaponHit;
+                _model.PrimaryWeapon.Missed -= WeaponMissed;
                 _model.InputSystem.Fire -= OnFire;
             }
         }
 
+        public void Update()
+        {
+            ProcessMovementInput();
+
+            TrackCursor();
+        }
         public void Enable()
         {
             _model.InputSystem.Enable();
-            _view.gameObject.SetActive(true);
+            _model.InputSystem.Jump += OnJump;
+            BindWeapon(true);
         }
         public void Disable()
         {
             _model.InputSystem.Disable();
-            _view.gameObject.SetActive(false);
+            _model.InputSystem.Jump -= OnJump;
+            BindWeapon(false);
         }
         public void Translate(Vector2 direction)
         {
@@ -127,12 +111,12 @@ namespace Core.Player
         {
             if (weapon == null) throw new ArgumentNullException("Weapon is null!");
 
-            UnbindWeapon();
+            BindWeapon(false);
 
             _model.PrimaryWeapon = weapon;
-            _model.PrimaryWeapon.Hit += OnWeaponHit;
-            _model.PrimaryWeapon.Missed += OnWeaponMissed;
+            _model.PrimaryWeapon.Hit += WeaponHit;
+            _model.PrimaryWeapon.Missed += WeaponMissed;
             _model.InputSystem.Fire += OnFire;
-        } 
+        }
     }
 }

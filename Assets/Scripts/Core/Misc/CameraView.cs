@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using Zenject;
@@ -8,10 +7,17 @@ namespace Core
     [RequireComponent(typeof(Camera))]
     public class CameraView : MonoBehaviour
     {
+        private float _fadeTime;
+
         [Inject]
         private void Construct(Models.GameSettings settings)
         {
-            FadeAsync(UI.FadeMode.On, settings.FadeTime);
+            _fadeTime = settings.FadeTime;
+        }
+
+        private IEnumerator Start()
+        {
+            yield return Fade(UI.FadeMode.On, _fadeTime);
         }
 
         public void Shake(float duration, float frequence)
@@ -24,8 +30,8 @@ namespace Core
             float factor = 0f;
             while (factor < 1f)
             {
-                transform.position = startPosition + (Vector3)UnityEngine.Random.insideUnitCircle * frequence;
-                factor += Time.deltaTime / duration;
+                transform.position = startPosition + (Vector3)Random.insideUnitCircle * frequence;
+                factor += Time.unscaledDeltaTime / duration;
                 yield return null;
             }
             transform.position = startPosition;
@@ -50,17 +56,17 @@ namespace Core
                 Vector3 resDirection = ((Vector3)currentDirection + Vector3.forward).normalized;
                 transform.localRotation = Quaternion.FromToRotation(Vector3.forward, resDirection);
 
-                elapsed += Time.deltaTime;
+                elapsed += Time.unscaledDeltaTime;
                 yield return null;
             }
             transform.localRotation = startRotation;
         }
 
-        public async void FadeAsync(UI.FadeMode mode, float duration)
+        public IEnumerator Fade(UI.FadeMode mode, float duration)
         {
             var asset = Resources.Load<UI.Vignette>("Prefabs/UI/Vignette");
             var vignette = Instantiate(asset);
-            await vignette.AwaitForFade(mode, duration);
+            yield return vignette.Fade(mode, duration);
         }
     }
 }

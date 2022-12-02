@@ -13,6 +13,10 @@ namespace Core.UI
         private Transform _parentPanel;
         [SerializeField]
         private GameObject _heathPrefab;
+        [SerializeField]
+        private Texture2D _happyEmoji;
+        [SerializeField]
+        private Texture2D _sadEmoji;
 
         private int _currentIndex;
         private byte _maxHealth;
@@ -67,6 +71,7 @@ namespace Core.UI
             for (int i = _currentIndex - 1; i < newValue; i++)
             {
                 RawImage image = _parentPanel.GetChild(i).GetComponent<RawImage>();
+                image.texture = _happyEmoji;
                 image.color = Color.white;
             }
             _currentIndex = newValue;
@@ -79,6 +84,7 @@ namespace Core.UI
             for (int i = _currentIndex - 1; i >= newValue; i--)
             {
                 RawImage image = _parentPanel.GetChild(i).GetComponent<RawImage>();
+                image.texture = _sadEmoji;
                 image.color = Color.grey;
             }
             _currentIndex = newValue;

@@ -2,24 +2,30 @@
 using UnityEngine;
 using Core.Cats;
 using Core.Audio;
+using Zenject;
 
 namespace Core.Weapons
 {
     public class BulletGun : IWeapon
     {
         private readonly BulletGunModel _model;
-        private readonly Bullet.Factory _bulletFactory;
-        private readonly Bullet.ExplosionFactory _explosionFactory;
+        private Bullet.Factory _bulletFactory;
+        private Bullet.ExplosionFactory _explosionFactory;
 
         public float ReloadTime => _model.ReloadTime;
         public event Action Missed;
         public event Action<CatView> Hit;
 
-        public BulletGun(BulletGunModel model, Bullet.Factory bulletFactory, Bullet.ExplosionFactory explosionFactory)
+        [Inject]
+        private void Construct(Bullet.Factory bulletFactory, Bullet.ExplosionFactory explosionFactory)
         {
-            _model = model;
             _bulletFactory = bulletFactory;
             _explosionFactory = explosionFactory;
+        }
+
+        public BulletGun(BulletGunModel model)
+        {
+            _model = model;
         }
 
         public bool TryShoot()

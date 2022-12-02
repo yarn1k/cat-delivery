@@ -13,7 +13,6 @@ namespace Core.Weapons
     {
         private BoxCollider2D _collider;
         private SpriteRenderer _renderer;
-        private LevelBounds _levelBounds;
         private IMemoryPool _pool;
         private bool _prepared;
         private Vector3 _startPosition;
@@ -25,12 +24,6 @@ namespace Core.Weapons
         public event Action Prepared;
         public bool HitAnyTarget { get; private set; }
 
-        [Inject]
-        private void Construct(LevelBounds levelBounds)
-        {
-            _levelBounds = levelBounds;
-        }
-
         private void Awake()
         {
             _collider = GetComponent<BoxCollider2D>();
@@ -38,10 +31,10 @@ namespace Core.Weapons
         }
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (_prepared && collision.TryGetComponent(out CatView target) && target.Interactable)
+            if (_prepared && collision.TryGetComponent(out CatView cat) && cat.Interactable)
             {
                 HitAnyTarget = true;
-                Hit?.Invoke(target);
+                Hit?.Invoke(cat);
             }
         }
         private void OnLifetimeElapsed()
@@ -62,6 +55,7 @@ namespace Core.Weapons
                 {
                     if (collider != null && collider.TryGetComponent(out CatView cat) && cat.Interactable)
                     {
+                        HitAnyTarget = true;
                         Hit?.Invoke(cat);
                     }
                 }
@@ -89,12 +83,11 @@ namespace Core.Weapons
         }
         private void PrepareLaser(float preparationTime)
         {
-            float width = _levelBounds.Size.x;
             _startPosition = transform.position;
 
             Sequence sequence = DOTween.Sequence();
             sequence.Append(ShowLaser(true, preparationTime));
-            sequence.Join(DOTween.To(() => 0f, x => SetWidth(x), width, preparationTime));
+            sequence.Join(DOTween.To(() => 0f, x => SetWidth(x), _renderer.size.x, preparationTime));
             sequence.SetLink(gameObject);
             sequence.SetEase(Ease.Linear);
             sequence.OnComplete(() =>
