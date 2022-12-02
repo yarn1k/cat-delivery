@@ -6,7 +6,7 @@ using Core.Infrastructure.Signals.Cats;
 
 namespace Core
 {
-    public class EndTrigger : MonoBehaviour
+    public class DisposeCollisionDetector : MonoBehaviour
     {
         private SignalBus _signalBus;
 

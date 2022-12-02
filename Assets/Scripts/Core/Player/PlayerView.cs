@@ -11,7 +11,7 @@ namespace Core.Player
         [SerializeField] 
         private SpriteRenderer _gun;
         [SerializeField]
-        private SpriteRenderer _head;
+        private SpriteRenderer _head; // Temporal
         [SerializeField]
         private Animator _animator;
         [field: SerializeField] public Transform FirePoint { get; private set; }
@@ -20,7 +20,6 @@ namespace Core.Player
         private const string MOVING_KEY = "IsMoving";
         public bool IsGrounded { get; private set; }
         public bool FlipX => transform.localScale.x < 0f;
-
 
         private void Awake()
         {

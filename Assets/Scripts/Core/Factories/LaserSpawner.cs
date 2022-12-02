@@ -4,13 +4,11 @@ using Core.Weapons;
 using Core.Models;
 using Core.Audio;
 using Core.Cats;
-using Core.Infrastructure.Signals.Game;
 
 namespace Core
 {
-    public class LaserSpawner : IInitializable, ITickable, ILateDisposable, IPauseHandler
+    public class LaserSpawner : IInitializable, ITickable, IPauseHandler
     {
-        private readonly SignalBus _signalBus;
         private readonly Laser.Factory _factory;
         private readonly LaserGunConfig _laserConfig;
         private readonly Vector2 _attackCooldownInterval;
@@ -20,16 +18,14 @@ namespace Core
         private Vector2 _position;
         private float _timer;
         private float _spawnTime;
-        private bool _enabled = true;
+        private bool _enabled;
 
         public LaserSpawner(
-            SignalBus signalBus, 
             Laser.Factory factory, 
             EnemySettings enemySettings, 
             WeaponsSettings weaponSettings, 
             CameraView camera)
         {
-            _signalBus = signalBus;
             _factory = factory;
             _attackCooldownInterval = enemySettings.AttackCooldownInterval;
             _spawnHeight = enemySettings.LaserSpawnHeight;
@@ -88,20 +84,12 @@ namespace Core
                 _camera.Shake(_laserConfig.ShakeDuration, _laserConfig.ShakeFrequence);
             }
         }
-        private void OnGameOverSignal()
-        {
-            _enabled = false;
-        }
 
         void IInitializable.Initialize()
         {
             _spawnTime = Random.Range(_attackCooldownInterval.x, _attackCooldownInterval.y);
-            _signalBus.Subscribe<GameOverSignal>(OnGameOverSignal);
         }
-        void ILateDisposable.LateDispose()
-        {
-            _signalBus.TryUnsubscribe<GameOverSignal>(OnGameOverSignal);
-        }
+
         void ITickable.Tick()
         {
             if (!_enabled) return;
@@ -116,9 +104,10 @@ namespace Core
             }
             else _timer += Time.deltaTime;
         }
-        void IPauseHandler.SetPaused(bool isPaused)
+        void IPauseHandler.SetPaused(bool isPaused) => SetEnabled(!isPaused);
+        public void SetEnabled(bool isEnabled)
         {
-            _enabled = !isPaused;
+            _enabled = isEnabled;
         }
     }
 }

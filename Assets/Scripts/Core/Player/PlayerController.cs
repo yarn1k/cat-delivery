@@ -63,9 +63,17 @@ namespace Core.Player
                     Mathf.Clamp(angle, -FIELD_OF_VIEW, 0f);
             _view.RotateGun(Quaternion.Euler(0f, 0f, clampedAngle));
         }
-        private void UnbindWeapon()
+        private void BindWeapon(bool isBind)
         {
-            if (_model.PrimaryWeapon != null)
+            if (_model.PrimaryWeapon == null) return;
+
+            if (isBind)
+            {
+                _model.PrimaryWeapon.Hit += WeaponHit;
+                _model.PrimaryWeapon.Missed += WeaponMissed;
+                _model.InputSystem.Fire += OnFire;
+            }
+            else
             {
                 _model.PrimaryWeapon.Hit -= WeaponHit;
                 _model.PrimaryWeapon.Missed -= WeaponMissed;
@@ -83,13 +91,13 @@ namespace Core.Player
         {
             _model.InputSystem.Enable();
             _model.InputSystem.Jump += OnJump;
-            _model.InputSystem.Fire += OnFire;
+            BindWeapon(true);
         }
         public void Disable()
         {
-            UnbindWeapon();
             _model.InputSystem.Disable();
             _model.InputSystem.Jump -= OnJump;
+            BindWeapon(false);
         }
         public void Translate(Vector2 direction)
         {
@@ -103,7 +111,7 @@ namespace Core.Player
         {
             if (weapon == null) throw new ArgumentNullException("Weapon is null!");
 
-            UnbindWeapon();
+            BindWeapon(false);
 
             _model.PrimaryWeapon = weapon;
             _model.PrimaryWeapon.Hit += WeaponHit;

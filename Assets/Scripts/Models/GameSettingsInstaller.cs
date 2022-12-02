@@ -8,7 +8,6 @@ namespace Core.Models
     [Serializable]
     public class GameSettings
     {
-        public ushort GameTime;
         public float PreparationTime;
         [Min(0f)]
         public float FadeTime;
