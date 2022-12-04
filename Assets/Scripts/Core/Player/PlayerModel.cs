@@ -6,9 +6,9 @@ namespace Core.Player
 {
     public class PlayerModel
     {
-        public readonly float ReloadTime;
-        public readonly float MovementSpeed;
-        public readonly float JumpForce;
+        public float ReloadTime;
+        public float MovementSpeed;
+        public float JumpForce;
         public IInputSystem InputSystem { get; private set; }
         public IWeapon PrimaryWeapon { get; set; }
 

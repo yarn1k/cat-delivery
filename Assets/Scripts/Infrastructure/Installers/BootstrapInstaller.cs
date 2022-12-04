@@ -20,14 +20,14 @@ namespace Core.Infrastructure.Installers
         {
             Container.Bind<AudioListener>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
             Container.Bind<SoundManager>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-            Container.Bind<UIManager>().AsSingle().NonLazy();
             Container.Bind<IPauseProvider>().To<PauseController>().AsSingle().NonLazy();
             Container.Bind<ILoadingScreenProvider>().To<LoadingScreenProvider>().AsSingle().NonLazy();
             Container.Bind<ICoroutineRunner>().To<AsyncProcessor>().FromNewComponentOnNewGameObject().AsSingle().NonLazy();
-            Container.BindFactory<AudioClip, float, bool, DisposableAudioClip, DisposableAudioClip.Factory>().FromMonoPoolableMemoryPool(x => x
-                  .WithInitialSize(_audioSettings.PoolCapacity)
-                  .FromNewComponentOnNewGameObject()
-                  .UnderTransformGroup("Sounds"));
+            Container.BindFactory<AudioClip, float, bool, DisposableAudioClip, DisposableAudioClip.Factory>()
+                .FromMonoPoolableMemoryPool(x => x
+                .WithInitialSize(_audioSettings.PoolCapacity)
+                .FromNewComponentOnNewGameObject()
+                .UnderTransformGroup("Sounds"));
         }
     }
 }

@@ -7,6 +7,7 @@ using Core.Weapons;
 using Core.Models;
 using Core.Infrastructure.Signals.Game;
 using Core.Input;
+using Core.Player.Buffs;
 
 namespace Core.Infrastructure.Installers
 {
@@ -40,6 +41,7 @@ namespace Core.Infrastructure.Installers
         {
             Container.DeclareSignal<PlayerWeaponMissedSignal>();
             Container.BindInterfacesTo<StandaloneInputController>().AsSingle();
+            Container.BindInterfacesAndSelfTo<BuffSystem>().AsSingle();
         }
         private void BindFactories()
         {

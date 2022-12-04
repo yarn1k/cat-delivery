@@ -17,7 +17,7 @@ MonoBehaviour:
     FadeTime: 2
     Lifes: 3
   _playerSettings:
-    ReloadTime: 0.5
+    ReloadTime: 1
     MovementSpeed: 5.8
     JumpForce: 13
   _catsSettings:
