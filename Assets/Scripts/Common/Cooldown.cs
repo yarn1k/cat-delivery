@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Core.Weapons
+namespace Core
 {
     public class Cooldown
     {

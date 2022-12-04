@@ -30,6 +30,8 @@ namespace Core
             PlayerView view = GameObject.Instantiate<PlayerView>(asset);
 
             PlayerModel model = _container.Instantiate<PlayerModel>(new object[] { _playerSettings.ReloadTime, _playerSettings.MovementSpeed, _playerSettings.JumpForce });
+            _container.Bind<PlayerModel>().FromInstance(model).AsSingle();
+
             _playerController = new PlayerController(model, view);
             _playerController.WeaponMissed += OnPlayerMissed;
             _playerController.WeaponHit += OnWeaponHit;
